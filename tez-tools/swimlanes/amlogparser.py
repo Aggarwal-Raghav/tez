@@ -17,274 +17,482 @@
 # under the License.
 #
 
-import sys,re
-from itertools import groupby
+import argparse
+import io
+import re
+import sys
 from bz2 import BZ2File
-from gzip import GzipFile as GZFile
-try:
-	from urllib.request import urlopen
-except:
-	from urllib2 import urlopen as urlopen
-
-class AMRawEvent(object):
-	def __init__(self, ts, dag, event, args):
-		self.ts = ts
-		self.dag = dag
-		self.event = event
-		self.args = args
-	def __repr__(self):
-		return "%s->%s (%s)" % (self.dag, self.event, self.args)
-
-def first(l):
-	return (l[:1] or [None])[0]
-
-def kv_add(d, k, v):
-	if(d.has_key(k)):
-		oldv = d[k]
-		if(type(oldv) is list):
-			oldv.append(v)
-		else:
-			oldv = [oldv, v]
-		d[k] = oldv
-	else:
-		d[k] = v
-			
-def csv_kv(args):
-	kvs = {};
-	pairs = [p.strip() for p in args.split(",")]
-	for kv in pairs:
-		if(kv.find("=") == -1):
-			kv_add(kvs, kv, None)
-		elif(kv.find("=") == kv.rfind("=")):
-			(k,v) = kv.split("=")
-			kv_add(kvs, k, v)
-	return kvs
-
-class AppMaster(object):
-	def __init__(self, raw):
-		self.raw = raw
-		self.kvs = csv_kv(raw.args)
-		self.name = self.kvs["appAttemptId"]
-		self.zero = int(self.kvs["startTime"])
-		#self.ready = int(self.kvs["initTime"])
-		#self.start = int(self.kvs["appSubmitTime"])
-		self.containers = None
-		self.dags = None
-	def __repr__(self):
-		return "[%s started at %d]" % (self.name, self.zero)
-
-class DummyAppMaster(object):
-	""" magic of duck typing """
-	def __init__(self, dag):
-		self.raw = None
-		self.kvs = {}
-		self.name = "Appmaster for %s" % dag.name
-		self.zero = dag.start
-		self.containers = None
-		self.dags = None
-	
-class Container(object):
-	def __init__(self, raw):
-		self.raw = raw
-		self.kvs = csv_kv(raw.args)
-		self.name = self.kvs["containerId"]
-		self.start = int(self.kvs["launchTime"])
-		self.stop = -1 
-		self.status = 0
-		self.node =""
-	def __repr__(self):
-		return "[%s start=%d]" % (self.name, self.start)
-
-class DummyContainer(object):
-	def __init__(self, attempt):
-		self.raw = None
-		self.kvs = {}
-		self.name = attempt.container
-		self.status = 0
-		self.start = attempt.start
-		self.stop = -1
-		self.status = 0
-		self.node = None
-
-class DAG(object):
-	def __init__(self, raw):
-		self.raw = raw
-		self.name = raw.dag
-		self.kvs = csv_kv(raw.args)
-		self.start = (int)(self.kvs["startTime"])
-		self.finish = (int)(self.kvs["finishTime"])
-		self.duration = (int)(self.kvs["timeTaken"])
-	def structure(self, vertexes):
-		self.vertexes = [v for v in vertexes if v.dag == self.name]
-	def attempts(self):
-		for v in self.vertexes:
-			for t in v.tasks:
-				for a in t.attempts:
-					if(a.dag == self.name):
-						yield a
-	def __repr__(self):
-		return "%s (%d+%d)" % (self.name, self.start, self.duration)
-
-class Vertex(object):
-	def __init__(self, raw):
-		self.raw = raw
-		self.dag = raw.dag
-		self.kvs = csv_kv(raw.args)
-		self.name = self.kvs["vertexName"]
-		self.initZero = (int)(self.kvs["initRequestedTime"])
-		self.init = (int)(self.kvs["initedTime"])
-		self.startZero = (int)(self.kvs["startRequestedTime"])
-		self.start = (int)(self.kvs["startedTime"])
-		self.finish = (int)(self.kvs["finishTime"])
-		self.duration = (int)(self.kvs["timeTaken"])
-	def structure(self, tasks):
-		self.tasks = [t for t in tasks if t.vertex == self.name]
-	def __repr__(self):
-		return "%s (%d+%d)" % (self.name, self.start, self.duration)
+from dataclasses import dataclass, field
+from gzip import GzipFile
+from itertools import groupby
+from pathlib import Path
+from typing import IO, Any, Dict, Iterator, List, Optional
+from urllib.request import urlopen
 
 
-class Task(object):
-	def __init__(self, raw):
-		self.raw = raw
-		self.dag = raw.dag
-		self.kvs = csv_kv(raw.args)
-		self.vertex = self.kvs["vertexName"]
-		self.name = self.kvs["taskId"]
-		self.start = (int)(self.kvs["startTime"])
-		self.finish = (int)(self.kvs["finishTime"])
-		self.duration = (int)(self.kvs["timeTaken"])
-	def structure(self, attempts):
-		self.attempts = [a for a in attempts if a.task == self.name]
-	def __repr__(self):
-		return "%s (%d+%d)" % (self.name, self.start, self.duration)
+@dataclass
+class AMRawEvent:
+    ts: str
+    dag: str
+    event: str
+    args: str
 
-class Attempt(object):
-	def __init__(self, pair):
-		start = first(filter(lambda a: a.event == "TASK_ATTEMPT_STARTED", pair))
-		finish = first(filter(lambda a: a.event == "TASK_ATTEMPT_FINISHED", pair))
-		if start is None or finish is None:
-			print [start, finish];
-		self.raw = finish
-		self.kvs = csv_kv(start.args)
-		if finish is not None:
-			self.dag = finish.dag
-			self.kvs.update(csv_kv(finish.args))
-			self.finish = (int)(self.kvs["finishTime"])
-			self.duration = (int)(self.kvs["timeTaken"])
-		self.name = self.kvs["taskAttemptId"]
-		self.task = self.name[:self.name.rfind("_")].replace("attempt","task")
-		(_, _, amid, dagid, vertexid, taskid, attemptid) = self.name.split("_")
-		self.tasknum = int(taskid)
-		self.attemptnum = int(attemptid)
-		self.vertex = self.kvs["vertexName"]
-		self.start = (int)(self.kvs["startTime"])
-		self.container = self.kvs["containerId"]
-		self.node = self.kvs["nodeId"]
-	def __repr__(self):
-		return "%s (%d+%d)" % (self.name, self.start, self.duration)
-		
+    def __repr__(self) -> str:
+        return f"{self.dag}->{self.event} ({self.args})"
 
-def open_file(f):
-	if(f.endswith(".gz")):
-		return GZFile(f)
-	elif(f.endswith(".bz2")):
-		return BZ2File(f)
-	elif(f.startswith("http://")):
-		return urlopen(f)
-	return open(f)
 
-class AMLog(object):	
-	def init(self):
-		ID=r'[^\]]*'
-		TS=r'[0-9:\-, ]*'
-		MAIN_RE=r'^(?P<ts>%(ts)s) [?INFO]? [(?P<thread>%(id)s)] \|?((HistoryEventHandler.criticalEvents)|((org.apache.tez.dag.)?history.HistoryEventHandler))\|?: [HISTORY][DAG:(?P<dag>%(id)s)][Event:(?P<event>%(id)s)]: (?P<args>.*)'
-		MAIN_RE = MAIN_RE.replace('[','\[').replace(']','\]')
-		MAIN_RE = MAIN_RE % {'ts' : TS, 'id' : ID}
-		self.MAIN_RE = re.compile(MAIN_RE)
-	
-	def __init__(self, f):
-		fp = open_file(f)
-		self.init()
-		self.events = filter(lambda a:a, [self.parse(l.strip()) for l in fp])
-	
-	def structure(self):
-		am = self.appmaster() # this is a copy
-		containers = dict([(a.name, a) for a in self.containers()])
-		dags = self.dags()
-		vertexes = self.vertexes()
-		tasks = self.tasks()
-		attempts = self.attempts()
-		for t in tasks:
-			t.structure(attempts)
-		for v in vertexes:
-			v.structure(tasks)
-		for d in dags:
-			d.structure(vertexes)
-		for a in attempts:
-			if containers.has_key(a.container):
-				c = containers[a.container]
-				c.node = a.node
-			else:
-				c = DummyContainer(a)
-				containers[a.container] = c
-		if not am:
-			am = DummyAppMaster(first(dags))
-		am.containers = containers
-		am.dags = dags
-		return am
+def get_first(iterable: List[Any]) -> Any:
+    """Safely returns the first element of a list or None."""
+    return iterable[0] if iterable else None
 
-	def appmaster(self):
-		return first([AppMaster(ev) for ev in self.events if ev.event == "AM_STARTED"])
-	
-	def containers(self):
-		containers = [Container(ev) for ev in self.events if ev.event == "CONTAINER_LAUNCHED"]
-		containermap = dict([(c.name, c) for c in containers])
-		for ev in self.events:
-			if ev.event == "CONTAINER_STOPPED":
-				kvs = csv_kv(ev.args)
-				if containermap.has_key(kvs["containerId"]):
-					containermap[kvs["containerId"]].stop = int(kvs["stoppedTime"])
-					containermap[kvs["containerId"]].status = int(kvs["exitStatus"])
-		return containers
-				
-	
-	def dags(self):
-		dags = [DAG(ev) for ev in self.events if ev.event == "DAG_FINISHED"]
-		return dags
-	
-	def vertexes(self):
-		""" yes, not vertices """
-		vertexes = [Vertex(ev) for ev in self.events if ev.event == "VERTEX_FINISHED"]
-		return vertexes
-	
-	def tasks(self):
-		tasks = [Task(ev) for ev in self.events if ev.event == "TASK_FINISHED"]
-		return tasks
-	
-	def attempts(self):
-		key = lambda a:a[0]
-		value = lambda a:a[1]
-		raw = [(csv_kv(ev.args)["taskAttemptId"], ev) for ev in self.events if ev.event == "TASK_ATTEMPT_STARTED" or ev.event == "TASK_ATTEMPT_FINISHED"]
-		pairs = groupby(sorted(raw), key = key)
-		attempts = [Attempt(map(value,p)) for (k,p) in pairs]
-		return attempts
-	
-	def parse(self, l):		
-		if(l.find("[HISTORY]") != -1):
-			m = self.MAIN_RE.match(l)
-			ts = m.group("ts")
-			dag = m.group("dag")
-			event = m.group("event")
-			args = m.group("args")
-			return AMRawEvent(ts, dag, event, args)
 
-def main(argv):
-	tree = AMLog(argv[0]).structure()
-	# AM -> dag -> vertex -> task -> attempt
-	# AM -> container
-	for d in tree.dags:
-		for a in d.attempts():
-			print [a.vertex, a.name, a.container, a.start, a.finish]
+def parse_key_values(args_str: str) -> Dict[str, Any]:
+    """Parses comma-separated key=value pairs into a dictionary."""
+    kvs: Dict[str, Any] = {}
+    # Split by comma, strip whitespace
+    pairs = [p.strip() for p in args_str.split(",")]
+
+    for pair in pairs:
+        if "=" not in pair:
+            # Handle flags (keys without values)
+            val = None
+            key = pair
+        else:
+            # Split on the last equals sign to handle values containing equals
+            last_eq_index = pair.rfind("=")
+            key = pair[:last_eq_index]
+            val = pair[last_eq_index + 1 :]
+
+        if key in kvs:
+            old_val = kvs[key]
+            if isinstance(old_val, list):
+                old_val.append(val)
+            else:
+                kvs[key] = [old_val, val]
+        else:
+            kvs[key] = val
+    return kvs
+
+
+@dataclass
+class Container:
+    raw: Optional[AMRawEvent]
+    name: str
+    start: int
+    stop: int = -1
+    status: int = 0
+    node: str = ""
+    kvs: Dict[str, Any] = field(default_factory=dict)
+
+    @classmethod
+    def from_event(cls, raw: AMRawEvent) -> "Container":
+        kvs = parse_key_values(raw.args)
+        return cls(
+            raw=raw,
+            name=kvs.get("containerId", "Unknown"),
+            start=int(kvs.get("launchTime", 0)),
+            kvs=kvs,
+        )
+
+    def __repr__(self) -> str:
+        return f"[{self.name} start={self.start}]"
+
+
+class DummyContainer(Container):
+    def __init__(self, attempt: "Attempt"):
+        super().__init__(
+            raw=None,
+            name=attempt.container,
+            start=attempt.start,
+            stop=-1,
+            status=0,
+            node="",
+            kvs={},
+        )
+
+
+@dataclass
+class Attempt:
+    name: str
+    task_id: str
+    vertex: str
+    start: int
+    container: str
+    node: str
+    raw: Optional[AMRawEvent] = None
+    finish: int = 0
+    duration: int = 0
+    kvs: Dict[str, Any] = field(default_factory=dict)
+
+    @classmethod
+    def from_events(cls, events: List[AMRawEvent]) -> "Attempt":
+        start_event = next(
+            (e for e in events if e.event == "TASK_ATTEMPT_STARTED"), None
+        )
+        finish_event = next(
+            (e for e in events if e.event == "TASK_ATTEMPT_FINISHED"), None
+        )
+
+        # Use start event for base info, fall back to finish if start missing
+        base_event = start_event if start_event else finish_event
+        if not base_event:
+            raise ValueError("Attempt has no start or finish event")
+
+        kvs = parse_key_values(base_event.args)
+
+        name = kvs.get("taskAttemptId", "Unknown")
+        # Heuristic to extract task ID from attempt ID string
+        task_id_str = name.rsplit("_", 1)[0].replace("attempt", "task")
+
+        instance = cls(
+            name=name,
+            task_id=task_id_str,
+            vertex=kvs.get("vertexName", ""),
+            start=int(kvs.get("startTime", 0)),
+            container=kvs.get("containerId", ""),
+            node=kvs.get("nodeId", ""),
+            raw=finish_event,
+            kvs=kvs,
+        )
+
+        if finish_event:
+            finish_kvs = parse_key_values(finish_event.args)
+            instance.kvs.update(finish_kvs)
+            instance.finish = int(finish_kvs.get("finishTime", 0))
+            instance.duration = int(finish_kvs.get("timeTaken", 0))
+
+        return instance
+
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.start}+{self.duration})"
+
+
+@dataclass
+class Task:
+    raw: AMRawEvent
+    dag_id: str
+    vertex: str
+    name: str
+    start: int
+    finish: int
+    duration: int
+    kvs: Dict[str, Any]
+    attempts: List[Attempt] = field(default_factory=list)
+
+    @classmethod
+    def from_event(cls, raw: AMRawEvent) -> "Task":
+        kvs = parse_key_values(raw.args)
+        return cls(
+            raw=raw,
+            dag_id=raw.dag,
+            vertex=kvs.get("vertexName", ""),
+            name=kvs.get("taskId", ""),
+            start=int(kvs.get("startTime", 0)),
+            finish=int(kvs.get("finishTime", 0)),
+            duration=int(kvs.get("timeTaken", 0)),
+            kvs=kvs,
+        )
+
+    def structure(self, all_attempts: List[Attempt]) -> None:
+        self.attempts = [a for a in all_attempts if a.task_id == self.name]
+
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.start}+{self.duration})"
+
+
+@dataclass
+class Vertex:
+    raw: AMRawEvent
+    dag_id: str
+    name: str
+    init_zero: int
+    init: int
+    start_zero: int
+    start: int
+    finish: int
+    duration: int
+    kvs: Dict[str, Any]
+    tasks: List[Task] = field(default_factory=list)
+
+    @classmethod
+    def from_event(cls, raw: AMRawEvent) -> "Vertex":
+        kvs = parse_key_values(raw.args)
+        return cls(
+            raw=raw,
+            dag_id=raw.dag,
+            name=kvs.get("vertexName", ""),
+            init_zero=int(kvs.get("initRequestedTime", 0)),
+            init=int(kvs.get("initedTime", 0)),
+            start_zero=int(kvs.get("startRequestedTime", 0)),
+            start=int(kvs.get("startedTime", 0)),
+            finish=int(kvs.get("finishTime", 0)),
+            duration=int(kvs.get("timeTaken", 0)),
+            kvs=kvs,
+        )
+
+    def structure(self, all_tasks: List[Task]) -> None:
+        self.tasks = [t for t in all_tasks if t.vertex == self.name]
+
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.start}+{self.duration})"
+
+
+@dataclass
+class DAG:
+    raw: AMRawEvent
+    name: str
+    start: int
+    finish: int
+    duration: int
+    kvs: Dict[str, Any]
+    vertexes: List[Vertex] = field(default_factory=list)
+
+    @classmethod
+    def from_event(cls, raw: AMRawEvent) -> "DAG":
+        kvs = parse_key_values(raw.args)
+        return cls(
+            raw=raw,
+            name=raw.dag,
+            start=int(kvs.get("startTime", 0)),
+            finish=int(kvs.get("finishTime", 0)),
+            duration=int(kvs.get("timeTaken", 0)),
+            kvs=kvs,
+        )
+
+    def structure(self, all_vertexes: List[Vertex]) -> None:
+        self.vertexes = [v for v in all_vertexes if v.dag_id == self.name]
+
+    def attempts(self) -> Iterator[Attempt]:
+        for v in self.vertexes:
+            for t in v.tasks:
+                for a in t.attempts:
+                    yield a
+
+    def __repr__(self) -> str:
+        return f"{self.name} ({self.start}+{self.duration})"
+
+
+@dataclass
+class AppMaster:
+    raw: Optional[AMRawEvent]
+    name: str
+    zero: int
+    kvs: Dict[str, Any]
+    containers: Dict[str, Container] = field(default_factory=dict)
+    dags: List[DAG] = field(default_factory=list)
+
+    @classmethod
+    def from_event(cls, raw: AMRawEvent) -> "AppMaster":
+        kvs = parse_key_values(raw.args)
+        return cls(
+            raw=raw,
+            name=kvs.get("appAttemptId", "Unknown"),
+            zero=int(kvs.get("startTime", 0)),
+            kvs=kvs,
+        )
+
+    def __repr__(self) -> str:
+        return f"[{self.name} started at {self.zero}]"
+
+
+class DummyAppMaster(AppMaster):
+    def __init__(self, dag: DAG):
+        super().__init__(
+            raw=None,
+            name=f"Appmaster for {dag.name}",
+            zero=dag.start,
+            kvs={},
+            containers={},
+            dags=[],
+        )
+
+
+def open_log_stream(filename: str) -> IO[str]:
+    """Opens a log file, handling GZ, BZ2, and HTTP sources."""
+    if filename.startswith("http://") or filename.startswith("https://"):
+        return io.TextIOWrapper(urlopen(filename), encoding="utf-8", errors="replace")
+
+    path = Path(filename)
+    if not path.exists():
+        raise FileNotFoundError(f"File not found: {filename}")
+
+    if filename.endswith(".gz"):
+        return GzipFile(filename, mode="rt", encoding="utf-8", errors="replace")
+    elif filename.endswith(".bz2"):
+        return BZ2File(filename, mode="rt", encoding="utf-8", errors="replace")
+    else:
+        return open(filename, mode="rt", encoding="utf-8", errors="replace")
+
+
+class AMLog:
+    # Compiled regex for performance and readability
+    LOG_PATTERN = re.compile(
+        r"""
+        ^
+        (?P<ts>[0-9:\-, ]*)             # Timestamp
+        \s+
+        [^|]* # Log Level / Thread info (skipped)
+        \|?                             # Optional Separator
+        (?:                             # Java Class definitions
+          HistoryEventHandler\.criticalEvents|
+          (?:org\.apache\.tez\.dag\.)?history\.HistoryEventHandler
+        )
+        \|?:                            # Separator
+        \s+
+        \[HISTORY\]
+        \[DAG:(?P<dag>[^\]]*)\]         # DAG ID
+        \[Event:(?P<event>[^\]]*)\]     # Event Type
+        :\s+
+        (?P<args>.*)                    # Arguments
+        """,
+        re.VERBOSE,
+    )
+
+    def __init__(self, filename: str):
+        self.events: List[AMRawEvent] = []
+        with open_log_stream(filename) as f:
+            self.events = [
+                parsed
+                for line in f
+                if (parsed := self.parse_line(line.strip())) is not None
+            ]
+
+    def parse_line(self, line: str) -> Optional[AMRawEvent]:
+        if "[HISTORY]" not in line:
+            return None
+
+        match = self.LOG_PATTERN.search(line)
+        if match:
+            return AMRawEvent(
+                ts=match.group("ts"),
+                dag=match.group("dag"),
+                event=match.group("event"),
+                args=match.group("args"),
+            )
+        return None
+
+    def structure(self) -> AppMaster:
+        # 1. Extract Basic Entities (Using Dictionaries to Dedup)
+        am_list = [
+            AppMaster.from_event(e) for e in self.events if e.event == "AM_STARTED"
+        ]
+        am = get_first(am_list)
+
+        # Dedup DAGs, Vertices, and Tasks by ID using Dict comprehensions
+        # This prevents duplicate entries if log lines are repeated
+        dags_map = {
+            e.dag: DAG.from_event(e)
+            for e in self.events
+            if e.event == "DAG_FINISHED"
+        }
+        dags = list(dags_map.values())
+
+        vertex_map = {
+            parse_key_values(e.args).get("vertexName"): Vertex.from_event(e)
+            for e in self.events
+            if e.event == "VERTEX_FINISHED"
+        }
+        # Filter out None keys if parsing failed for some reason
+        vertexes = [v for k, v in vertex_map.items() if k]
+
+        task_map = {
+            parse_key_values(e.args).get("taskId"): Task.from_event(e)
+            for e in self.events
+            if e.event == "TASK_FINISHED"
+        }
+        tasks = [t for k, t in task_map.items() if k]
+
+        # 2. Process Containers
+        containers_list = [
+            Container.from_event(e)
+            for e in self.events
+            if e.event == "CONTAINER_LAUNCHED"
+        ]
+        # Map handles dedup for containers implicitly by ID
+        container_map = {c.name: c for c in containers_list}
+
+        for ev in self.events:
+            if ev.event == "CONTAINER_STOPPED":
+                kvs = parse_key_values(ev.args)
+                c_id = kvs.get("containerId")
+                if c_id in container_map:
+                    container_map[c_id].stop = int(kvs.get("stoppedTime", -1))
+                    container_map[c_id].status = int(kvs.get("exitStatus", 0))
+
+        # 3. Process Attempts
+        attempt_events = [
+            e
+            for e in self.events
+            if e.event in ("TASK_ATTEMPT_STARTED", "TASK_ATTEMPT_FINISHED")
+        ]
+
+        def get_attempt_id(ev: AMRawEvent) -> str:
+            start = ev.args.find("taskAttemptId=") + 14
+            end = ev.args.find(",", start)
+            if end == -1:
+                return ev.args[start:]
+            return ev.args[start:end]
+
+        attempt_events.sort(key=get_attempt_id)
+
+        attempts: List[Attempt] = []
+        for _, group in groupby(attempt_events, key=get_attempt_id):
+            group_list = list(group)
+            try:
+                attempts.append(Attempt.from_events(group_list))
+            except ValueError:
+                continue
+
+        # 4. Link Structures
+        for t in tasks:
+            t.structure(attempts)
+
+        for v in vertexes:
+            v.structure(tasks)
+
+        for d in dags:
+            d.structure(vertexes)
+
+        # Link Attempts to Nodes via Containers
+        for a in attempts:
+            if a.container in container_map:
+                c = container_map[a.container]
+                c.node = a.node
+            else:
+                c = DummyContainer(a)
+                container_map[a.container] = c
+
+        # 5. Final Assembly
+        if not am:
+            if dags:
+                am = DummyAppMaster(dags[0])
+            else:
+                am = AppMaster(None, "Unknown", 0, {})
+
+        am.containers = container_map
+        am.dags = dags
+        return am
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Parse Tez AM Logs.")
+    parser.add_argument(
+        "logfile", help="Path to the AM log file (text, .gz, .bz2, or URL)"
+    )
+    args = parser.parse_args()
+
+    try:
+        log_parser = AMLog(args.logfile)
+        am_structure = log_parser.structure()
+
+        for d in am_structure.dags:
+            for a in d.attempts():
+                print([a.vertex, a.name, a.container, a.start, a.finish])
+
+    except Exception as e:
+        print(f"Error parsing log: {e}", file=sys.stderr)
+        sys.exit(1)
+
 
 if __name__ == "__main__":
-	main(sys.argv[1:])
+    main()
