@@ -1029,7 +1029,86 @@
               <removeUnusedImports/>
               <trimTrailingWhitespace/>
               <endWithNewline/>
+              <licenseHeader>
+                <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.java</file>
+              </licenseHeader>
             </java>
+            <pom>
+              <includes>
+                <include>pom.xml</include>
+              </includes>
+              <licenseHeader>
+                <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.xml</file>
+                <delimiter>^&lt;project|^&lt;configuration|^&lt;Configuration|^&lt;extensions|^&lt;component</delimiter>
+              </licenseHeader>
+            </pom>
+            <markdown>
+              <includes>
+                <include>**/*.md</include>
+              </includes>
+              <excludes>
+                <exclude>dev-support/spotless/*.md</exclude>
+                <exclude>**/node_modules/**</exclude>
+                <exclude>**/bower_components/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>tez-ui/**</exclude>
+              </excludes>
+              <licenseHeader>
+                <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.md</file>
+                <delimiter>^[^&lt;]</delimiter>
+              </licenseHeader>
+            </markdown>
+            <shell>
+              <includes>
+                <include>**/*.sh</include>
+              </includes>
+              <excludes>
+                <exclude>dev-support/spotless/*.sh</exclude>
+                <exclude>**/node_modules/**</exclude>
+                <exclude>**/bower_components/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>tez-ui/**</exclude>
+              </excludes>
+              <licenseHeader>
+                <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.sh</file>
+                <delimiter>^[^#\n]</delimiter>
+              </licenseHeader>
+            </shell>
+            <yaml>
+              <includes>
+                <include>**/*.yaml</include>
+                <include>**/*.yml</include>
+              </includes>
+              <excludes>
+                <exclude>dev-support/spotless/*.yaml</exclude>
+                <exclude>**/node_modules/**</exclude>
+                <exclude>**/bower_components/**</exclude>
+                <exclude>**/target/**</exclude>
+                <exclude>tez-ui/**</exclude>
+              </excludes>
+              <licenseHeader>
+                <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.yaml</file>
+                <delimiter>^(?!#|---)</delimiter>
+              </licenseHeader>
+            </yaml>
+            <formats>
+              <format>
+                <includes>
+                  <include>**/Dockerfile</include>
+                </includes>
+                <excludes>
+                  <exclude>dev-support/spotless/*.yaml</exclude>
+                  <exclude>**/node_modules/**</exclude>
+                  <exclude>**/bower_components/**</exclude>
+                  <exclude>**/target/**</exclude>
+                  <exclude>tez-ui/**</exclude>
+                </excludes>
+                <licenseHeader>
+                  <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.yaml</file>
+                  <delimiter>^(?!#)</delimiter>
+                </licenseHeader>
+              </format>
+            </formats>
           </configuration>
         </plugin>
         <plugin>
