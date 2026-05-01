@@ -1,31 +1,22 @@
 #!/bin/bash
-
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# This script is used to set up a local Hadoop and Tez environment for running a simple word count example.
-# Prerequisites
-# 1. java is installed and JAVA_HOME is set
-# 2. ssh localhost works without password
-
-# All parameters are optional:
-# TEZ_VERSION: defaults to the latest version available on the Apache Tez download page
-# HADOOP_VERSION: defaults to the version which belongs to the TEZ_VERSION
-# TEZ_EXAMPLE_WORKING_DIR: defaults to the current working directory
-
-# TEZ_VERSION comes from environment variable or is fetched from the Apache Tez download page
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
 export TEZ_VERSION="${TEZ_VERSION:-$(curl -s "https://downloads.apache.org/tez/" | grep --color=never -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | sed -n '/\/$/!p' | sort -V | tail -1)}" # e.g. 0.10.4
 export TEZ_EXAMPLE_WORKING_DIR="${TEZ_EXAMPLE_WORKING_DIR:-$PWD}"
 cd "$TEZ_EXAMPLE_WORKING_DIR" || exit
