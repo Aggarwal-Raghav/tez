@@ -1040,6 +1040,7 @@
               <licenseHeader>
                 <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.xml</file>
                 <delimiter>^&lt;project|^&lt;configuration|^&lt;Configuration|^&lt;extensions|^&lt;component</delimiter>
+                <skipLinesMatching>^&lt;.*xml.+?$</skipLinesMatching>
               </licenseHeader>
             </pom>
             <markdown>
@@ -1071,7 +1072,8 @@
               </excludes>
               <licenseHeader>
                 <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.sh</file>
-                <delimiter>^[^#\n]</delimiter>
+                <delimiter>(^[a-zA-Z0-9_-]|^#[a-zA-Z0-9_-]|^##.+?$)</delimiter>
+                <skipLinesMatching>^#!.+?$</skipLinesMatching>
               </licenseHeader>
             </shell>
             <yaml>
@@ -1088,7 +1090,7 @@
               </excludes>
               <licenseHeader>
                 <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.yaml</file>
-                <delimiter>^(?!#|---)</delimiter>
+                <delimiter>(^[a-zA-Z0-9_-]|^#[a-zA-Z0-9_-]|^##.+?$)</delimiter>
               </licenseHeader>
             </yaml>
             <formats>
@@ -1105,7 +1107,7 @@
                 </excludes>
                 <licenseHeader>
                   <file>${maven.multiModuleProjectDirectory}/dev-support/spotless/license.yaml</file>
-                  <delimiter>^(?!#)</delimiter>
+                  <delimiter>(^[a-zA-Z0-9_-]|^#[a-zA-Z0-9_-]|^##.+?$)</delimiter>
                 </licenseHeader>
               </format>
             </formats>
