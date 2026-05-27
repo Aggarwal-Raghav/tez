@@ -26,27 +26,27 @@ moduleFor('route:application', 'Unit | Route | application', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.pageReset);
-  assert.ok(route.actions.didTransition);
-  assert.ok(route.actions.bubbleBreadcrumbs);
+  ok(route);
+  ok(route.pageReset);
+  ok(route.actions.didTransition);
+  ok(route.actions.bubbleBreadcrumbs);
 
-  assert.ok(route.actions.error);
+  ok(route.actions.error);
 
-  assert.ok(route.actions.openModal);
-  assert.ok(route.actions.closeModal);
-  assert.ok(route.actions.destroyModal);
+  ok(route.actions.openModal);
+  ok(route.actions.closeModal);
+  ok(route.actions.destroyModal);
 
-  assert.ok(route.actions.resetTooltip);
+  ok(route.actions.resetTooltip);
 });
 
 test('Test didTransition action', function(assert) {
   let route = this.subject();
 
-  assert.expect(1);
+  expect(1);
 
   route.pageReset = function () {
-    assert.ok(true);
+    ok(true);
   };
 
   route.send("didTransition");
@@ -61,7 +61,7 @@ test('Test bubbleBreadcrumbs action', function(assert) {
 
   route.controller = testController;
 
-  assert.notOk(route.get("controller.breadcrumbs"));
+  notOk(route.get("controller.breadcrumbs"));
   route.send("bubbleBreadcrumbs", testBreadcrumbs);
-  assert.equal(route.get("controller.breadcrumbs"), testBreadcrumbs);
+  equal(route.get("controller.breadcrumbs"), testBreadcrumbs);
 });

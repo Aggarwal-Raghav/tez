@@ -28,25 +28,25 @@ moduleFor('route:app/dags', 'Unit | Route | app/dags', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'app');
+      equal(type, 'app');
       return Ember.Object.create({
         entityID: 'app_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 
@@ -59,7 +59,7 @@ test('Test load', function(assert) {
       testData = {},
       route = this.subject({
         modelFor: function (type) {
-          assert.equal(type, "app");
+          equal(type, "app");
           return Ember.Object.create({
             entityID: testID
           });
@@ -67,9 +67,9 @@ test('Test load', function(assert) {
         get: function () {
           return {
             query: function (type, query, options) {
-              assert.equal(type, "dag");
-              assert.equal(query.appID, testID);
-              assert.equal(options, testOptions);
+              equal(type, "dag");
+              equal(query.appID, testID);
+              equal(options, testOptions);
               return testData;
             }
           };
@@ -77,8 +77,8 @@ test('Test load', function(assert) {
       }),
       data;
 
-  assert.expect(1 + 3 + 1);
+  expect(1 + 3 + 1);
 
   data = route.load(null, null, testOptions);
-  assert.equal(data, testData);
+  equal(data, testData);
 });

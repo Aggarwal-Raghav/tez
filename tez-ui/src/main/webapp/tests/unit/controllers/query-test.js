@@ -30,8 +30,8 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.equal(controller.get("tabs.length"), 3);
+  ok(controller);
+  equal(controller.get("tabs.length"), 3);
 });
 
 test('breadcrumbs test', function(assert) {
@@ -45,7 +45,7 @@ test('breadcrumbs test', function(assert) {
       }),
       breadcrumbs = controller.get("breadcrumbs");
 
-  assert.ok(breadcrumbs);
-  assert.ok(breadcrumbs.length, 1);
-  assert.ok(breadcrumbs[0].text, `Query [ ${testID} ]`);
+  ok(breadcrumbs);
+  ok(breadcrumbs.length, 1);
+  ok(breadcrumbs[0].text, `Query [ ${testID} ]`);
 });

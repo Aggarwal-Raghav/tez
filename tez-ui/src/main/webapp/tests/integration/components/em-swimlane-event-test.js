@@ -34,8 +34,8 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-event processor=processor process=process}}`);
 
-  assert.ok(this.$(".event-bar"));
-  assert.ok(this.$(".event-window"));
+  ok(this.$(".event-bar"));
+  ok(this.$(".event-window"));
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -44,8 +44,8 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-event}}
   `);
 
-  assert.ok(this.$(".event-bar"));
-  assert.ok(this.$(".event-window"));
+  ok(this.$(".event-bar"));
+  ok(this.$(".event-window"));
 });
 
 test('Event position test', function(assert) {
@@ -61,6 +61,6 @@ test('Event position test', function(assert) {
   this.render(hbs`{{em-swimlane-event processor=processor process=process event=event}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".em-swimlane-event").attr("style").trim(), "left: 60%;", "em-swimlane-event");
+    equal(this.$(".em-swimlane-event").attr("style").trim(), "left: 60%;", "em-swimlane-event");
   });
 });

@@ -18,12 +18,12 @@
  */
 package org.apache.tez.runtime.library.output;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.ByteBuffer;
 import java.util.BitSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -36,13 +36,14 @@ import org.apache.tez.runtime.library.shuffle.impl.ShuffleUserPayloads;
 
 import com.google.protobuf.ByteString;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 // Tests which don't require parameterization
 public class TestUnorderedPartitionedKVOutput2 {
 
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNonStartedOutput() throws Exception {
     OutputContext outputContext = OutputTestHelpers.createOutputContext();
     int numPartitions = 1;
@@ -52,7 +53,7 @@ public class TestUnorderedPartitionedKVOutput2 {
     List<Event> events = output.close();
     assertEquals(1, events.size());
     Event event1 = events.get(0);
-    assertTrue(event1 instanceof CompositeDataMovementEvent);
+    assertInstanceOf(CompositeDataMovementEvent.class, event1);
     CompositeDataMovementEvent dme = (CompositeDataMovementEvent) event1;
     ByteBuffer bb = dme.getUserPayload();
     ShuffleUserPayloads.DataMovementEventPayloadProto shufflePayload =

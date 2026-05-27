@@ -31,10 +31,10 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.columns);
-  assert.ok(controller.counters);
-  assert.ok(controller._countersObserver);
+  ok(controller);
+  ok(controller.columns);
+  ok(controller.counters);
+  ok(controller._countersObserver);
 
 });
 
@@ -58,34 +58,34 @@ test('counters & _countersObserver test', function(assert) {
     }
   });
 
-  assert.equal(controller.countersCount, 0);
+  equal(controller.countersCount, 0);
 
   controller._countersObserver();
 
-  assert.equal(controller.get("counters.0.groupName"), "foo");
-  assert.equal(controller.get("counters.0.counterName"), "Foo Name 1");
-  assert.equal(controller.get("counters.0.counterValue"), "Value 1");
+  equal(controller.get("counters.0.groupName"), "foo");
+  equal(controller.get("counters.0.counterName"), "Foo Name 1");
+  equal(controller.get("counters.0.counterValue"), "Value 1");
 
-  assert.equal(controller.get("counters.1.groupName"), "foo");
-  assert.equal(controller.get("counters.1.counterName"), "Foo Name 2");
-  assert.equal(controller.get("counters.1.counterValue"), "Value 2");
+  equal(controller.get("counters.1.groupName"), "foo");
+  equal(controller.get("counters.1.counterName"), "Foo Name 2");
+  equal(controller.get("counters.1.counterValue"), "Value 2");
 
-  assert.equal(controller.get("counters.2.groupName"), "foo");
-  assert.equal(controller.get("counters.2.counterName"), "Foo Name 3");
-  assert.equal(controller.get("counters.2.counterValue"), "Value 3");
+  equal(controller.get("counters.2.groupName"), "foo");
+  equal(controller.get("counters.2.counterName"), "Foo Name 3");
+  equal(controller.get("counters.2.counterValue"), "Value 3");
 
 
-  assert.equal(controller.get("counters.3.groupName"), "bar");
-  assert.equal(controller.get("counters.3.counterName"), "Bar Name 1");
-  assert.equal(controller.get("counters.3.counterValue"), "Value 1");
+  equal(controller.get("counters.3.groupName"), "bar");
+  equal(controller.get("counters.3.counterName"), "Bar Name 1");
+  equal(controller.get("counters.3.counterValue"), "Value 1");
 
-  assert.equal(controller.get("counters.4.groupName"), "bar");
-  assert.equal(controller.get("counters.4.counterName"), "Bar Name 2");
-  assert.equal(controller.get("counters.4.counterValue"), "Value 2");
+  equal(controller.get("counters.4.groupName"), "bar");
+  equal(controller.get("counters.4.counterName"), "Bar Name 2");
+  equal(controller.get("counters.4.counterValue"), "Value 2");
 
-  assert.equal(controller.get("counters.5.groupName"), "bar");
-  assert.equal(controller.get("counters.5.counterName"), "Bar Name 3");
-  assert.equal(controller.get("counters.5.counterValue"), "Value 3");
+  equal(controller.get("counters.5.groupName"), "bar");
+  equal(controller.get("counters.5.counterName"), "Bar Name 3");
+  equal(controller.get("counters.5.counterValue"), "Value 3");
 
-  assert.equal(controller.countersCount, 6);
+  equal(controller.countersCount, 6);
 });

@@ -28,8 +28,8 @@ moduleForComponent('home-table-controls', 'Integration | Component | home table 
 test('Basic creation test', function(assert) {
   this.render(hbs`{{home-table-controls}}`);
 
-  assert.equal(this.$().text().trim(), 'Load Counters');
-  assert.equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), 2);
+  equal(this.$().text().trim(), 'Load Counters');
+  equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), 2);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -38,7 +38,7 @@ test('Basic creation test', function(assert) {
     {{/home-table-controls}}
   `);
 
-  assert.equal(this.$().text().trim(), 'Load Counters');
+  equal(this.$().text().trim(), 'Load Counters');
 });
 
 test('countersLoaded test', function(assert) {
@@ -54,7 +54,7 @@ test('countersLoaded test', function(assert) {
     })]
   });
   this.render(hbs`{{home-table-controls dataProcessor=dataProcessor}}`);
-  assert.equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), 2);
+  equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), 2);
 
   this.set("dataProcessor", {
     processedRows: [Ember.Object.create({
@@ -66,7 +66,7 @@ test('countersLoaded test', function(assert) {
     })]
   });
   this.render(hbs`{{home-table-controls dataProcessor=dataProcessor}}`);
-  assert.equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), -1);
+  equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), -1);
 
   this.set("dataProcessor", {
     processedRows: [Ember.Object.create({
@@ -76,5 +76,5 @@ test('countersLoaded test', function(assert) {
     })]
   });
   this.render(hbs`{{home-table-controls dataProcessor=dataProcessor}}`);
-  assert.equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), -1);
+  equal(this.$().find("button").attr("class").split(" ").indexOf("no-visible"), -1);
 });

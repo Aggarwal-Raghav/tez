@@ -34,7 +34,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-process-line process=process processor=processor}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -43,7 +43,7 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-process-line}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('start-end event test', function(assert) {
@@ -63,6 +63,6 @@ test('start-end event test', function(assert) {
   this.render(hbs`{{em-swimlane-process-line processor=processor process=process}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".process-line").eq(0).attr("style").trim(), "left: 50%; right: 30%;", "process-line");
+    equal(this.$(".process-line").eq(0).attr("style").trim(), "left: 50%; right: 30%;", "process-line");
   });
 });

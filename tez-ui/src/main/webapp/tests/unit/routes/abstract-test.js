@@ -28,30 +28,30 @@ moduleFor('route:abstract', 'Unit | Route | abstract', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
+  ok(route);
 
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.model);
-  assert.ok(route.queryFromParams);
+  ok(route.loaderQueryParams);
+  ok(route.model);
+  ok(route.queryFromParams);
 
-  assert.ok(route.setDocTitle);
-  assert.ok(route.setupController);
+  ok(route.setDocTitle);
+  ok(route.setupController);
 
-  assert.ok(route.checkAndCall);
+  ok(route.checkAndCall);
 
-  assert.ok(route.setLoading);
-  assert.ok(route.loadData);
-  assert.ok(route.beforeLoad);
-  assert.ok(route.load);
-  assert.ok(route.afterLoad);
-  assert.ok(route.setValue);
+  ok(route.setLoading);
+  ok(route.loadData);
+  ok(route.beforeLoad);
+  ok(route.load);
+  ok(route.afterLoad);
+  ok(route.setValue);
 
-  assert.ok(route.getLoadTime);
-  assert.ok(route._setControllerModel);
-  assert.ok(route.setLoader);
+  ok(route.getLoadTime);
+  ok(route._setControllerModel);
+  ok(route.setLoader);
 
-  assert.ok(route.actions.setBreadcrumbs);
-  assert.ok(route.actions.bubbleBreadcrumbs);
+  ok(route.actions.setBreadcrumbs);
+  ok(route.actions.bubbleBreadcrumbs);
 });
 
 test('queryFromParams test', function(assert) {
@@ -68,7 +68,7 @@ test('queryFromParams test', function(assert) {
     b_id: 4
   };
 
-  assert.deepEqual(route.queryFromParams(testParam), {
+  deepEqual(route.queryFromParams(testParam), {
     id: 2,
     b: 3
   });
@@ -80,17 +80,17 @@ test('checkAndCall test', function(assert) {
       testQuery = {},
       testOptions = {};
 
-  assert.expect(3 + 1);
+  expect(3 + 1);
 
   route.testFunction = function (value, query, options) {
-    assert.equal(value, testValue, "Value check for id 1");
-    assert.equal(query, testQuery, "Query check for id 1");
-    assert.equal(options, testOptions, "Options check for id 1");
+    equal(value, testValue, "Value check for id 1");
+    equal(query, testQuery, "Query check for id 1");
+    equal(options, testOptions, "Options check for id 1");
   };
   route.currentPromiseId = 1;
 
   route.checkAndCall(1, "testFunction", testQuery, testOptions, testValue);
-  assert.throws(function () {
+  throws(function () {
     route.checkAndCall(2, "testFunction", testQuery, testOptions, testValue);
   });
 });
@@ -106,30 +106,30 @@ test('loadData test - Hook sequence check', function(assert) {
     };
   };
 
-  assert.expect(4 + 1);
+  expect(4 + 1);
 
   route.setLoading = function () {
     return 1;
   };
   route.beforeLoad = function (value) {
-    assert.equal(value, 1, "beforeLoad");
+    equal(value, 1, "beforeLoad");
     return ++value;
   };
   route.load = function (value) {
-    assert.equal(value, 2, "load");
+    equal(value, 2, "load");
     return ++value;
   };
   route.afterLoad = function (value) {
-    assert.equal(value, 3, "afterLoad");
+    equal(value, 3, "afterLoad");
     return ++value;
   };
   route.setValue = function (value) {
-    assert.equal(value, 4, "setValue");
+    equal(value, 4, "setValue");
     return ++value;
   };
 
   route.loadData().then(function (value) {
-    assert.equal(value, 5, "Value returned by loadData");
+    equal(value, 5, "Value returned by loadData");
   });
 
 });
@@ -145,35 +145,35 @@ test('loadData test - ID change check with exception throw', function(assert) {
     };
   };
 
-  assert.expect(2 + 1);
+  expect(2 + 1);
 
   route.setLoading = function () {
     return 1;
   };
   route.beforeLoad = function (value) {
-    assert.equal(value, 1, "beforeLoad");
+    equal(value, 1, "beforeLoad");
     return ++value;
   };
   route.load = function (value) {
-    assert.equal(value, 2, "load");
+    equal(value, 2, "load");
 
     route.currentPromiseId = 0;
 
     return ++value;
   };
   route.afterLoad = function (value) {
-    assert.equal(value, 3, "afterLoad");
+    equal(value, 3, "afterLoad");
     return ++value;
   };
   route.setValue = function (value) {
-    assert.equal(value, 4, "setValue");
+    equal(value, 4, "setValue");
     return ++value;
   };
 
   route.loadData().then(function () {
-    assert.notOk("Shouldn't be called");
+    notOk("Shouldn't be called");
   }).catch(function () {
-    assert.ok(true, "Exception thrown");
+    ok(true, "Exception thrown");
   });
 });
 
@@ -182,18 +182,18 @@ test('setLoading test', function(assert) {
 
   route.controller = Ember.Object.create();
 
-  assert.equal(route.get("isLoading"), false);
+  equal(route.get("isLoading"), false);
   route.setLoading();
-  assert.equal(route.get("isLoading"), true);
+  equal(route.get("isLoading"), true);
 });
 
 test('beforeLoad load afterLoad test', function(assert) {
   let route = this.subject(),
       testVal = {};
 
-  assert.equal(route.beforeLoad(testVal), testVal);
-  assert.equal(route.load(testVal), testVal);
-  assert.equal(route.afterLoad(testVal), testVal);
+  equal(route.beforeLoad(testVal), testVal);
+  equal(route.load(testVal), testVal);
+  equal(route.afterLoad(testVal), testVal);
 });
 
 test('setValue test', function(assert) {
@@ -203,11 +203,11 @@ test('setValue test', function(assert) {
   route.controller = Ember.Object.create();
 
   route.setLoading();
-  assert.equal(route.get("loadedValue"), null);
-  assert.equal(route.get("isLoading"), true);
-  assert.equal(route.setValue(testVal), testVal);
-  assert.equal(route.get("loadedValue"), testVal);
-  assert.equal(route.get("isLoading"), false);
+  equal(route.get("loadedValue"), null);
+  equal(route.get("isLoading"), true);
+  equal(route.setValue(testVal), testVal);
+  equal(route.get("loadedValue"), testVal);
+  equal(route.get("isLoading"), false);
 });
 
 test('getLoadTime test', function(assert) {
@@ -217,8 +217,8 @@ test('getLoadTime test', function(assert) {
         loadTime: testTime
       };
 
-  assert.equal(route.getLoadTime(testRecord), testTime);
-  assert.equal(route.getLoadTime([testRecord]), testTime);
+  equal(route.getLoadTime(testRecord), testTime);
+  equal(route.getLoadTime([testRecord]), testTime);
 });
 
 test('_setControllerModel test', function(assert) {
@@ -229,9 +229,9 @@ test('_setControllerModel test', function(assert) {
   route.set("loadedValue", testValue);
   route.set("controller", testController);
 
-  assert.notOk(testController.model);
+  notOk(testController.model);
   route._setControllerModel();
-  assert.equal(testController.model, testValue, "With controller");
+  equal(testController.model, testValue, "With controller");
 });
 
 test('setLoader test', function(assert) {
@@ -241,10 +241,10 @@ test('setLoader test', function(assert) {
 
   route.setLoader(testNamespace);
 
-  assert.notEqual(route.get("loader"), oldLoader);
-  assert.equal(route.get("loader.nameSpace"), testNamespace);
-  assert.equal(route.get("loader.store"), route.get("store"));
-  assert.equal(route.get("loader.container"), route.get("container"));
+  notEqual(route.get("loader"), oldLoader);
+  equal(route.get("loader.nameSpace"), testNamespace);
+  equal(route.get("loader.store"), route.get("store"));
+  equal(route.get("loader.container"), route.get("container"));
 });
 
 test('actions.setBreadcrumbs test', function(assert) {
@@ -258,13 +258,13 @@ test('actions.setBreadcrumbs test', function(assert) {
   testCrumbs[testName] = testCrumbs;
 
   route.send("setBreadcrumbs", testCrumbs);
-  assert.equal(route.get("breadcrumbs"), testCrumbs);
+  equal(route.get("breadcrumbs"), testCrumbs);
 
   route.send("setBreadcrumbs", {});
-  assert.equal(route.get("breadcrumbs"), testCrumbs);
+  equal(route.get("breadcrumbs"), testCrumbs);
 
   route.send("setBreadcrumbs", null);
-  assert.equal(route.get("breadcrumbs"), testCrumbs);
+  equal(route.get("breadcrumbs"), testCrumbs);
 });
 
 test('actions.bubbleBreadcrumbs test', function(assert) {
@@ -278,5 +278,5 @@ test('actions.bubbleBreadcrumbs test', function(assert) {
   route.set("breadcrumbs", existingCrumbs);
 
   route.send("bubbleBreadcrumbs", testCrumbs);
-  assert.equal(testCrumbs.length, 2 + 2);
+  equal(testCrumbs.length, 2 + 2);
 });

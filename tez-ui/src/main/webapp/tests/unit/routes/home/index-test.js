@@ -27,38 +27,38 @@ moduleFor('route:home/index', 'Unit | Route | home/index', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
+  ok(route);
+  ok(route.title);
 
-  assert.ok(route.queryParams);
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.setupController);
+  ok(route.queryParams);
+  ok(route.loaderQueryParams);
+  ok(route.setupController);
 
-  assert.equal(route.entityType, "dag");
-  assert.equal(route.loaderNamespace, "dags");
+  equal(route.entityType, "dag");
+  equal(route.loaderNamespace, "dags");
 
-  assert.ok(route.filterRecords);
+  ok(route.filterRecords);
 
-  assert.ok(route.actions.willTransition);
-  assert.ok(route.actions.loadCounters);
-  assert.ok(route.actions.tableRowsChanged);
+  ok(route.actions.willTransition);
+  ok(route.actions.loadCounters);
+  ok(route.actions.tableRowsChanged);
 });
 
 test('refresh test', function(assert) {
   let route = this.subject();
 
-  assert.equal(route.get("queryParams.dagName.refreshModel"), true);
-  assert.equal(route.get("queryParams.dagID.refreshModel"), true);
-  assert.equal(route.get("queryParams.submitter.refreshModel"), true);
-  assert.equal(route.get("queryParams.status.refreshModel"), true);
-  assert.equal(route.get("queryParams.appID.refreshModel"), true);
-  assert.equal(route.get("queryParams.callerID.refreshModel"), true);
-  assert.equal(route.get("queryParams.rowCount.refreshModel"), true);
+  equal(route.get("queryParams.dagName.refreshModel"), true);
+  equal(route.get("queryParams.dagID.refreshModel"), true);
+  equal(route.get("queryParams.submitter.refreshModel"), true);
+  equal(route.get("queryParams.status.refreshModel"), true);
+  equal(route.get("queryParams.appID.refreshModel"), true);
+  equal(route.get("queryParams.callerID.refreshModel"), true);
+  equal(route.get("queryParams.rowCount.refreshModel"), true);
 });
 
 test('loaderQueryParams test', function(assert) {
   let route = this.subject();
-  assert.equal(Object.keys(route.get("loaderQueryParams")).length, 8);
+  equal(Object.keys(route.get("loaderQueryParams")).length, 8);
 });
 
 test('filterRecords test', function(assert) {
@@ -76,8 +76,8 @@ test('filterRecords test', function(assert) {
 
   let filteredRecords = route.filterRecords(testRecords, testQuery);
 
-  assert.equal(filteredRecords.length, 1);
-  assert.equal(filteredRecords[0], testRecords[0]);
+  equal(filteredRecords.length, 1);
+  equal(filteredRecords[0], testRecords[0]);
 });
 
 test('load - query + filter test', function(assert) {
@@ -115,33 +115,33 @@ test('load - query + filter test', function(assert) {
 
   route.loader = Ember.Object.create({
     query: function (type, query, options) {
-      assert.equal(type, "dag");
-      assert.equal(query.limit, 6);
-      assert.equal(options.reload, true);
+      equal(type, "dag");
+      equal(query.limit, 6);
+      equal(options.reload, true);
       return Ember.RSVP.resolve(resultRecords);
     },
     loadNeed: function (record, field, options) {
-      assert.equal(record.get("entityID"), testEntityID2);
-      assert.equal(field, "am");
-      assert.equal(options.reload, true);
+      equal(record.get("entityID"), testEntityID2);
+      equal(field, "am");
+      equal(options.reload, true);
       return Ember.RSVP.resolve();
     }
   });
 
-  assert.expect(3 + 3 + 2 + 1 + 3 + 2);
+  expect(3 + 3 + 2 + 1 + 3 + 2);
 
-  assert.notOk(route.get("controller.moreAvailable"), "moreAvailable shouldn't be set!");
-  assert.equal(route.get("fromId"), null, "fromId shouldn't be set");
+  notOk(route.get("controller.moreAvailable"), "moreAvailable shouldn't be set!");
+  equal(route.get("fromId"), null, "fromId shouldn't be set");
 
   return route.load(null, query).then(function (records) {
-    assert.ok(Array.isArray(records));
+    ok(Array.isArray(records));
 
-    assert.equal(records.get("length"), 2, "Length should be 2!");
-    assert.equal(records.get("0.entityID"), testEntityID1);
-    assert.equal(records.get("1.entityID"), testEntityID2);
+    equal(records.get("length"), 2, "Length should be 2!");
+    equal(records.get("0.entityID"), testEntityID1);
+    equal(records.get("1.entityID"), testEntityID2);
 
-    assert.equal(route.get("controller.moreAvailable"), true, "moreAvailable was not set");
-    assert.equal(route.get("fromId"), testEntityID3);
+    equal(route.get("controller.moreAvailable"), true, "moreAvailable was not set");
+    equal(route.get("fromId"), testEntityID3);
   });
 });
 
@@ -153,7 +153,7 @@ test('actions.willTransition test', function(assert) {
   route.set("loader", {
     unloadAll: function (type) {
       if(type === "dag" || type === "ahs-app") {
-        assert.ok(true);
+        ok(true);
       }
       else {
         throw(new Error("Invalid type!"));
@@ -161,7 +161,7 @@ test('actions.willTransition test', function(assert) {
     }
   });
 
-  assert.expect(2);
+  expect(2);
   route.send("willTransition");
 });
 
@@ -174,12 +174,12 @@ test('actions.loadCounters test', function(assert) {
 
   route.loader = {
     loadNeed: function (record, name) {
-      assert.equal(record, visibleRecords[index++]);
-      assert.equal(name, "info");
+      equal(record, visibleRecords[index++]);
+      equal(name, "info");
       return Ember.RSVP.resolve(record);
     }
   };
-  assert.expect(3 * 2);
+  expect(3 * 2);
 
   route.send("loadCounters");
 

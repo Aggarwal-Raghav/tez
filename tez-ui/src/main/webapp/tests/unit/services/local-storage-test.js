@@ -25,18 +25,18 @@ moduleFor('service:local-storage', 'Unit | Service | local storage', {
 
 test('Test creation', function(assert) {
   let service = this.subject();
-  assert.ok(service);
+  ok(service);
 });
 
 test('getStoreKey test', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.getStoreKey("abc"), "tez-ui:abc");
+  equal(service.getStoreKey("abc"), "tez-ui:abc");
 });
 
 test('Set & get test', function(assert) {
   let service = this.subject();
 
   service.set("abc", "value");
-  assert.equal(service.get("abc"), "value");
+  equal(service.get("abc"), "value");
 });

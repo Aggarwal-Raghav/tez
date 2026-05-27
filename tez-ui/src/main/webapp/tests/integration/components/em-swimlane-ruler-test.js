@@ -30,7 +30,7 @@ moduleForComponent('em-swimlane-ruler', 'Integration | Component | em swimlane r
 test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-ruler}}`);
-  assert.equal(this.$().text().trim(), 'Milliseconds');
+  equal(this.$().text().trim(), 'Milliseconds');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -38,7 +38,7 @@ test('Basic creation test', function(assert) {
       template block text
     {{/em-swimlane-ruler}}
   `);
-  assert.equal(this.$().text().trim(), 'Milliseconds');
+  equal(this.$().text().trim(), 'Milliseconds');
 });
 
 test('Mark test', function(assert) {
@@ -50,8 +50,8 @@ test('Mark test', function(assert) {
   this.render(hbs`{{em-swimlane-ruler processor=processor zoom=100}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".unit-text").text().trim(), 'Seconds');
-    assert.equal(this.$(".ruler-mark").length, 11);
+    equal(this.$(".unit-text").text().trim(), 'Seconds');
+    equal(this.$(".ruler-mark").length, 11);
   });
 });
 
@@ -64,7 +64,7 @@ test('Mark zoom test', function(assert) {
   this.render(hbs`{{em-swimlane-ruler processor=processor zoom=500}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".unit-text").text().trim(), 'Milliseconds');
-    assert.equal(this.$(".ruler-mark").length, 55);
+    equal(this.$(".unit-text").text().trim(), 'Milliseconds');
+    equal(this.$(".ruler-mark").length, 55);
   });
 });

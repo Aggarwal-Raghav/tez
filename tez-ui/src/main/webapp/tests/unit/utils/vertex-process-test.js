@@ -26,28 +26,28 @@ module('Unit | Utility | vertex process');
 test('Basic creation test', function(assert) {
   let process = VertexProcess.create();
 
-  assert.ok(process);
+  ok(process);
 
-  assert.ok(process.name);
-  assert.ok(process.completeTime);
-  assert.ok(process.blockingEventName);
+  ok(process.name);
+  ok(process.completeTime);
+  ok(process.blockingEventName);
 
-  assert.ok(process.events);
-  assert.ok(process.eventBars);
-  assert.ok(process.unblockDetails);
+  ok(process.events);
+  ok(process.eventBars);
+  ok(process.unblockDetails);
 
-  assert.ok(process.eventsHash);
-  assert.ok(process.getTooltipContents);
+  ok(process.eventsHash);
+  ok(process.getTooltipContents);
 
-  assert.ok(process.consolidateStartTime);
-  assert.ok(process.consolidateEndTime);
-  assert.ok(process.getConsolidateColor);
+  ok(process.consolidateStartTime);
+  ok(process.consolidateEndTime);
+  ok(process.getConsolidateColor);
 });
 
 test('unblockDetails test', function(assert) {
   var process = VertexProcess.create(),
       testEdge2 = {}, testEdge3 = {}, testEdge4 = {};
-  assert.equal(process.get("unblockDetails"), undefined);
+  equal(process.get("unblockDetails"), undefined);
 
   process = VertexProcess.create({
     blockers: [VertexProcess.create({
@@ -73,19 +73,19 @@ test('unblockDetails test', function(assert) {
     v4: testEdge4
   });
 
-  assert.equal(process.get("unblockDetails.edge"), testEdge3);
-  assert.equal(process.get("unblockDetails.time"), 20);
+  equal(process.get("unblockDetails.edge"), testEdge3);
+  equal(process.get("unblockDetails.time"), 20);
 
   process.blockers[2].set("vertex", Ember.Object.create({
     name: "v4",
     endTime: 12
   }));
-  assert.equal(process.get("unblockDetails.edge"), testEdge2);
-  assert.equal(process.get("unblockDetails.time"), 15);
+  equal(process.get("unblockDetails.edge"), testEdge2);
+  equal(process.get("unblockDetails.time"), 15);
 
   process.blockers[2].vertex.set("endTime", 25);
-  assert.equal(process.get("unblockDetails.edge"), testEdge4);
-  assert.equal(process.get("unblockDetails.time"), 25);
+  equal(process.get("unblockDetails.edge"), testEdge4);
+  equal(process.get("unblockDetails.time"), 25);
 });
 
 test('events test', function(assert) {
@@ -107,21 +107,21 @@ test('events test', function(assert) {
     })
   });
 
-  assert.equal(process.get("events.length"), 6);
+  equal(process.get("events.length"), 6);
 
-  assert.equal(process.get("events.0.name"), "testEvent2");
-  assert.equal(process.get("events.1.name"), "VERTEX_INITIALIZED");
-  assert.equal(process.get("events.2.name"), "VERTEX_STARTED");
-  assert.equal(process.get("events.3.name"), "FIRST_TASK_STARTED");
-  assert.equal(process.get("events.4.name"), "LAST_TASK_FINISHED");
-  assert.equal(process.get("events.5.name"), "VERTEX_FINISHED");
+  equal(process.get("events.0.name"), "testEvent2");
+  equal(process.get("events.1.name"), "VERTEX_INITIALIZED");
+  equal(process.get("events.2.name"), "VERTEX_STARTED");
+  equal(process.get("events.3.name"), "FIRST_TASK_STARTED");
+  equal(process.get("events.4.name"), "LAST_TASK_FINISHED");
+  equal(process.get("events.5.name"), "VERTEX_FINISHED");
 
-  assert.equal(process.get("events.0.time"), 10);
-  assert.equal(process.get("events.1.time"), 20);
-  assert.equal(process.get("events.2.time"), 30);
-  assert.equal(process.get("events.3.time"), 40);
-  assert.equal(process.get("events.4.time"), 50);
-  assert.equal(process.get("events.5.time"), 60);
+  equal(process.get("events.0.time"), 10);
+  equal(process.get("events.1.time"), 20);
+  equal(process.get("events.2.time"), 30);
+  equal(process.get("events.3.time"), 40);
+  equal(process.get("events.4.time"), 50);
+  equal(process.get("events.5.time"), 60);
 
   // unblockTime < firstTaskStartTime, and we don't consider as a relevant event
   process.set("blockers", [VertexProcess.create({
@@ -130,7 +130,7 @@ test('events test', function(assert) {
       endTime: 30
     })
   })]);
-  assert.equal(process.get("events.length"), 6);
+  equal(process.get("events.length"), 6);
 
   process.set("blockers", [VertexProcess.create({
     vertex: Ember.Object.create({
@@ -139,9 +139,9 @@ test('events test', function(assert) {
     })
   })]);
 
-  assert.equal(process.get("events.length"), 7);
-  assert.equal(process.get("events.6.name"), "DEPENDENT_VERTICES_COMPLETE");
-  assert.equal(process.get("events.6.time"), 55);
+  equal(process.get("events.length"), 7);
+  equal(process.get("events.6.name"), "DEPENDENT_VERTICES_COMPLETE");
+  equal(process.get("events.6.time"), 55);
 });
 
 test('getTooltipContents-event test', function(assert) {
@@ -173,50 +173,50 @@ test('getTooltipContents-event test', function(assert) {
     }]
   });
 
-  assert.equal(eventTooltip.length, 4);
+  equal(eventTooltip.length, 4);
 
-  assert.equal(eventTooltip[0].title, "TestEventName1");
-  assert.equal(eventTooltip[0].properties.length, 1);
-  assert.equal(eventTooltip[0].properties[0].name, "Time");
-  assert.equal(eventTooltip[0].properties[0].value, 10);
-  assert.equal(eventTooltip[0].properties[0].type, "date");
+  equal(eventTooltip[0].title, "TestEventName1");
+  equal(eventTooltip[0].properties.length, 1);
+  equal(eventTooltip[0].properties[0].name, "Time");
+  equal(eventTooltip[0].properties[0].value, 10);
+  equal(eventTooltip[0].properties[0].type, "date");
 
-  assert.equal(eventTooltip[1].title, "TestEventName2");
-  assert.equal(eventTooltip[1].properties.length, 3);
-  assert.equal(eventTooltip[1].properties[0].name, "Time");
-  assert.equal(eventTooltip[1].properties[0].value, 20);
-  assert.equal(eventTooltip[1].properties[0].type, "date");
+  equal(eventTooltip[1].title, "TestEventName2");
+  equal(eventTooltip[1].properties.length, 3);
+  equal(eventTooltip[1].properties[0].name, "Time");
+  equal(eventTooltip[1].properties[0].value, 20);
+  equal(eventTooltip[1].properties[0].type, "date");
 
-  assert.equal(eventTooltip[1].properties[1].name, "inf1");
-  assert.equal(eventTooltip[1].properties[1].value, "val1");
-  assert.equal(eventTooltip[1].properties[1].type, undefined);
+  equal(eventTooltip[1].properties[1].name, "inf1");
+  equal(eventTooltip[1].properties[1].value, "val1");
+  equal(eventTooltip[1].properties[1].type, undefined);
 
-  assert.equal(eventTooltip[1].properties[2].name, "inf2");
-  assert.equal(eventTooltip[1].properties[2].value, 30);
-  assert.equal(eventTooltip[1].properties[2].type, "number");
+  equal(eventTooltip[1].properties[2].name, "inf2");
+  equal(eventTooltip[1].properties[2].value, 30);
+  equal(eventTooltip[1].properties[2].type, "number");
 
-  assert.equal(eventTooltip[2].title, "TestEventName3");
-  assert.equal(eventTooltip[2].properties.length, 1);
-  assert.equal(eventTooltip[2].properties[0].name, "Time");
-  assert.equal(eventTooltip[2].properties[0].value, 40);
-  assert.equal(eventTooltip[2].properties[0].type, "date");
+  equal(eventTooltip[2].title, "TestEventName3");
+  equal(eventTooltip[2].properties.length, 1);
+  equal(eventTooltip[2].properties[0].name, "Time");
+  equal(eventTooltip[2].properties[0].value, 40);
+  equal(eventTooltip[2].properties[0].type, "date");
 
-  assert.equal(eventTooltip[3].title, "Edge From Final Dependent Vertex");
-  assert.equal(eventTooltip[3].properties.length, 7);
-  assert.equal(eventTooltip[3].properties[0].name, "Input Vertex");
-  assert.equal(eventTooltip[3].properties[0].value, "Map 4");
-  assert.equal(eventTooltip[3].properties[1].name, "Output Vertex");
-  assert.equal(eventTooltip[3].properties[1].value, "Map 1");
-  assert.equal(eventTooltip[3].properties[2].name, "Data Movement");
-  assert.equal(eventTooltip[3].properties[2].value, "BROADCAST");
-  assert.equal(eventTooltip[3].properties[3].name, "Data Source");
-  assert.equal(eventTooltip[3].properties[3].value, "PERSISTED");
-  assert.equal(eventTooltip[3].properties[4].name, "Scheduling");
-  assert.equal(eventTooltip[3].properties[4].value, "SEQUENTIAL");
-  assert.equal(eventTooltip[3].properties[5].name, "Source Class");
-  assert.equal(eventTooltip[3].properties[5].value, "UnorderedKVOutput");
-  assert.equal(eventTooltip[3].properties[6].name, "Destination Class");
-  assert.equal(eventTooltip[3].properties[6].value, "UnorderedKVInput");
+  equal(eventTooltip[3].title, "Edge From Final Dependent Vertex");
+  equal(eventTooltip[3].properties.length, 7);
+  equal(eventTooltip[3].properties[0].name, "Input Vertex");
+  equal(eventTooltip[3].properties[0].value, "Map 4");
+  equal(eventTooltip[3].properties[1].name, "Output Vertex");
+  equal(eventTooltip[3].properties[1].value, "Map 1");
+  equal(eventTooltip[3].properties[2].name, "Data Movement");
+  equal(eventTooltip[3].properties[2].value, "BROADCAST");
+  equal(eventTooltip[3].properties[3].name, "Data Source");
+  equal(eventTooltip[3].properties[3].value, "PERSISTED");
+  equal(eventTooltip[3].properties[4].name, "Scheduling");
+  equal(eventTooltip[3].properties[4].value, "SEQUENTIAL");
+  equal(eventTooltip[3].properties[5].name, "Source Class");
+  equal(eventTooltip[3].properties[5].value, "UnorderedKVOutput");
+  equal(eventTooltip[3].properties[6].name, "Destination Class");
+  equal(eventTooltip[3].properties[6].value, "UnorderedKVInput");
 });
 
 test('getTooltipContents-process test', function(assert) {
@@ -250,25 +250,25 @@ test('getTooltipContents-process test', function(assert) {
   });
 
   var processTooltip = process.getTooltipContents("event-bar")[0];
-  assert.equal(processTooltip.title, "TestName");
-  assert.equal(processTooltip.properties[0].name, "Prop 1");
-  assert.equal(processTooltip.properties[0].value, "val1");
-  assert.equal(processTooltip.properties[0].type, "Type1");
-  assert.equal(processTooltip.properties[0].format, "Format1");
-  assert.equal(processTooltip.properties[1].name, "Prop 2");
+  equal(processTooltip.title, "TestName");
+  equal(processTooltip.properties[0].name, "Prop 1");
+  equal(processTooltip.properties[0].value, "val1");
+  equal(processTooltip.properties[0].type, "Type1");
+  equal(processTooltip.properties[0].format, "Format1");
+  equal(processTooltip.properties[1].name, "Prop 2");
 
   processTooltip = process.getTooltipContents("process-line")[0];
-  assert.equal(processTooltip.title, "TestName");
-  assert.equal(processTooltip.properties[0].name, "Prop 1");
-  assert.equal(processTooltip.properties[0].value, "val1");
-  assert.equal(processTooltip.properties[0].type, "Type1");
-  assert.equal(processTooltip.properties[0].format, "Format1");
-  assert.equal(processTooltip.properties[1].name, "Prop 2");
+  equal(processTooltip.title, "TestName");
+  equal(processTooltip.properties[0].name, "Prop 1");
+  equal(processTooltip.properties[0].value, "val1");
+  equal(processTooltip.properties[0].type, "Type1");
+  equal(processTooltip.properties[0].format, "Format1");
+  equal(processTooltip.properties[1].name, "Prop 2");
 
   processTooltip = process.getTooltipContents("consolidated-process", {
     contribution: 10
   })[0];
-  assert.equal(processTooltip.title, "TestName");
-  assert.equal(processTooltip.description, "Contribution 10%");
+  equal(processTooltip.title, "TestName");
+  equal(processTooltip.description, "Contribution 10%");
 
 });

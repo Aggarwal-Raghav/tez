@@ -24,6 +24,6 @@ module('Unit | Utility | process definition');
 test('Basic creation test', function(assert) {
   let definition = ProcessDefinition.create();
 
-  assert.ok(definition);
+  ok(definition);
 
 });

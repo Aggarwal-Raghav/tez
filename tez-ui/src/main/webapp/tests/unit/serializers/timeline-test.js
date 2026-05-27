@@ -26,11 +26,11 @@ moduleFor('serializer:timeline', 'Unit | Serializer | timeline', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.extractArrayPayload);
-  assert.ok(serializer.maps);
+  ok(serializer);
+  ok(serializer.extractArrayPayload);
+  ok(serializer.maps);
 
-  assert.equal(Object.keys(serializer.get("maps")).length, 7);
+  equal(Object.keys(serializer.get("maps")).length, 7);
 });
 
 test('extractArrayPayload test', function(assert) {
@@ -39,5 +39,5 @@ test('extractArrayPayload test', function(assert) {
         entities: []
       };
 
-  assert.equal(serializer.extractArrayPayload(testPayload), testPayload.entities);
+  equal(serializer.extractArrayPayload(testPayload), testPayload.entities);
 });

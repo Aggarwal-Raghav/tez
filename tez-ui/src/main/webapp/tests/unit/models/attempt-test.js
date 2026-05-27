@@ -27,28 +27,28 @@ moduleForModel('attempt', 'Unit | Model | attempt', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
+  ok(model);
 
-  assert.ok(model.needs.dag);
-  assert.ok(model.needs.am);
+  ok(model.needs.dag);
+  ok(model.needs.am);
 
-  assert.ok(model.taskID);
-  assert.ok(model.taskIndex);
+  ok(model.taskID);
+  ok(model.taskIndex);
 
-  assert.ok(model.vertexID);
-  assert.ok(model.vertexIndex);
-  assert.ok(model.vertexName);
+  ok(model.vertexID);
+  ok(model.vertexIndex);
+  ok(model.vertexName);
 
-  assert.ok(model.dagID);
-  assert.ok(model.dag);
+  ok(model.dagID);
+  ok(model.dag);
 
-  assert.ok(model.containerID);
-  assert.ok(model.nodeID);
+  ok(model.containerID);
+  ok(model.nodeID);
 
-  assert.ok(model.inProgressLogsURL);
-  assert.ok(model.completedLogsURL);
-  assert.ok(model.logURL);
-  assert.ok(model.containerLogURL);
+  ok(model.inProgressLogsURL);
+  ok(model.completedLogsURL);
+  ok(model.logURL);
+  ok(model.containerLogURL);
 });
 
 test('index test', function(assert) {
@@ -56,7 +56,7 @@ test('index test', function(assert) {
     entityID: "1_2_3"
   });
 
-  assert.equal(model.get("index"), "3");
+  equal(model.get("index"), "3");
 });
 
 test('taskIndex test', function(assert) {
@@ -64,7 +64,7 @@ test('taskIndex test', function(assert) {
         taskID: "1_2_3",
       });
 
-  assert.equal(model.get("taskIndex"), "3");
+  equal(model.get("taskIndex"), "3");
 });
 
 test('vertexName test', function(assert) {
@@ -78,7 +78,7 @@ test('vertexName test', function(assert) {
         }
       });
 
-  assert.equal(model.get("vertexName"), testVertexName);
+  equal(model.get("vertexName"), testVertexName);
 });
 
 test('logURL test', function(assert) {
@@ -96,14 +96,14 @@ test('logURL test', function(assert) {
   Ember.run(function () {
     // Normal Tez log link
     model.set("inProgressLogsURL", "abc.com/test/link");
-    assert.equal(model.get("logURL"), "ptcl://abc.com/test/link/syslog_id_1");
+    equal(model.get("logURL"), "ptcl://abc.com/test/link/syslog_id_1");
 
     // LLAP log link - In Progress
     model.set("inProgressLogsURL", "http://abc.com/in-progress/link.log");
-    assert.equal(model.get("logURL"), "http://abc.com/in-progress/link.log");
+    equal(model.get("logURL"), "http://abc.com/in-progress/link.log");
 
     // LLAP log link - Completed
     model.set("dag.isComplete", true);
-    assert.equal(model.get("logURL"), "http://abc.com/completed/link.log.done");
+    equal(model.get("logURL"), "http://abc.com/completed/link.log.done");
   });
 });

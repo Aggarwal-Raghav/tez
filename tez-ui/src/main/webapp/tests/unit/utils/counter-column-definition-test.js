@@ -24,20 +24,20 @@ module('Unit | Utility | counter column definition');
 test('Basic creation test', function(assert) {
   let definition = CounterColumnDefinition.create();
 
-  assert.ok(definition);
+  ok(definition);
 
-  assert.ok(definition.getCellContent);
-  assert.ok(definition.getSearchValue);
-  assert.ok(definition.getSortValue);
+  ok(definition.getCellContent);
+  ok(definition.getSearchValue);
+  ok(definition.getSortValue);
 
-  assert.ok(definition.id);
-  assert.ok(definition.groupDisplayName);
-  assert.ok(definition.headerTitle);
+  ok(definition.id);
+  ok(definition.groupDisplayName);
+  ok(definition.headerTitle);
 
-  assert.ok(CounterColumnDefinition.make);
+  ok(CounterColumnDefinition.make);
 
-  assert.equal(definition.observePath, true);
-  assert.equal(definition.contentPath, "counterGroupsHash");
+  equal(definition.observePath, true);
+  equal(definition.contentPath, "counterGroupsHash");
 });
 
 test('getCellContent, getSearchValue & getSortValue test', function(assert) {
@@ -58,9 +58,9 @@ test('getCellContent, getSearchValue & getSortValue test', function(assert) {
     counterName: testCounterName,
   });
 
-  assert.equal(definition.getCellContent(testRow), testCounterValue);
-  assert.equal(definition.getSearchValue(testRow), testCounterValue);
-  assert.equal(definition.getSortValue(testRow), testCounterValue);
+  equal(definition.getCellContent(testRow), testCounterValue);
+  equal(definition.getSearchValue(testRow), testCounterValue);
+  equal(definition.getSortValue(testRow), testCounterValue);
 });
 
 test('id test', function(assert) {
@@ -72,29 +72,29 @@ test('id test', function(assert) {
     counterName: testCounterName,
   });
 
-  assert.equal(definition.get("id"), `${testGroupName}/${testCounterName}`);
+  equal(definition.get("id"), `${testGroupName}/${testCounterName}`);
 });
 
 test('groupDisplayName test', function(assert) {
   let definition = CounterColumnDefinition.create();
 
   definition.set("counterGroupName", "foo");
-  assert.equal(definition.get("groupDisplayName"), "foo");
+  equal(definition.get("groupDisplayName"), "foo");
 
   definition.set("counterGroupName", "foo.bar");
-  assert.equal(definition.get("groupDisplayName"), "bar");
+  equal(definition.get("groupDisplayName"), "bar");
 
   definition.set("counterGroupName", "org.apache.tez.common.counters.DAGCounter");
-  assert.equal(definition.get("groupDisplayName"), "DAG");
+  equal(definition.get("groupDisplayName"), "DAG");
 
   definition.set("counterGroupName", "org.apache.tez.common.counters.FileSystemCounter");
-  assert.equal(definition.get("groupDisplayName"), "FileSystem");
+  equal(definition.get("groupDisplayName"), "FileSystem");
 
   definition.set("counterGroupName", "TaskCounter_ireduce1_INPUT_map");
-  assert.equal(definition.get("groupDisplayName"), "Task - ireduce1 to Input-map");
+  equal(definition.get("groupDisplayName"), "Task - ireduce1 to Input-map");
 
   definition.set("counterGroupName", "TaskCounter_ireduce1_OUTPUT_reduce");
-  assert.equal(definition.get("groupDisplayName"), "Task - ireduce1 to Output-reduce");
+  equal(definition.get("groupDisplayName"), "Task - ireduce1 to Output-reduce");
 });
 
 test('headerTitle test', function(assert) {
@@ -106,7 +106,7 @@ test('headerTitle test', function(assert) {
     counterName: testCounterName,
   });
 
-  assert.equal(definition.get("headerTitle"), "gn - cn");
+  equal(definition.get("headerTitle"), "gn - cn");
 });
 
 test('CounterColumnDefinition.make test', function(assert) {
@@ -118,7 +118,7 @@ test('CounterColumnDefinition.make test', function(assert) {
     counterName: "nm2",
   }]);
 
-  assert.equal(definitions.length, 2);
-  assert.equal(definitions[0].get("headerTitle"), "gn1 - nm1");
-  assert.equal(definitions[1].get("headerTitle"), "gn2 - nm2");
+  equal(definitions.length, 2);
+  equal(definitions[0].get("headerTitle"), "gn1 - nm1");
+  equal(definitions[1].get("headerTitle"), "gn2 - nm2");
 });

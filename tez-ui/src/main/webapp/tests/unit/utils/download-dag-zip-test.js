@@ -22,5 +22,5 @@ import { module, test } from 'qunit';
 module('Unit | Utility | download dag zip');
 
 test('Basic creation test', function(assert) {
-  assert.ok(downloadDagZip);
+  ok(downloadDagZip);
 });

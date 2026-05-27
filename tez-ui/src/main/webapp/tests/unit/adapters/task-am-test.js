@@ -25,5 +25,5 @@ moduleFor('adapter:task-am', 'Unit | Adapter | task am', {
 
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
-  assert.ok(adapter);
+  ok(adapter);
 });

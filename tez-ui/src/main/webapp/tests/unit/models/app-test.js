@@ -26,9 +26,9 @@ moduleForModel('app', 'Unit | Model | app', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
-  assert.ok(model.needs);
-  assert.ok(model.appID);
+  ok(model);
+  ok(model.needs);
+  ok(model.appID);
 });
 
 test('appID test', function(assert) {
@@ -36,5 +36,5 @@ test('appID test', function(assert) {
         entityID: "tez_1_2_3",
       });
 
-  assert.equal(model.get("appID"), "1_2_3");
+  equal(model.get("appID"), "1_2_3");
 });

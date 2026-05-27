@@ -31,37 +31,37 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.queryParams);
+  ok(controller);
+  ok(controller.queryParams);
 
-  assert.equal(controller.rowCount, 10);
-  assert.equal(controller.searchText, "");
-  assert.equal(controller.sortColumnId, "");
-  assert.equal(controller.sortOrder, "");
-  assert.equal(controller.pageNo, 1);
+  equal(controller.rowCount, 10);
+  equal(controller.searchText, "");
+  equal(controller.sortColumnId, "");
+  equal(controller.sortOrder, "");
+  equal(controller.pageNo, 1);
 
-  assert.ok(controller.headerComponentNames);
-  assert.ok(controller.visibleColumnIDs);
-  assert.ok(controller.columnSelectorTitle);
-  assert.ok(controller.definition);
+  ok(controller.headerComponentNames);
+  ok(controller.visibleColumnIDs);
+  ok(controller.columnSelectorTitle);
+  ok(controller.definition);
 
-  assert.ok(controller.storageID);
-  assert.ok(controller.initVisibleColumns);
+  ok(controller.storageID);
+  ok(controller.initVisibleColumns);
 
-  assert.ok(controller.beforeSort);
-  assert.ok(controller.columns);
-  assert.ok(controller.allColumns);
-  assert.ok(controller.visibleColumns);
+  ok(controller.beforeSort);
+  ok(controller.columns);
+  ok(controller.allColumns);
+  ok(controller.visibleColumns);
 
-  assert.ok(controller.getCounterColumns);
+  ok(controller.getCounterColumns);
 
-  assert.ok(controller.actions.searchChanged);
-  assert.ok(controller.actions.sortChanged);
-  assert.ok(controller.actions.rowsChanged);
-  assert.ok(controller.actions.pageChanged);
+  ok(controller.actions.searchChanged);
+  ok(controller.actions.sortChanged);
+  ok(controller.actions.rowsChanged);
+  ok(controller.actions.pageChanged);
 
-  assert.ok(controller.actions.openColumnSelector);
-  assert.ok(controller.actions.columnsSelected);
+  ok(controller.actions.openColumnSelector);
+  ok(controller.actions.columnsSelected);
 });
 
 test('initVisibleColumns test', function(assert) {
@@ -79,9 +79,9 @@ test('initVisibleColumns test', function(assert) {
     id: "c3",
   }]);
   controller.initVisibleColumns();
-  assert.equal(controller.get("visibleColumnIDs.c1"), true);
-  assert.equal(controller.get("visibleColumnIDs.c2"), true);
-  assert.equal(controller.get("visibleColumnIDs.c3"), true);
+  equal(controller.get("visibleColumnIDs.c1"), true);
+  equal(controller.get("visibleColumnIDs.c2"), true);
+  equal(controller.get("visibleColumnIDs.c3"), true);
 
   controller.set("columns", [{
     id: "c1",
@@ -93,12 +93,12 @@ test('initVisibleColumns test', function(assert) {
     hiddenByDefault: true,
   }]);
   controller.initVisibleColumns();
-  assert.equal(controller.get("visibleColumnIDs.c1"), false);
-  assert.equal(controller.get("visibleColumnIDs.c2"), true);
-  assert.equal(controller.get("visibleColumnIDs.c3"), false);
+  equal(controller.get("visibleColumnIDs.c1"), false);
+  equal(controller.get("visibleColumnIDs.c2"), true);
+  equal(controller.get("visibleColumnIDs.c3"), false);
 
   controller.initVisibleColumns();
-  assert.equal(controller.get("visibleColumnIDs.c1"), false);
-  assert.equal(controller.get("visibleColumnIDs.c2"), true);
-  assert.equal(controller.get("visibleColumnIDs.c3"), false);
+  equal(controller.get("visibleColumnIDs.c1"), false);
+  equal(controller.get("visibleColumnIDs.c2"), true);
+  equal(controller.get("visibleColumnIDs.c3"), false);
 });

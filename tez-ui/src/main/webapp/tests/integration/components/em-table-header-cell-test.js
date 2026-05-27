@@ -26,5 +26,5 @@ moduleForComponent('em-table-header-cell', 'Integration | Component | em table h
 test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table-header-cell}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });

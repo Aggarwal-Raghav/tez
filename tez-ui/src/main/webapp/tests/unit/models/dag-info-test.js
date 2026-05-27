@@ -26,10 +26,10 @@ moduleForModel('dag-info', 'Unit | Model | dag info', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
   // let store = this.store();
-  assert.ok(!!model);
+  ok(!!model);
 
-  assert.ok(model.dagPlan);
-  assert.ok(model.callerData);
+  ok(model.dagPlan);
+  ok(model.callerData);
 });
 
 

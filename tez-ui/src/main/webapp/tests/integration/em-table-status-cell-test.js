@@ -27,7 +27,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-table-status-cell}}`);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -36,5 +36,5 @@ test('Basic creation test', function(assert) {
     {{/em-table-status-cell}}
   `);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });

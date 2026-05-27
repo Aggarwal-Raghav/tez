@@ -30,7 +30,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{table-controls}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -39,5 +39,5 @@ test('Basic creation test', function(assert) {
     {{/table-controls}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });

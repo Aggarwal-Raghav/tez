@@ -28,7 +28,7 @@ moduleForComponent('error-bar', 'Integration | Component | error bar', {
 test('Basic creation test', function(assert) {
   this.render(hbs`{{error-bar}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -37,7 +37,7 @@ test('Basic creation test', function(assert) {
     {{/error-bar}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('Plain Object test', function(assert) {
@@ -47,7 +47,7 @@ test('Plain Object test', function(assert) {
   this.render(hbs`{{error-bar error=error}}`);
 
   return wait().then(() => {
-    assert.equal(this.$().text().trim(), 'Error');
+    equal(this.$().text().trim(), 'Error');
   });
 });
 
@@ -62,7 +62,7 @@ test('Message test', function(assert) {
   this.render(hbs`{{error-bar error=error}}`);
 
   return wait().then(() => {
-    assert.equal(this.$().text().trim(), testMessage);
+    equal(this.$().text().trim(), testMessage);
   });
 });
 
@@ -79,8 +79,8 @@ test('details test', function(assert) {
   this.render(hbs`{{error-bar error=error}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".message").text().trim(), testMessage);
-    assert.equal(this.$(".details p").text().trim(), testDetails);
+    equal(this.$(".message").text().trim(), testMessage);
+    equal(this.$(".details p").text().trim(), testDetails);
   });
 });
 
@@ -97,8 +97,8 @@ test('requestInfo test', function(assert) {
   this.render(hbs`{{error-bar error=error}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".message").text().trim(), testMessage);
-    assert.equal(this.$(".details p").text().trim(), testInfo);
+    equal(this.$(".message").text().trim(), testMessage);
+    equal(this.$(".details p").text().trim(), testInfo);
   });
 });
 
@@ -115,7 +115,7 @@ test('stack test', function(assert) {
   this.render(hbs`{{error-bar error=error}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".message").text().trim(), testMessage);
-    assert.equal(this.$(".details p").text().trim(), testStack);
+    equal(this.$(".message").text().trim(), testMessage);
+    equal(this.$(".details p").text().trim(), testStack);
   });
 });

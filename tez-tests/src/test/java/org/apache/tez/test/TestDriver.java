@@ -20,6 +20,8 @@ package org.apache.tez.test;
 
 import org.apache.hadoop.util.ProgramDriver;
 
+import org.junit.jupiter.api.*;
+
 public final class TestDriver {
 
   private TestDriver() {}

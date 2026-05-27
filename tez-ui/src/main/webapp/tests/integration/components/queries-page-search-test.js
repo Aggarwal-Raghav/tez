@@ -28,7 +28,7 @@ moduleForComponent('queries-page-search', 'Integration | Component | queries pag
 
 test('Basic creation test', function(assert) {
   this.render(hbs`{{queries-page-search}}`);
-  assert.equal(this.$("input").length, 8);
+  equal(this.$("input").length, 8);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -36,7 +36,7 @@ test('Basic creation test', function(assert) {
       template block text
     {{/queries-page-search}}
   `);
-  assert.equal(this.$("input").length, 8);
+  equal(this.$("input").length, 8);
 });
 
 test('tableDefinition test', function(assert) {
@@ -63,14 +63,14 @@ test('tableDefinition test', function(assert) {
   this.render(hbs`{{queries-page-search tableDefinition=tableDefinition}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('input').length, 8);
-    assert.equal(this.$('input').eq(0).val(), testQueryID);
-    assert.equal(this.$('input').eq(1).val(), testUser);
-    assert.equal(this.$('input').eq(2).val(), testDagID);
-    assert.equal(this.$('input').eq(3).val(), testTablesRead);
-    assert.equal(this.$('input').eq(4).val(), testTablesWritten);
-    assert.equal(this.$('input').eq(5).val(), testAppID);
-    assert.equal(this.$('input').eq(6).val(), testQueue);
-    assert.equal(this.$('input').eq(7).val(), testExecutionMode);
+    equal(this.$('input').length, 8);
+    equal(this.$('input').eq(0).val(), testQueryID);
+    equal(this.$('input').eq(1).val(), testUser);
+    equal(this.$('input').eq(2).val(), testDagID);
+    equal(this.$('input').eq(3).val(), testTablesRead);
+    equal(this.$('input').eq(4).val(), testTablesWritten);
+    equal(this.$('input').eq(5).val(), testAppID);
+    equal(this.$('input').eq(6).val(), testQueue);
+    equal(this.$('input').eq(7).val(), testExecutionMode);
   });
 });

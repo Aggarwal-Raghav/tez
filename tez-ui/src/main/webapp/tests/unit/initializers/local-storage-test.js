@@ -35,5 +35,5 @@ test('it works', function(assert) {
   LocalStorageInitializer.initialize(application);
 
   // you would normally confirm the results of the initializer here
-  assert.ok(true);
+  ok(true);
 });

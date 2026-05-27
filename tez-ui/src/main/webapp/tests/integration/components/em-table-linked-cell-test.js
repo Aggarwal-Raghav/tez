@@ -26,5 +26,5 @@ moduleForComponent('em-table-linked-cell', 'Integration | Component | em table l
 test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table-linked-cell}}`);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });

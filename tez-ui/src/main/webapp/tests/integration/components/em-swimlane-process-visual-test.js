@@ -34,8 +34,8 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-process-visual process=process processor=processor}}`);
 
-  assert.ok(this.$(".base-line"));
-  assert.ok(this.$(".event-window"));
+  ok(this.$(".base-line"));
+  ok(this.$(".event-window"));
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -44,8 +44,8 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-process-visual}}
   `);
 
-  assert.ok(this.$(".base-line"));
-  assert.ok(this.$(".event-window"));
+  ok(this.$(".base-line"));
+  ok(this.$(".event-window"));
 });
 
 test('Events test', function(assert) {
@@ -68,10 +68,10 @@ test('Events test', function(assert) {
   return wait().then(() => {
     var events = this.$(".em-swimlane-event");
 
-    assert.equal(events.length, 2);
-    assert.equal(events.eq(0).attr("style").trim(), "left: 50%;", "em-swimlane-event 1 left");
-    assert.equal(events.eq(1).attr("style").trim(), "left: 70%;", "em-swimlane-event 2 left");
+    equal(events.length, 2);
+    equal(events.eq(0).attr("style").trim(), "left: 50%;", "em-swimlane-event 1 left");
+    equal(events.eq(1).attr("style").trim(), "left: 70%;", "em-swimlane-event 2 left");
 
-    assert.equal(this.$(".process-line").eq(0).attr("style").trim(), "left: 50%; right: 30%;", "process-line");
+    equal(this.$(".process-line").eq(0).attr("style").trim(), "left: 50%; right: 30%;", "process-line");
   });
 });

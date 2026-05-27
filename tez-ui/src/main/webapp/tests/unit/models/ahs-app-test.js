@@ -26,15 +26,15 @@ moduleForModel('ahs-app', 'Unit | Model | ahs app', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
+  ok(model);
 
-  assert.ok(model.name);
-  assert.ok(model.queue);
-  assert.ok(model.user);
-  assert.ok(model.type);
+  ok(model.name);
+  ok(model.queue);
+  ok(model.user);
+  ok(model.type);
 
-  assert.ok(model.status);
-  assert.ok(model.finalStatus);
+  ok(model.status);
+  ok(model.finalStatus);
 
-  assert.ok(model.diagnostics);
+  ok(model.diagnostics);
 });

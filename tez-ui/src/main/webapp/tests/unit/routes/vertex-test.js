@@ -26,7 +26,7 @@ moduleFor('route:vertex', 'Unit | Route | vertex', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.model);
+  ok(route);
+  ok(route.loaderQueryParams);
+  ok(route.model);
 });

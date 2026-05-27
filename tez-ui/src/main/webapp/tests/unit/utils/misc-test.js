@@ -22,5 +22,5 @@ import { module, test } from 'qunit';
 module('Unit | Utility | misc');
 
 test('Basic creation test', function(assert) {
-  assert.ok(isIOCounter);
+  ok(isIOCounter);
 });

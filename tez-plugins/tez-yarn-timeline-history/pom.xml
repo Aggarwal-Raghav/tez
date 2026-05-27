@@ -129,11 +129,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-json</artifactId>
       <scope>test</scope>
@@ -148,18 +143,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>hadoop27</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.tez</groupId>
-          <artifactId>tez-yarn-timeline-history</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 
 </project>

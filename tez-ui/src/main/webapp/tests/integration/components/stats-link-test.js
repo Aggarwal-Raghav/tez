@@ -26,7 +26,7 @@ moduleForComponent('stats-link', 'Integration | Component | stats link', {
 test('Basic creation test', function(assert) {
 
   this.render(hbs`{{stats-link}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -34,5 +34,5 @@ test('Basic creation test', function(assert) {
       template block text
     {{/stats-link}}
   `);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });

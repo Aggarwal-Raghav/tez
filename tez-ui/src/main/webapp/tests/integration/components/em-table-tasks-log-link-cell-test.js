@@ -28,7 +28,7 @@ moduleForComponent('em-table-tasks-log-link-cell', 'Integration | Component | em
 test('Basic render test', function(assert) {
   this.render(hbs`{{em-table-tasks-log-link-cell}}`);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -37,7 +37,7 @@ test('Basic render test', function(assert) {
     {{/em-table-tasks-log-link-cell}}
   `);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });
 
 test('Test with content', function(assert) {
@@ -47,7 +47,7 @@ test('Test with content', function(assert) {
   this.render(hbs`{{em-table-tasks-log-link-cell content=content}}`);
 
   let tags = this.$().find("a");
-  assert.equal(tags.length, 2);
-  assert.equal(Ember.$(tags[0]).text().trim(), 'View');
-  assert.equal(Ember.$(tags[1]).text().trim(), 'Download');
+  equal(tags.length, 2);
+  equal(Ember.$(tags[0]).text().trim(), 'View');
+  equal(Ember.$(tags[1]).text().trim(), 'Download');
 });

@@ -35,17 +35,17 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller.zoom);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.equal(controller.columns.length, 13);
-  assert.ok(controller.processes);
+  ok(controller);
+  ok(controller.zoom);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  equal(controller.columns.length, 13);
+  ok(controller.processes);
 
-  assert.ok(controller.dataAvailable);
+  ok(controller.dataAvailable);
 
-  assert.ok(controller.actions.toggleFullscreen);
-  assert.ok(controller.actions.click);
+  ok(controller.actions.toggleFullscreen);
+  ok(controller.actions.click);
 });
 
 test('Processes test', function(assert) {
@@ -86,9 +86,9 @@ test('Processes test', function(assert) {
 
   var processes = controller.get("processes");
 
-  assert.equal(processes[2].blockers[0].vertex, vertices[0]);
-  assert.equal(processes[2].blockers[1].vertex, vertices[1]);
-  assert.equal(processes[3].blockers[0].vertex, vertices[2]);
+  equal(processes[2].blockers[0].vertex, vertices[0]);
+  equal(processes[2].blockers[1].vertex, vertices[1]);
+  equal(processes[3].blockers[0].vertex, vertices[2]);
 });
 
 test('dataAvailable test', function(assert) {
@@ -105,28 +105,28 @@ test('dataAvailable test', function(assert) {
     dag: dag
   });
 
-  assert.equal(controller.get("dataAvailable"), true, "No DAG or vertex");
+  equal(controller.get("dataAvailable"), true, "No DAG or vertex");
 
   controller.set("model", Ember.Object.create({
     firstObject: vertex
   }));
-  assert.equal(controller.get("dataAvailable"), false, "With vertex & dag but no amWsVersion");
+  equal(controller.get("dataAvailable"), false, "With vertex & dag but no amWsVersion");
 
   dag.set("isComplete", true);
-  assert.equal(controller.get("dataAvailable"), true, "Complete DAG");
+  equal(controller.get("dataAvailable"), true, "Complete DAG");
   dag.set("isComplete", false);
 
   dag.set("amWsVersion", 1);
-  assert.equal(controller.get("dataAvailable"), false, "With vertex & dag but amWsVersion=1");
+  equal(controller.get("dataAvailable"), false, "With vertex & dag but amWsVersion=1");
 
   dag.set("amWsVersion", 2);
-  assert.equal(controller.get("dataAvailable"), true, "With vertex & dag but amWsVersion=2");
+  equal(controller.get("dataAvailable"), true, "With vertex & dag but amWsVersion=2");
 
   vertex.set("am", {});
-  assert.equal(controller.get("dataAvailable"), false, "am loaded without event time data");
+  equal(controller.get("dataAvailable"), false, "am loaded without event time data");
 
   vertex.set("am", {
     initTime: Date.now()
   });
-  assert.equal(controller.get("dataAvailable"), true, "am loaded with event time data");
+  equal(controller.get("dataAvailable"), true, "am loaded with event time data");
 });

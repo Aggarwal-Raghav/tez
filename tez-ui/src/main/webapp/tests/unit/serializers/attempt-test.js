@@ -26,8 +26,8 @@ moduleFor('serializer:attempt', 'Unit | Serializer | attempt', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.equal(Object.keys(serializer.maps).length, 8 + 8);
+  ok(serializer);
+  equal(Object.keys(serializer.maps).length, 8 + 8);
 });
 
 test('containerLogURL test', function(assert) {
@@ -39,7 +39,7 @@ test('containerLogURL test', function(assert) {
     }
   });
 
-  assert.equal(serializer.maps.containerLogURL.call(serializer, {
+  equal(serializer.maps.containerLogURL.call(serializer, {
     otherinfo: {
       inProgressLogsURL: "abc.com/test/link",
     }

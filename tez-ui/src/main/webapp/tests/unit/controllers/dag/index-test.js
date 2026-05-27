@@ -31,6 +31,6 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.equal(controller.logLinkDefinition.target, "_blank");
+  ok(controller);
+  equal(controller.logLinkDefinition.target, "_blank");
 });

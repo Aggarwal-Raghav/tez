@@ -30,8 +30,8 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.equal(controller.get("breadcrumbs"), null);
+  ok(controller);
+  equal(controller.get("breadcrumbs"), null);
 });
 
 test('tabs test', function(assert) {
@@ -40,7 +40,7 @@ test('tabs test', function(assert) {
     initVisibleColumns: Ember.K
   }).get("tabs");
 
-  assert.equal(tabs.length, 2);
-  assert.equal(tabs[0].text, "All DAGs");
-  assert.equal(tabs[1].text, "Hive Queries");
+  equal(tabs.length, 2);
+  equal(tabs[0].text, "All DAGs");
+  equal(tabs[1].text, "Hive Queries");
 });

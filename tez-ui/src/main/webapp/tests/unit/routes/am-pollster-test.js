@@ -26,10 +26,10 @@ moduleFor('route:am-pollster', 'Unit | Route | am pollster', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.onRecordPoll);
-  assert.ok(route.onPollFailure);
-  assert.ok(route.scheduleReload);
-  assert.ok(route.reload);
-  assert.ok(route.actions.countersToPollChanged);
+  ok(route);
+  ok(route.onRecordPoll);
+  ok(route.onPollFailure);
+  ok(route.scheduleReload);
+  ok(route.reload);
+  ok(route.actions.countersToPollChanged);
 });

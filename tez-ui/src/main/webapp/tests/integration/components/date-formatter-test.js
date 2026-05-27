@@ -27,7 +27,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{date-formatter}}`);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -36,16 +36,16 @@ test('Basic creation test', function(assert) {
     {{/date-formatter}}
   `);
 
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });
 
 test('Negative value test', function(assert) {
   this.render(hbs`{{date-formatter -1}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   this.render(hbs`{{date-formatter -99}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   this.render(hbs`{{date-formatter 0}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });

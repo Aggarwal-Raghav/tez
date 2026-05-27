@@ -47,12 +47,12 @@ test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 1);
-  assert.equal($(paginationItems[0]).text().trim(), "1");
+  equal(paginationItems.length, 1);
+  equal($(paginationItems[0]).text().trim(), "1");
 
   var rowSelection = this.$('select')[0];
-  assert.ok(rowSelection);
-  assert.equal($(rowSelection).val(), customRowCount);
+  ok(rowSelection);
+  equal($(rowSelection).val(), customRowCount);
 });
 
 test('No data test', function(assert) {
@@ -74,7 +74,7 @@ test('No data test', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 0);
+  equal(paginationItems.length, 0);
 });
 
 test('Multiple page test; without first & last', function(assert) {
@@ -96,9 +96,9 @@ test('Multiple page test; without first & last', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 2);
-  assert.equal($(paginationItems[0]).text().trim(), "1");
-  assert.equal($(paginationItems[1]).text().trim(), "2");
+  equal(paginationItems.length, 2);
+  equal($(paginationItems[0]).text().trim(), "1");
+  equal($(paginationItems[1]).text().trim(), "2");
 });
 
 test('Display last test', function(assert) {
@@ -125,13 +125,13 @@ test('Display last test', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 6);
-  assert.equal($(paginationItems[0]).text().trim(), "1");
-  assert.equal($(paginationItems[1]).text().trim(), "2");
-  assert.equal($(paginationItems[2]).text().trim(), "3");
-  assert.equal($(paginationItems[3]).text().trim(), "4");
-  assert.equal($(paginationItems[4]).text().trim(), "5");
-  assert.equal($(paginationItems[5]).text().trim(), "Last - 20");
+  equal(paginationItems.length, 6);
+  equal($(paginationItems[0]).text().trim(), "1");
+  equal($(paginationItems[1]).text().trim(), "2");
+  equal($(paginationItems[2]).text().trim(), "3");
+  equal($(paginationItems[3]).text().trim(), "4");
+  equal($(paginationItems[4]).text().trim(), "5");
+  equal($(paginationItems[5]).text().trim(), "Last - 20");
 });
 
 test('Display first test', function(assert) {
@@ -159,13 +159,13 @@ test('Display first test', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 6);
-  assert.equal($(paginationItems[0]).text().trim(), "First");
-  assert.equal($(paginationItems[1]).text().trim(), "16");
-  assert.equal($(paginationItems[2]).text().trim(), "17");
-  assert.equal($(paginationItems[3]).text().trim(), "18");
-  assert.equal($(paginationItems[4]).text().trim(), "19");
-  assert.equal($(paginationItems[5]).text().trim(), "20");
+  equal(paginationItems.length, 6);
+  equal($(paginationItems[0]).text().trim(), "First");
+  equal($(paginationItems[1]).text().trim(), "16");
+  equal($(paginationItems[2]).text().trim(), "17");
+  equal($(paginationItems[3]).text().trim(), "18");
+  equal($(paginationItems[4]).text().trim(), "19");
+  equal($(paginationItems[5]).text().trim(), "20");
 });
 
 test('Display first & last test', function(assert) {
@@ -193,12 +193,12 @@ test('Display first & last test', function(assert) {
   this.render(hbs`{{em-table-pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 7);
-  assert.equal($(paginationItems[0]).text().trim(), "First");
-  assert.equal($(paginationItems[1]).text().trim(), "8");
-  assert.equal($(paginationItems[2]).text().trim(), "9");
-  assert.equal($(paginationItems[3]).text().trim(), "10");
-  assert.equal($(paginationItems[4]).text().trim(), "11");
-  assert.equal($(paginationItems[5]).text().trim(), "12");
-  assert.equal($(paginationItems[6]).text().trim(), "Last - 20");
+  equal(paginationItems.length, 7);
+  equal($(paginationItems[0]).text().trim(), "First");
+  equal($(paginationItems[1]).text().trim(), "8");
+  equal($(paginationItems[2]).text().trim(), "9");
+  equal($(paginationItems[3]).text().trim(), "10");
+  equal($(paginationItems[4]).text().trim(), "11");
+  equal($(paginationItems[5]).text().trim(), "12");
+  equal($(paginationItems[6]).text().trim(), "Last - 20");
 });

@@ -18,15 +18,12 @@
  */
 package org.apache.tez.runtime.library.conf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -37,11 +34,12 @@ import org.apache.tez.runtime.library.api.TezRuntimeConfiguration.ReportPartitio
 
 import com.google.common.collect.Maps;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestOrderedPartitionedKVEdgeConfig {
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNullParams() {
     try {
       OrderedPartitionedKVEdgeConfig.newBuilder(null, "VALUE", "PARTITIONER");
@@ -65,7 +63,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
     }
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void testDefaultConfigsUsed() {
     OrderedPartitionedKVEdgeConfig.Builder builder = OrderedPartitionedKVEdgeConfig
         .newBuilder("KEY", "VALUE", "PARTITIONER");
@@ -79,19 +78,20 @@ public class TestOrderedPartitionedKVEdgeConfig {
     rebuiltInput.fromUserPayload(configuration.getInputPayload());
 
     Configuration outputConf = rebuiltOutput.conf;
-    assertEquals(true, outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD,
+    assertTrue(outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD,
         TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD_DEFAULT));
     assertEquals("TestCodec",
         outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
 
     Configuration inputConf = rebuiltInput.conf;
-    assertEquals(true, inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD,
+    assertTrue(inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD,
         TezRuntimeConfiguration.TEZ_RUNTIME_IFILE_READAHEAD_DEFAULT));
     assertEquals("TestCodec",
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void testSpecificIOConfs() {
     // Ensures that Output and Input confs are not mixed.
     OrderedPartitionedKVEdgeConfig.Builder builder = OrderedPartitionedKVEdgeConfig
@@ -114,7 +114,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, "DEFAULT"));
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void tetCommonConf() {
 
     Configuration fromConf = new Configuration(false);
@@ -184,7 +185,7 @@ public class TestOrderedPartitionedKVEdgeConfig {
         ReportPartitionStats.fromString(outputConf.get(
         TezRuntimeConfiguration.TEZ_RUNTIME_REPORT_PARTITION_STATS,
         TezRuntimeConfiguration.TEZ_RUNTIME_REPORT_PARTITION_STATS_DEFAULT));
-    assertEquals(true, partitionStats.isEnabled());
+    assertTrue(partitionStats.isEnabled());
 
 
     assertEquals(3, inputConf.getInt(TezRuntimeConfiguration.TEZ_RUNTIME_IO_SORT_FACTOR, 0));
@@ -206,7 +207,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
     assertEquals("unfiltered1", inputConf.get("test.conf.unfiltered.1"));
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void testSetters() {
     Map<String, String> comparatorConf = Maps.newHashMap();
     comparatorConf.put("comparator.test.key", "comparatorValue");
@@ -236,9 +238,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
     assertEquals(1111, outputConf.getInt(TezRuntimeConfiguration.TEZ_RUNTIME_IO_SORT_MB, 0));
     assertEquals("CustomCodec",
         outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
-    assertEquals(true,
-        outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
-            false));
+    assertTrue(outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
+        false));
     assertEquals("KEY_COMPARATOR",
         outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_KEY_COMPARATOR_CLASS));
     assertEquals("comparatorValue", outputConf.get("comparator.test.key"));
@@ -255,9 +256,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_VALUE_CLASS, ""));
     assertEquals("CustomCodec",
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
-    assertEquals(true,
-        inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
-            false));
+    assertTrue(inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
+        false));
 
     assertEquals(0.11f,
         inputConf.getFloat(TezRuntimeConfiguration.TEZ_RUNTIME_SHUFFLE_MEMORY_LIMIT_PERCENT, 0.0f), 0.001f);
@@ -271,7 +271,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
 
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void testSerialization() {
     OrderedPartitionedKVEdgeConfig.Builder builder = OrderedPartitionedKVEdgeConfig
         .newBuilder("KEY", "VALUE", "PARTITIONER")
@@ -296,9 +297,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
     assertEquals("PARTITIONER", outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_PARTITIONER_CLASS, ""));
     assertEquals("CustomCodec",
         outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
-    assertEquals(true,
-        outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
-            false));
+    assertTrue(outputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
+        false));
     assertNull(outputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_SHUFFLE_FETCH_BUFFER_PERCENT));
     //verify comparator and serialization class
     assertEquals("SomeComparator1",
@@ -317,9 +317,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_VALUE_CLASS, ""));
     assertEquals("CustomCodec",
         inputConf.get(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS_CODEC, ""));
-    assertEquals(true,
-        inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
-            false));
+    assertTrue(inputConf.getBoolean(TezRuntimeConfiguration.TEZ_RUNTIME_COMPRESS,
+        false));
   }
 
   private void checkHistoryText(String historyText) {
@@ -328,7 +327,8 @@ public class TestOrderedPartitionedKVEdgeConfig {
         TezRuntimeConfiguration.TEZ_RUNTIME_CONVERT_USER_PAYLOAD_TO_HISTORY_TEXT));
   }
 
-  @Test (timeout=2000)
+  @Test
+  @Timeout(value = 2000, unit = TimeUnit.MILLISECONDS)
   public void testHistoryText() {
     OrderedPartitionedKVEdgeConfig.Builder builder =
         OrderedPartitionedKVEdgeConfig.newBuilder("KEY", "VALUE", "PARTITIONER");

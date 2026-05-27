@@ -34,7 +34,7 @@ test('Basic creation test', function(assert) {
   });
 
   this.render(hbs`{{zip-download-modal content=content}}`);
-  assert.equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
+  equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -42,7 +42,7 @@ test('Basic creation test', function(assert) {
       template block text
     {{/zip-download-modal}}
   `);
-  assert.equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
+  equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
 });
 
 test('progress test', function(assert) {
@@ -54,10 +54,10 @@ test('progress test', function(assert) {
 
   this.render(hbs`{{zip-download-modal content=content}}`);
   let text = this.$(".message").text().trim();
-  assert.equal(text.substr(-3), "50%");
+  equal(text.substr(-3), "50%");
 
-  assert.equal(this.$(".btn").length, 1);
-  assert.equal(this.$(".btn-primary").length, 0);
+  equal(this.$(".btn").length, 1);
+  equal(this.$(".btn-primary").length, 0);
 });
 
 test('failed test', function(assert) {
@@ -70,10 +70,10 @@ test('failed test', function(assert) {
   });
 
   this.render(hbs`{{zip-download-modal content=content}}`);
-  assert.equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
+  equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
 
-  assert.equal(this.$(".btn").length, 1);
-  assert.equal(this.$(".btn-primary").length, 1);
+  equal(this.$(".btn").length, 1);
+  equal(this.$(".btn-primary").length, 1);
 });
 
 test('partial test', function(assert) {
@@ -87,8 +87,8 @@ test('partial test', function(assert) {
   });
 
   this.render(hbs`{{zip-download-modal content=content}}`);
-  assert.equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
+  equal(this.$(".message").text().trim().indexOf(expectedMessage), 0);
 
-  assert.equal(this.$(".btn").length, 1);
-  assert.equal(this.$(".btn-primary").length, 1);
+  equal(this.$(".btn").length, 1);
+  equal(this.$(".btn-primary").length, 1);
 });

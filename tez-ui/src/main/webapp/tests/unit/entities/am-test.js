@@ -26,8 +26,8 @@ moduleFor('entitie:am', 'Unit | Entity | am', {
 test('Basic creation test', function(assert) {
   let entity = this.subject();
 
-  assert.ok(entity);
-  assert.ok(entity.resetJoiner);
-  assert.ok(entity.queryRecord);
-  assert.ok(entity.queryJoinedRecords);
+  ok(entity);
+  ok(entity.resetJoiner);
+  ok(entity.queryRecord);
+  ok(entity.queryJoinedRecords);
 });

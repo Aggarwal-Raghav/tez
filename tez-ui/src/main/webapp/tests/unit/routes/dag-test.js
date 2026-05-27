@@ -26,7 +26,7 @@ moduleFor('route:dag', 'Unit | Route | dag', {
 test('it exists', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.model);
+  ok(route);
+  ok(route.loaderQueryParams);
+  ok(route.model);
 });

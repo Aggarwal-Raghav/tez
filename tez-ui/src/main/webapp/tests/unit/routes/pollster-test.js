@@ -26,14 +26,14 @@ moduleFor('route:pollster', 'Unit | Route | pollster', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
+  ok(route);
 
-  assert.ok(route.onRecordPoll);
-  assert.ok(route.onPollSuccess);
-  assert.ok(route.onPollFailure);
+  ok(route.onRecordPoll);
+  ok(route.onPollSuccess);
+  ok(route.onPollFailure);
 
-  assert.ok(route.pollData);
-  assert.ok(route.canPoll);
-  assert.ok(route._canPollInit);
-  assert.ok(route._canPollObserver);
+  ok(route.pollData);
+  ok(route.canPoll);
+  ok(route._canPollInit);
+  ok(route._canPollObserver);
 });

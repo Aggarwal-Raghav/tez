@@ -27,29 +27,29 @@ moduleFor('route:dag/index/index', 'Unit | Route | dag/index/index', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
 
-  assert.ok(route._canPollObserver);
-  assert.ok(route.actions.reload);
-  assert.ok(route.actions.willTransition);
+  ok(route._canPollObserver);
+  ok(route.actions.reload);
+  ok(route.actions.willTransition);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'dag');
+      equal(type, 'dag');
       return Ember.Object.create({
         entityID: 'dag_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 

@@ -26,6 +26,6 @@ moduleFor('serializer:vertex-am', 'Unit | Serializer | vertex am', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.extractArrayPayload);
+  ok(serializer);
+  ok(serializer.extractArrayPayload);
 });

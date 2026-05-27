@@ -26,6 +26,6 @@ moduleFor('serializer:app', 'Unit | Serializer | app', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.maps);
+  ok(serializer);
+  ok(serializer.maps);
 });

@@ -34,7 +34,7 @@ test('Basic creation test', function(assert) {
   });
   this.render(hbs`{{column-selector content=content}}`);
 
-  assert.equal(this.$(".select-option ").text().trim(), 'Test Column');
+  equal(this.$(".select-option ").text().trim(), 'Test Column');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -43,7 +43,7 @@ test('Basic creation test', function(assert) {
     {{/column-selector}}
   `);
 
-  assert.equal(this.$(".select-option ").text().trim(), 'Test Column');
+  equal(this.$(".select-option ").text().trim(), 'Test Column');
 });
 
 test('visibleColumnIDs test', function(assert) {
@@ -62,8 +62,8 @@ test('visibleColumnIDs test', function(assert) {
 
   this.render(hbs`{{column-selector content=content}}`);
 
-  assert.equal(this.$(".select-option").text().trim(), 'Test Column');
-  assert.equal(this.$(".select-option input")[0].checked, true);
+  equal(this.$(".select-option").text().trim(), 'Test Column');
+  equal(this.$(".select-option input")[0].checked, true);
 });
 
 test('searchText test', function(assert) {
@@ -83,7 +83,7 @@ test('searchText test', function(assert) {
 
   this.render(hbs`{{column-selector content=content searchText=searchText}}`);
 
-  assert.equal(this.$(".select-option").text().trim(), '');
+  equal(this.$(".select-option").text().trim(), '');
 });
 
 test('case-insensitive searchText test', function(assert) {
@@ -103,5 +103,5 @@ test('case-insensitive searchText test', function(assert) {
 
   this.render(hbs`{{column-selector content=content searchText=searchText}}`);
 
-  assert.equal(this.$(".select-option").text().trim(), 'Test Column');
+  equal(this.$(".select-option").text().trim(), 'Test Column');
 });

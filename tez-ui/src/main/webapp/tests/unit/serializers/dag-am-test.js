@@ -26,5 +26,5 @@ moduleFor('serializer:dag-am', 'Unit | Serializer | dag am', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
+  ok(serializer);
 });

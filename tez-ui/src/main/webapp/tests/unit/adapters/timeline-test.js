@@ -26,31 +26,31 @@ moduleFor('adapter:timeline', 'Unit | Adapter | timeline', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.ok(adapter.filters);
-  assert.ok(adapter.stringifyFilters);
-  assert.ok(adapter.normalizeQuery);
-  assert.ok(adapter.query);
+  ok(adapter);
+  ok(adapter.filters);
+  ok(adapter.stringifyFilters);
+  ok(adapter.normalizeQuery);
+  ok(adapter.query);
 
-  assert.equal(adapter.serverName, "timeline");
+  equal(adapter.serverName, "timeline");
 });
 
 test('filters test', function(assert) {
   let filters = this.subject().filters;
-  assert.equal(Object.keys(filters).length, 8 + 8 + 4);
+  equal(Object.keys(filters).length, 8 + 8 + 4);
 });
 
 test('stringifyFilters test', function(assert) {
   let adapter = this.subject();
 
-  assert.equal(adapter.stringifyFilters({a: 1, b: 2}), 'a:"1",b:"2"');
-  assert.throws(function () {
+  equal(adapter.stringifyFilters({a: 1, b: 2}), 'a:"1",b:"2"');
+  throws(function () {
     adapter.stringifyFilters();
   });
 
-  assert.equal(adapter.stringifyFilters({a: "123", b: "abc"}), 'a:"123",b:"abc"');
-  assert.equal(adapter.stringifyFilters({a: '123', b: 'abc'}), 'a:"123",b:"abc"');
-  assert.equal(adapter.stringifyFilters({a: '123"abc'}), 'a:"123\\"abc"');
+  equal(adapter.stringifyFilters({a: "123", b: "abc"}), 'a:"123",b:"abc"');
+  equal(adapter.stringifyFilters({a: '123', b: 'abc'}), 'a:"123",b:"abc"');
+  equal(adapter.stringifyFilters({a: '123"abc'}), 'a:"123\\"abc"');
 });
 
 test('normalizeQuery test', function(assert) {
@@ -64,10 +64,10 @@ test('normalizeQuery test', function(assert) {
 
   normalQuery = adapter.normalizeQuery({a: 1, b: 2, c: 3, d: 4});
 
-  assert.deepEqual(normalQuery.primaryFilter, 'A_ID:"1"');
-  assert.deepEqual(normalQuery.secondaryFilter, 'B_ID:"2"');
-  assert.deepEqual(normalQuery.c, 3);
-  assert.deepEqual(normalQuery.d, 4);
+  deepEqual(normalQuery.primaryFilter, 'A_ID:"1"');
+  deepEqual(normalQuery.secondaryFilter, 'B_ID:"2"');
+  deepEqual(normalQuery.c, 3);
+  deepEqual(normalQuery.d, 4);
 });
 
 test('query test', function(assert) {
@@ -77,14 +77,14 @@ test('query test', function(assert) {
       testType = "ts",
       testQuery = {};
 
-  assert.expect(1 + 1);
+  expect(1 + 1);
 
   adapter.normalizeQuery = function (params) {
-    assert.equal(params, testQuery);
+    equal(params, testQuery);
     return normalQuery;
   };
   adapter._loaderAjax = function (url, queryParams) {
-    assert.equal(queryParams, normalQuery);
+    equal(queryParams, normalQuery);
   };
 
   adapter.query(testStore, testType, {

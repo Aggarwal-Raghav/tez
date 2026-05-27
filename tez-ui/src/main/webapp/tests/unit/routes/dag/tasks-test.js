@@ -28,26 +28,26 @@ moduleFor('route:dag/tasks', 'Unit | Route | dag/tasks', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
-  assert.ok(route.actions.logCellClicked);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
+  ok(route.actions.logCellClicked);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'dag');
+      equal(type, 'dag');
       return Ember.Object.create({
         entityID: 'dag_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 
@@ -55,7 +55,7 @@ test('setupController test', function(assert) {
 });
 
 test('logCellClicked test', function(assert) {
-  assert.expect(2 * 3 + 2 + 2 + 1);
+  expect(2 * 3 + 2 + 2 + 1);
 
   let testID = "attempt_1",
       testLogURL = "http://abc.com/xyz",
@@ -67,26 +67,26 @@ test('logCellClicked test', function(assert) {
 
   route.loader = {
     queryRecord: function (type, id) {
-      assert.equal(type, "attempt");
-      assert.equal(id, testID);
+      equal(type, "attempt");
+      equal(id, testID);
 
       return Ember.RSVP.resolve(attemptRecord);
     }
   };
   route.send = function (actionName) {
-    assert.equal(actionName, "openModal");
+    equal(actionName, "openModal");
   };
 
   // Download false
   route.actions.logCellClicked.call(route, testID, false).then(function (virtualAnchorInstance) {
-    assert.equal(virtualAnchorInstance.href, testLogURL);
-    assert.notOk(virtualAnchorInstance.download);
+    equal(virtualAnchorInstance.href, testLogURL);
+    notOk(virtualAnchorInstance.download);
   });
 
   // Download true
   route.actions.logCellClicked.call(route, testID, true).then(function (virtualAnchorInstance) {
-    assert.equal(virtualAnchorInstance.href, testLogURL);
-    assert.equal(virtualAnchorInstance.download, testID);
+    equal(virtualAnchorInstance.href, testLogURL);
+    equal(virtualAnchorInstance.download, testID);
   });
 
   // No log

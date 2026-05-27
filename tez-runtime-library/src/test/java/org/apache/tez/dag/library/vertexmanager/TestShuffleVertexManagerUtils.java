@@ -18,7 +18,6 @@
  */
 package org.apache.tez.dag.library.vertexmanager;
 
-
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyList;
@@ -62,6 +61,7 @@ import org.apache.tez.runtime.library.shuffle.impl.ShuffleUserPayloads.VertexMan
 
 import com.google.protobuf.ByteString;
 
+import org.junit.jupiter.api.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.roaringbitmap.RoaringBitmap;

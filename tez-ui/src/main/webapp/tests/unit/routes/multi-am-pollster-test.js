@@ -27,9 +27,9 @@ moduleFor('route:multi-am-pollster', 'Unit | Route | multi am pollster', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.canPoll);
-  assert.ok(route.actions.setPollingRecords);
+  ok(route);
+  ok(route.canPoll);
+  ok(route.actions.setPollingRecords);
 });
 
 test('canPoll test', function(assert) {
@@ -44,7 +44,7 @@ test('canPoll test', function(assert) {
         loadedValue: {}
       });
 
-  assert.notOk(route.get("canPoll"));
+  notOk(route.get("canPoll"));
 
   record.setProperties({
     app: Ember.Object.create({
@@ -52,25 +52,25 @@ test('canPoll test', function(assert) {
     }),
     dag: undefined
   });
-  assert.ok(route.get("canPoll"), true, "Test 1");
+  ok(route.get("canPoll"), true, "Test 1");
 
   record.set("app.isComplete", true);
-  assert.notOk(route.get("canPoll"), "Test 2");
+  notOk(route.get("canPoll"), "Test 2");
 
   record.set("app.isComplete", undefined);
-  assert.notOk(route.get("canPoll"), "Test 3");
+  notOk(route.get("canPoll"), "Test 3");
 
   record.set("dag", Ember.Object.create({
     isComplete: false
   }));
-  assert.ok(route.get("canPoll"), "Test 4");
+  ok(route.get("canPoll"), "Test 4");
 
   record.set("dag.isComplete", true);
-  assert.notOk(route.get("canPoll"), "Test 5");
+  notOk(route.get("canPoll"), "Test 5");
 
   record.set("dag", undefined);
-  assert.notOk(route.get("canPoll"), "Test 6");
+  notOk(route.get("canPoll"), "Test 6");
 
   record.set("app.isComplete", false);
-  assert.ok(route.get("canPoll"), "Test 7");
+  ok(route.get("canPoll"), "Test 7");
 });

@@ -30,10 +30,10 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.equal(controller.get("searchText"), "tez");
-  assert.equal(controller.get("breadcrumbs.length"), 1);
-  assert.equal(controller.get("columns.length"), 2);
+  ok(controller);
+  equal(controller.get("searchText"), "tez");
+  equal(controller.get("breadcrumbs.length"), 1);
+  equal(controller.get("columns.length"), 2);
 });
 
 test('Basic creation test', function(assert) {
@@ -49,7 +49,7 @@ test('Basic creation test', function(assert) {
 
   let configs = controller.get("configs");
 
-  assert.equal(configs.length, 1);
-  assert.equal(configs[0].configName, "x");
-  assert.equal(configs[0].configValue, 1);
+  equal(configs.length, 1);
+  equal(configs[0].configName, "x");
+  equal(configs[0].configValue, 1);
 });

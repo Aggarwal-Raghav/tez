@@ -30,7 +30,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-table-progress-cell content=0.5}}`);
 
-  assert.equal(this.$().text().trim(), '50%');
+  equal(this.$().text().trim(), '50%');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -39,5 +39,5 @@ test('Basic creation test', function(assert) {
     {{/em-table-progress-cell}}
   `);
 
-  assert.equal(this.$().text().trim(), '50%');
+  equal(this.$().text().trim(), '50%');
 });

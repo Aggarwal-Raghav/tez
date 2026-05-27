@@ -26,5 +26,5 @@ moduleForComponent('em-table-search-ui', 'Integration | Component | em table sea
 test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table-search-ui}}`);
 
-  assert.equal(this.$().text().trim(), 'Search');
+  equal(this.$().text().trim(), 'Search');
 });

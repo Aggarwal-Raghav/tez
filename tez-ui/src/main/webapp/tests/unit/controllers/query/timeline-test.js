@@ -30,12 +30,12 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
+  ok(controller);
 
-  assert.ok(controller.columns);
-  assert.equal(controller.columns.length, 2);
+  ok(controller.columns);
+  equal(controller.columns.length, 2);
 
-  assert.ok(controller.rows);
+  ok(controller.rows);
 });
 
 test('rows test', function(assert) {
@@ -52,12 +52,12 @@ test('rows test', function(assert) {
   }),
   rows = controller.get("rows");
 
-  assert.equal(rows[0].perfLogName, "x");
-  assert.equal(rows[0].perfLogValue, 1);
+  equal(rows[0].perfLogName, "x");
+  equal(rows[0].perfLogValue, 1);
 
-  assert.equal(rows[1].perfLogName, "y");
-  assert.equal(rows[1].perfLogValue, 2);
+  equal(rows[1].perfLogName, "y");
+  equal(rows[1].perfLogValue, 2);
 
-  assert.equal(rows[2].perfLogName, "z");
-  assert.equal(rows[2].perfLogValue, 3);
+  equal(rows[2].perfLogName, "z");
+  equal(rows[2].perfLogValue, 3);
 });

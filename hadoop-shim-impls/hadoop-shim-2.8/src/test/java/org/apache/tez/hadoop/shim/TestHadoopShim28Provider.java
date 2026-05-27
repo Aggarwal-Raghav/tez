@@ -18,25 +18,27 @@
  */
 package org.apache.tez.hadoop.shim;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.hadoop.conf.Configuration;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+
 
 public class TestHadoopShim28Provider {
 
   @Test
   public void testShimProvider() {
     HadoopShim28Provider provider = new HadoopShim28Provider();
-    Assert.assertNull(provider.createHadoopShim("foo", 2, 2));
-    Assert.assertNull(provider.createHadoopShim("foo", 2, 7));
-    Assert.assertNull(provider.createHadoopShim("foo", 2, 5));
-    Assert.assertNull(provider.createHadoopShim("foo", 2, 6));
-    Assert.assertNull(provider.createHadoopShim("foo", 3, 3));
-    Assert.assertNotNull(provider.createHadoopShim("foo", 2, 8));
-    Assert.assertNotNull(provider.createHadoopShim("foo", 2, 111));
+    assertNull(provider.createHadoopShim("foo", 2, 2));
+    assertNull(provider.createHadoopShim("foo", 2, 7));
+    assertNull(provider.createHadoopShim("foo", 2, 5));
+    assertNull(provider.createHadoopShim("foo", 2, 6));
+    assertNull(provider.createHadoopShim("foo", 3, 3));
+    assertNotNull(provider.createHadoopShim("foo", 2, 8));
+    assertNotNull(provider.createHadoopShim("foo", 2, 111));
 
-    Assert.assertEquals(HadoopShim28.class,
+    assertEquals(HadoopShim28.class,
         provider.createHadoopShim("foo", 2, 9).getClass());
   }
 
@@ -50,8 +52,8 @@ public class TestHadoopShim28Provider {
     conf.set(HadoopShimsLoader.TEZ_HADOOP_SHIM_HADOOP_VERSION_OVERRIDE, "2.8.0");
     HadoopShimsLoader loader = new HadoopShimsLoader(conf, true);
     HadoopShim shim = loader.getHadoopShim();
-    Assert.assertNotNull(shim);
-    Assert.assertEquals(HadoopShim28.class, shim.getClass());
+    assertNotNull(shim);
+    assertEquals(HadoopShim28.class, shim.getClass());
   }
 
   @Test
@@ -61,8 +63,8 @@ public class TestHadoopShim28Provider {
     conf.set(HadoopShimsLoader.TEZ_HADOOP_SHIM_HADOOP_VERSION_OVERRIDE, "2.2.0");
     HadoopShimsLoader loader = new HadoopShimsLoader(conf, true);
     HadoopShim shim = loader.getHadoopShim();
-    Assert.assertNotNull(shim);
-    Assert.assertEquals(DefaultHadoopShim.class, shim.getClass());
+    assertNotNull(shim);
+    assertEquals(DefaultHadoopShim.class, shim.getClass());
   }
 
   @Test
@@ -74,8 +76,8 @@ public class TestHadoopShim28Provider {
     conf.set(HadoopShimsLoader.TEZ_HADOOP_SHIM_HADOOP_VERSION_OVERRIDE, "2.1.0");
     HadoopShimsLoader loader = new HadoopShimsLoader(conf, true);
     HadoopShim shim = loader.getHadoopShim();
-    Assert.assertNotNull(shim);
-    Assert.assertEquals(DefaultHadoopShim.class, shim.getClass());
+    assertNotNull(shim);
+    assertEquals(DefaultHadoopShim.class, shim.getClass());
   }
 
 }

@@ -18,9 +18,11 @@
  */
 package org.apache.tez.runtime.common.resources;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.tez.dag.api.InputDescriptor;
@@ -41,7 +43,7 @@ import org.apache.tez.runtime.library.resources.WeightedScalingMemoryDistributor
 
 import com.google.common.base.Joiner;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor {
 
@@ -54,7 +56,8 @@ public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor 
     conf.setDouble(TezConfiguration.TEZ_TASK_SCALE_MEMORY_ADDITIONAL_RESERVATION_FRACTION_PER_IO, 0.0d);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSimpleWeightedScaling() throws TezException {
     Configuration conf = new Configuration(this.conf);
     conf.setStrings(TezConfiguration.TEZ_TASK_SCALE_MEMORY_WEIGHTED_RATIOS,
@@ -101,7 +104,8 @@ public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor 
     assertEquals(2000, e4Callback.assigned);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testAdditionalReserveFractionWeightedScaling() throws TezException {
     Configuration conf = new Configuration(this.conf);
     conf.setStrings(TezConfiguration.TEZ_TASK_SCALE_MEMORY_WEIGHTED_RATIOS,
@@ -148,7 +152,8 @@ public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor 
     assertEquals(1500, e4Callback.assigned);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testWeightedScalingNonConcurrent() throws TezException {
     Configuration conf = new Configuration(this.conf);
     conf.setBoolean(TezConfiguration.TEZ_TASK_SCALE_MEMORY_INPUT_OUTPUT_CONCURRENT, false);
@@ -205,7 +210,8 @@ public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor 
     assertEquals(1000, e5Callback.assigned);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testAdditionalReserveFractionWeightedScalingNonConcurrent() throws TezException {
     Configuration conf = new Configuration(this.conf);
     conf.setBoolean(TezConfiguration.TEZ_TASK_SCALE_MEMORY_INPUT_OUTPUT_CONCURRENT, false);
@@ -254,7 +260,8 @@ public class TestWeightedScalingMemoryDistributor extends TestMemoryDistributor 
     assertEquals(4500, e4Callback.assigned);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testWeightedScalingNonConcurrentInputsDisabled() throws TezException {
     Configuration conf = new Configuration(this.conf);
     conf.setBoolean(TezConfiguration.TEZ_TASK_SCALE_MEMORY_INPUT_OUTPUT_CONCURRENT, false);

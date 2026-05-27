@@ -26,5 +26,5 @@ moduleForModel('attempt-am', 'Unit | Model | attempt am', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
   // let store = this.store();
-  assert.ok(!!model);
+  ok(!!model);
 });

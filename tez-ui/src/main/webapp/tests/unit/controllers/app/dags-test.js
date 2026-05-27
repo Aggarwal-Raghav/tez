@@ -33,8 +33,8 @@ test('Basic creation test', function(assert) {
     getCounterColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.ok(controller.getCounterColumns);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  ok(controller.getCounterColumns);
 });

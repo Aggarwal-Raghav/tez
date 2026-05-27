@@ -31,10 +31,10 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.loaded);
+  ok(controller);
+  ok(controller.loaded);
 
-  assert.equal(controller.isLoading, false);
+  equal(controller.isLoading, false);
 });
 
 test('loaded test', function(assert) {
@@ -43,9 +43,9 @@ test('loaded test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.notOk(controller.get("loaded"));
+  notOk(controller.get("loaded"));
   controller.set("model", true);
-  assert.ok(controller.get("loaded"));
+  ok(controller.get("loaded"));
   controller.set("isLoading", true);
-  assert.notOk(controller.get("loaded"));
+  notOk(controller.get("loaded"));
 });

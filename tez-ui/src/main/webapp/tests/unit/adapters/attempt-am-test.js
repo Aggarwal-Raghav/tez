@@ -25,5 +25,5 @@ moduleFor('adapter:attempt-am', 'Unit | Adapter | attempt am', {
 
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
-  assert.ok(adapter);
+  ok(adapter);
 });

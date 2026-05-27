@@ -26,22 +26,22 @@ moduleFor('serializer:vertex', 'Unit | Serializer | vertex', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.maps);
-  assert.ok(serializer.maps.processorClassName);
+  ok(serializer);
+  ok(serializer.maps);
+  ok(serializer.maps.processorClassName);
 });
 
 test('processorClassName test', function(assert) {
   let serializer = this.subject(),
       processorClassName = serializer.maps.processorClassName;
 
-  assert.equal(processorClassName({}), "");
-  assert.equal(processorClassName({
+  equal(processorClassName({}), "");
+  equal(processorClassName({
     otherinfo: {
       processorClassName: "foo"
     }
   }), "foo");
-  assert.equal(processorClassName({
+  equal(processorClassName({
     otherinfo: {
       processorClassName: "a.b.foo"
     }

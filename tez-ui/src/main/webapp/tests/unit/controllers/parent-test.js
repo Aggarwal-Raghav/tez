@@ -30,7 +30,7 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.polling);
-  assert.ok(controller.actions.autoRefreshChanged);
+  ok(controller);
+  ok(controller.polling);
+  ok(controller.actions.autoRefreshChanged);
 });

@@ -32,7 +32,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-process-name process=process}}`);
 
-  assert.equal(this.$().text().trim(), testName);
+  equal(this.$().text().trim(), testName);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -41,5 +41,5 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-process-name}}
   `);
 
-  assert.equal(this.$().text().trim(), testName);
+  equal(this.$().text().trim(), testName);
 });

@@ -28,14 +28,14 @@ moduleFor('route:server-side-ops', 'Unit | Route | server side ops', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.load);
-  assert.ok(route.loadNewPage);
+  ok(route);
+  ok(route.load);
+  ok(route.loadNewPage);
 
-  assert.ok(route.actions.loadPage);
-  assert.ok(route.actions.reload);
+  ok(route.actions.loadPage);
+  ok(route.actions.reload);
 
-  assert.ok(route.actions.willTransition);
+  ok(route.actions.willTransition);
 });
 
 test('load - query/filter test', function(assert) {
@@ -62,24 +62,24 @@ test('load - query/filter test', function(assert) {
         controller: Ember.Object.create(),
         loader: {
           query: function (type, query, options) {
-            assert.equal(type, testEntityType);
-            assert.equal(query.limit, 6);
-            assert.equal(options.reload, true);
+            equal(type, testEntityType);
+            equal(query.limit, 6);
+            equal(options.reload, true);
             return Ember.RSVP.resolve(resultRecords);
           }
         }
       });
 
-  assert.expect(3 * 2 + 2 + 3 + 3);
+  expect(3 * 2 + 2 + 3 + 3);
 
-  assert.notOk(route.get("controller.moreAvailable"));
-  assert.equal(route.get("fromId"), null);
+  notOk(route.get("controller.moreAvailable"));
+  equal(route.get("fromId"), null);
 
   return route.load(null, query).then(function (records) {
-    assert.equal(records.get("0.entityID"), testEntityID1);
+    equal(records.get("0.entityID"), testEntityID1);
 
-    assert.equal(route.get("controller.moreAvailable"), true, "moreAvailable was not set");
-    assert.equal(route.get("fromId"), testFromID);
+    equal(route.get("controller.moreAvailable"), true, "moreAvailable was not set");
+    equal(route.get("fromId"), testFromID);
   }).then(function () {
     resultRecords = Ember.A([
       Ember.Object.create({
@@ -88,10 +88,10 @@ test('load - query/filter test', function(assert) {
     ]);
     return route.load(null, query);
   }).then(function (records) {
-    assert.equal(records.get("0.entityID"), testEntityID2);
+    equal(records.get("0.entityID"), testEntityID2);
 
-    assert.equal(route.get("controller.moreAvailable"), false);
-    assert.equal(route.get("fromId"), null);
+    equal(route.get("controller.moreAvailable"), false);
+    equal(route.get("fromId"), null);
   });
 });
 
@@ -103,8 +103,8 @@ test('load - id fetch test', function(assert) {
         controller: Ember.Object.create(),
         loader: {
           queryRecord: function (type, id, options) {
-            assert.equal(type, testEntityType);
-            assert.equal(options.reload, true);
+            equal(type, testEntityType);
+            equal(options.reload, true);
             if (id === querySuccess.id) {
               return Ember.RSVP.resolve(testRecord);
             } else {
@@ -120,15 +120,15 @@ test('load - id fetch test', function(assert) {
         id :'entity_456'
       };
 
-  assert.expect(2 * 2 + 3 + 1);
+  expect(2 * 2 + 3 + 1);
 
   route.load(null, querySuccess).then(function (records) {
-    assert.ok(Array.isArray(records));
-    assert.equal(records.length, 1);
-    assert.equal(records[0], testRecord);
+    ok(Array.isArray(records));
+    equal(records.length, 1);
+    equal(records[0], testRecord);
   });
   route.load(null, queryFailure).then(function (data) {
-    assert.equal(data.length,0);
+    equal(data.length,0);
   });
 });
 
@@ -144,17 +144,17 @@ test('loadNewPage test', function(assert) {
         fromId: fromId,
         loadedValue: {
           pushObjects: function (objs) {
-            assert.equal(data.content, objs);
+            equal(data.content, objs);
           }
         },
         load: function (value, query) {
-          assert.equal(query.val, currentQuery.val);
-          assert.equal(query.fromId, fromId);
+          equal(query.val, currentQuery.val);
+          equal(query.fromId, fromId);
           return Ember.RSVP.resolve(data);
         }
       });
 
-  assert.expect(1 + 2);
+  expect(1 + 2);
 
   route.loadNewPage();
 });
@@ -168,9 +168,9 @@ test('actions.willTransition test', function(assert) {
         controller: controller,
       });
 
-  assert.expect(1 + 1);
+  expect(1 + 1);
 
-  assert.equal(controller.get("pageNum"), testPageNum);
+  equal(controller.get("pageNum"), testPageNum);
   route.send("willTransition");
-  assert.equal(controller.get("pageNum"), 1); // PageNum must be reset
+  equal(controller.get("pageNum"), 1); // PageNum must be reset
 });

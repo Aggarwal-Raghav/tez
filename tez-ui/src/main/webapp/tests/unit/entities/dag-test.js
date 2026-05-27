@@ -26,8 +26,8 @@ moduleFor('entitie:dag', 'Unit | Entity | dag', {
 
 test('Basic creation test', function(assert) {
   let entity = this.subject();
-  assert.ok(entity);
-  assert.ok(entity.queryRecord);
+  ok(entity);
+  ok(entity.queryRecord);
 });
 
 test('queryRecord-Hive:No description test', function(assert) {
@@ -41,15 +41,15 @@ test('queryRecord-Hive:No description test', function(assert) {
       }),
       store = {
         queryRecord: function (name) {
-          assert.equal(name, entityName);
+          equal(name, entityName);
           return Ember.RSVP.resolve(testDag);
         }
       },
       loader = Ember.Object.create({
         nameSpace: "ns",
         queryRecord: function (type, id/*, options, query, urlParams*/) {
-          assert.equal(type, "hive-query");
-          assert.equal(id, "testName");
+          equal(type, "hive-query");
+          equal(id, "testName");
           return Ember.RSVP.resolve(hiveQuery);
         }
       }),
@@ -58,12 +58,12 @@ test('queryRecord-Hive:No description test', function(assert) {
         store: store
       });
 
-  assert.expect(1 + 2 + 3);
+  expect(1 + 2 + 3);
 
   entity.queryRecord(loader).then(function (dag) {
-    assert.equal(testDag, dag);
-    assert.equal(testDag.get("callerContext"), "Hive");
-    assert.equal(testDag.get("callerDescription"), testQuery);
+    equal(testDag, dag);
+    equal(testDag.get("callerContext"), "Hive");
+    equal(testDag.get("callerDescription"), testQuery);
   });
 });
 
@@ -78,14 +78,14 @@ test('queryRecord-Not Hive:No description test', function(assert) {
       }),
       store = {
         queryRecord: function (name) {
-          assert.equal(name, entityName);
+          equal(name, entityName);
           return Ember.RSVP.resolve(testDag);
         }
       },
       loader = Ember.Object.create({
         nameSpace: "ns",
         queryRecord: function (/*type, id, options, query, urlParams*/) {
-          assert.ok(false);
+          ok(false);
           return Ember.RSVP.resolve(hiveQuery);
         }
       }),
@@ -94,12 +94,12 @@ test('queryRecord-Not Hive:No description test', function(assert) {
         store: store
       });
 
-  assert.expect(1 + 3);
+  expect(1 + 3);
 
   entity.queryRecord(loader).then(function (dag) {
-    assert.equal(testDag, dag);
-    assert.ok(!testDag.get("callerContext"));
-    assert.ok(!testDag.get("callerDescription"));
+    equal(testDag, dag);
+    ok(!testDag.get("callerContext"));
+    ok(!testDag.get("callerDescription"));
   });
 });
 
@@ -113,12 +113,12 @@ test('queryRecord-With description test', function(assert) {
       loader = Ember.Object.create({
         nameSpace: "ns",
         queryRecord: function (/*type, id, options, query, urlParams*/) {
-          assert.ok(false);
+          ok(false);
         }
       }),
       store = {
         queryRecord: function (name) {
-          assert.equal(name, entityName);
+          equal(name, entityName);
           return Ember.RSVP.resolve(testDag);
         }
       },
@@ -127,10 +127,10 @@ test('queryRecord-With description test', function(assert) {
         store: store
       });
 
-  assert.expect(1 + 2);
+  expect(1 + 2);
 
   entity.queryRecord(loader).then(function (dag) {
-    assert.equal(testDag, dag);
-    assert.equal(testDag.get("callerDescription"), testQuery);
+    equal(testDag, dag);
+    equal(testDag.get("callerDescription"), testQuery);
   });
 });

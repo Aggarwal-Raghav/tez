@@ -26,9 +26,9 @@ moduleFor('serializer:ahs-app', 'Unit | Serializer | ahs app', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.primaryKey);
-  assert.ok(serializer.extractArrayPayload);
+  ok(serializer);
+  ok(serializer.primaryKey);
+  ok(serializer.extractArrayPayload);
 
-  assert.ok(serializer.maps);
+  ok(serializer.maps);
 });

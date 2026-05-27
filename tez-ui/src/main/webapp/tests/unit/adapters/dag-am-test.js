@@ -26,6 +26,6 @@ moduleFor('adapter:dag-am', 'Unit | Adapter | dag am', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.ok(adapter.buildURL);
+  ok(adapter);
+  ok(adapter.buildURL);
 });

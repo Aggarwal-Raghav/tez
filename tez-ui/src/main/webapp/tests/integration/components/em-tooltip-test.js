@@ -27,7 +27,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-tooltip}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -36,21 +36,21 @@ test('Basic creation test', function(assert) {
     {{/em-tooltip}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('Title test', function(assert) {
   this.set("title", "TestTitle");
   this.render(hbs`{{em-tooltip title=title}}`);
 
-  assert.equal(this.$().text().trim(), 'TestTitle');
+  equal(this.$().text().trim(), 'TestTitle');
 });
 
 test('Description test', function(assert) {
   this.set("desc", "TestDesc");
   this.render(hbs`{{em-tooltip description=desc}}`);
 
-  assert.equal(this.$().text().trim(), 'TestDesc');
+  equal(this.$().text().trim(), 'TestDesc');
 });
 
 test('Properties test', function(assert) {
@@ -61,7 +61,7 @@ test('Properties test', function(assert) {
   }]);
   this.render(hbs`{{em-tooltip properties=properties}}`);
 
-  assert.equal(this.$("tr").length, 2);
+  equal(this.$("tr").length, 2);
 });
 
 test('Contents test', function(assert) {
@@ -75,6 +75,6 @@ test('Contents test', function(assert) {
 
   this.render(hbs`{{em-tooltip contents=contents}}`);
 
-  assert.equal(this.$(".bubble").length, 2);
-  assert.equal(this.$("tr").length, 2 + 3);
+  equal(this.$(".bubble").length, 2);
+  equal(this.$("tr").length, 2 + 3);
 });

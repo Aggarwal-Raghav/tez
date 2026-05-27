@@ -24,11 +24,11 @@ module('Unit | Utility | processor');
 test('Basic creation test', function(assert) {
   let processor = Processor.create();
 
-  assert.ok(processor);
+  ok(processor);
 
-  assert.ok(processor.timeWindow);
-  assert.ok(processor.createProcessColor);
-  assert.ok(processor.timeToPositionPercent);
+  ok(processor.timeWindow);
+  ok(processor.createProcessColor);
+  ok(processor.timeToPositionPercent);
 });
 
 test('timeWindow test', function(assert) {
@@ -37,14 +37,14 @@ test('timeWindow test', function(assert) {
     endTime: 80
   });
 
-  assert.equal(processor.get("timeWindow"), 30);
+  equal(processor.get("timeWindow"), 30);
 
   processor = Processor.create({
     startTime: 80,
     endTime: 50
   });
 
-  assert.equal(processor.get("timeWindow"), 0);
+  equal(processor.get("timeWindow"), 0);
 });
 
 test('timeWindow test', function(assert) {
@@ -53,9 +53,9 @@ test('timeWindow test', function(assert) {
   }),
   color = processor.createProcessColor(3);
 
-  assert.equal(color.h, 108);
-  assert.equal(color.s, 70);
-  assert.equal(color.l, 40);
+  equal(color.h, 108);
+  equal(color.s, 70);
+  equal(color.l, 40);
 });
 
 test('timeToPositionPercent test', function(assert) {
@@ -64,5 +64,5 @@ test('timeToPositionPercent test', function(assert) {
     endTime: 10
   });
 
-  assert.equal(processor.timeToPositionPercent(5), 50);
+  equal(processor.timeToPositionPercent(5), 50);
 });

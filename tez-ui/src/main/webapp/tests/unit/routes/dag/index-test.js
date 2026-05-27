@@ -27,26 +27,26 @@ moduleFor('route:dag/index', 'Unit | Route | dag/index', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
-  assert.ok(route.getCallerInfo);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
+  ok(route.getCallerInfo);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'dag');
+      equal(type, 'dag');
       return Ember.Object.create({
         entityID: 'dag_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 
@@ -68,18 +68,18 @@ test('getCallerInfo test', function(assert) {
 
   // callerID computed - No callerType
   callerInfo = route.getCallerInfo(dag);
-  assert.equal(callerInfo.id, "hive_query_id");
-  assert.equal(callerInfo.type, "HIVE_QUERY_ID");
+  equal(callerInfo.id, "hive_query_id");
+  equal(callerInfo.type, "HIVE_QUERY_ID");
 
   // callerID computed - No callerID
   dag.set("callerType", testType);
   callerInfo = route.getCallerInfo(dag);
-  assert.equal(callerInfo.id, "hive_query_id");
-  assert.equal(callerInfo.type, "HIVE_QUERY_ID");
+  equal(callerInfo.id, "hive_query_id");
+  equal(callerInfo.type, "HIVE_QUERY_ID");
 
   // callerID & callerType available
   dag.set("callerID", testID);
   callerInfo = route.getCallerInfo(dag);
-  assert.equal(callerInfo.id, testID);
-  assert.equal(callerInfo.type, testType);
+  equal(callerInfo.id, testID);
+  equal(callerInfo.type, testType);
 });

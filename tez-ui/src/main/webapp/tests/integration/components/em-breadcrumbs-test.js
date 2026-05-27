@@ -32,7 +32,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-breadcrumbs}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -41,7 +41,7 @@ test('Basic creation test', function(assert) {
     {{/em-breadcrumbs}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('Test with one link-to item', function(assert) {
@@ -56,10 +56,10 @@ test('Test with one link-to item', function(assert) {
 
   elements = this.$("li");
 
-  assert.equal(elements.length, 1);
-  assert.equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
-  assert.equal(elements[0].title, testItems[0].text);
-  assert.equal(elements[0].style.maxWidth, "100%");
+  equal(elements.length, 1);
+  equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
+  equal(elements[0].title, testItems[0].text);
+  equal(elements[0].style.maxWidth, "100%");
 });
 
 test('Test with two link-to item', function(assert) {
@@ -77,15 +77,15 @@ test('Test with two link-to item', function(assert) {
 
   elements = this.$("li");
 
-  assert.equal(elements.length, 2);
+  equal(elements.length, 2);
 
-  assert.equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
-  assert.equal(elements[0].title, testItems[0].text);
-  assert.equal(elements[0].style.maxWidth, "50%");
+  equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
+  equal(elements[0].title, testItems[0].text);
+  equal(elements[0].style.maxWidth, "50%");
 
-  assert.equal(Ember.$(elements[1]).text().trim(), testItems[1].text);
-  assert.equal(elements[1].title, testItems[1].text);
-  assert.equal(elements[1].style.maxWidth, "50%");
+  equal(Ember.$(elements[1]).text().trim(), testItems[1].text);
+  equal(elements[1].title, testItems[1].text);
+  equal(elements[1].style.maxWidth, "50%");
 });
 
 test('Test with one anchor tag item', function(assert) {
@@ -100,8 +100,8 @@ test('Test with one anchor tag item', function(assert) {
 
   elements = this.$("li");
 
-  assert.equal(elements.length, 1);
-  assert.equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
-  assert.equal(elements[0].title, testItems[0].text);
-  assert.equal(elements[0].style.maxWidth, "100%");
+  equal(elements.length, 1);
+  equal(Ember.$(elements[0]).text().trim(), testItems[0].text);
+  equal(elements[0].title, testItems[0].text);
+  equal(elements[0].style.maxWidth, "100%");
 });

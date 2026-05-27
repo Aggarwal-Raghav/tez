@@ -36,5 +36,5 @@ test('it works', function(assert) {
   LoaderInitializer.initialize(application);
 
   // you would normally confirm the results of the initializer here
-  assert.ok(true);
+  ok(true);
 });

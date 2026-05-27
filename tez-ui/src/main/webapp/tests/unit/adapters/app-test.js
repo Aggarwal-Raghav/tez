@@ -26,5 +26,5 @@ moduleFor('adapter:app', 'Unit | Adapter | app', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
+  ok(adapter);
 });

@@ -26,5 +26,5 @@ moduleForComponent('em-table-column', 'Integration | Component | em table column
 test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table-column}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });

@@ -35,10 +35,10 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.equal(controller.columns.length, 7);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  equal(controller.columns.length, 7);
 });
 
 test('Log column test', function(assert) {
@@ -55,15 +55,15 @@ test('Log column test', function(assert) {
   var columnDef = controller.get("columns").findBy("id", "log"),
       getLogCellContent = columnDef.getCellContent;
 
-  assert.equal(getLogCellContent(Ember.Object.create()), undefined);
+  equal(getLogCellContent(Ember.Object.create()), undefined);
 
-  assert.equal(getLogCellContent(Ember.Object.create({
+  equal(getLogCellContent(Ember.Object.create({
     successfulAttemptID: testAttemptID
   })), testAttemptID);
 
-  assert.equal(getLogCellContent(Ember.Object.create({
+  equal(getLogCellContent(Ember.Object.create({
     attemptIDs: ["1", "2", testAttemptID]
   })), testAttemptID);
 
-  assert.equal(columnDef.get("enableSearch"), false);
+  equal(columnDef.get("enableSearch"), false);
 });

@@ -26,5 +26,5 @@ moduleFor('adapter:vertex', 'Unit | Adapter | vertex', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
+  ok(adapter);
 });

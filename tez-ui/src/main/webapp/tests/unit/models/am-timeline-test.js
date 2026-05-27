@@ -27,8 +27,8 @@ test('Basic creation test', function(assert) {
   let model = this.subject();
   // let store = this.store();
 
-  assert.ok(!!model);
-  assert.ok(!!model.status);
-  assert.ok(!!model.progress);
-  assert.ok(!!model.counterGroupsHash);
+  ok(!!model);
+  ok(!!model.status);
+  ok(!!model.progress);
+  ok(!!model.counterGroupsHash);
 });

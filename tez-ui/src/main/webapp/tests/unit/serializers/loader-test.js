@@ -28,18 +28,18 @@ moduleFor('serializer:loader', 'Unit | Serializer | loader', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer._isLoader);
+  ok(serializer);
+  ok(serializer._isLoader);
 
-  assert.ok(serializer.extractId);
-  assert.ok(serializer.extractAttributes);
-  assert.ok(serializer.extractRelationships);
+  ok(serializer.extractId);
+  ok(serializer.extractAttributes);
+  ok(serializer.extractRelationships);
 
-  assert.ok(serializer.extractSinglePayload);
-  assert.ok(serializer.extractArrayPayload);
+  ok(serializer.extractSinglePayload);
+  ok(serializer.extractArrayPayload);
 
-  assert.ok(serializer.normalizeSingleResponse);
-  assert.ok(serializer.normalizeArrayResponse);
+  ok(serializer.normalizeSingleResponse);
+  ok(serializer.normalizeArrayResponse);
 });
 
 test('extractId test', function(assert) {
@@ -53,11 +53,11 @@ test('extractId test', function(assert) {
       }
     };
 
-  assert.equal(serializer.extractId(modelClass, resourceHash), "ns:1", "With name-space");
-  assert.equal(serializer.extractId(modelClass, { data: {id: 2} }), 2, "Without name-space");
+  equal(serializer.extractId(modelClass, resourceHash), "ns:1", "With name-space");
+  equal(serializer.extractId(modelClass, { data: {id: 2} }), 2, "Without name-space");
 
   serializer.primaryKey = "entityID";
-  assert.equal(serializer.extractId(modelClass, resourceHash), "ns:3", "Different primary key");
+  equal(serializer.extractId(modelClass, resourceHash), "ns:3", "Different primary key");
 });
 
 test('extractAttributes test', function(assert) {
@@ -81,7 +81,7 @@ test('extractAttributes test', function(assert) {
       }
     };
 
-  assert.deepEqual(serializer.extractAttributes(modelClass, resourceHash), {
+  deepEqual(serializer.extractAttributes(modelClass, resourceHash), {
     id: 1,
     appID: 2
   });
@@ -92,7 +92,7 @@ test('extractAttributes test', function(assert) {
     status: "info.status"
   };
 
-  assert.deepEqual(serializer.extractAttributes(modelClass, resourceHash), {
+  deepEqual(serializer.extractAttributes(modelClass, resourceHash), {
     id: 1,
     appID: 3,
     status: "SUCCESS"
@@ -122,7 +122,7 @@ test('extractRelationships test', function(assert) {
       }
     };
 
-  assert.deepEqual(serializer.extractRelationships(modelClass, resourceHash), {
+  deepEqual(serializer.extractRelationships(modelClass, resourceHash), {
     app: {
       data: {
         id: null,
@@ -158,9 +158,9 @@ test('normalizeSingleResponse test', function(assert) {
 
   var response = serializer.normalizeSingleResponse({}, modelClass, resourceHash, null, null);
 
-  assert.equal(response.data.id, "ns:1");
-  assert.equal(response.data.attributes.id, 1);
-  assert.equal(response.data.attributes.appID, 2);
+  equal(response.data.id, "ns:1");
+  equal(response.data.attributes.id, 1);
+  equal(response.data.attributes.appID, 2);
 });
 
 test('normalizeArrayResponse test', function(assert) {
@@ -187,7 +187,7 @@ test('normalizeArrayResponse test', function(assert) {
 
   var response = serializer.normalizeArrayResponse({}, modelClass, resourceHash, null, null);
 
-  assert.equal(response.data.length, 2);
-  assert.deepEqual(response.data[0].id, "ns:1");
-  assert.deepEqual(response.data[1].id, "ns:2");
+  equal(response.data.length, 2);
+  deepEqual(response.data[0].id, "ns:1");
+  deepEqual(response.data[1].id, "ns:2");
 });

@@ -23,7 +23,7 @@ module('Unit | Utility | virtual anchor');
 
 test('Basic creation test', function(assert) {
   let anchor = virtualAnchor();
-  assert.ok(anchor);
+  ok(anchor);
 });
 
 test('Param set test', function(assert) {
@@ -32,9 +32,9 @@ test('Param set test', function(assert) {
 
       anchor = virtualAnchor(testURL, downloadFileName);
 
-  assert.ok(anchor);
-  assert.equal(anchor.href, testURL);
-  assert.equal(anchor.download, downloadFileName);
-  assert.equal(anchor.target, "_blank");
+  ok(anchor);
+  equal(anchor.href, testURL);
+  equal(anchor.download, downloadFileName);
+  equal(anchor.target, "_blank");
 });
 

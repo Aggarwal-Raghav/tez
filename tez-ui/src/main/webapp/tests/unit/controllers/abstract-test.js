@@ -31,28 +31,28 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller.name);
-  assert.ok(controller.crumbObserver);
-  assert.ok(controller.setBreadcrumbs);
-  assert.ok(controller.loaded);
+  ok(controller.name);
+  ok(controller.crumbObserver);
+  ok(controller.setBreadcrumbs);
+  ok(controller.loaded);
 });
 
 test('init test', function(assert) {
-  assert.expect(1);
+  expect(1);
 
   this.subject({
     send: function (name) {
-      assert.equal(name, "setBreadcrumbs");
+      equal(name, "setBreadcrumbs");
     }
   });
 });
 
 test('crumbObserver test', function(assert) {
-  assert.expect(1 + 1); // Init and fired
+  expect(1 + 1); // Init and fired
 
   let controller = this.subject({
     send: function (name) {
-      assert.equal(name, "setBreadcrumbs");
+      equal(name, "setBreadcrumbs");
     }
   });
 
@@ -63,14 +63,14 @@ test('setBreadcrumbs test', function(assert) {
   let testName = "Abc", // Because all controllers are pointing to the leaf rout
       testBreadCrumbs = [];
 
-  assert.expect(3);
+  expect(3);
   this.subject({
     name: testName,
     breadcrumbs: testBreadCrumbs,
     send: function (name, crumbs) {
-      assert.equal(name, "setBreadcrumbs");
-      assert.ok(crumbs.hasOwnProperty(testName));
-      assert.equal(crumbs[testName], testBreadCrumbs);
+      equal(name, "setBreadcrumbs");
+      ok(crumbs.hasOwnProperty(testName));
+      equal(crumbs[testName], testBreadCrumbs);
     }
   });
 });

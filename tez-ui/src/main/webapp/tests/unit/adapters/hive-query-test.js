@@ -25,5 +25,5 @@ moduleFor('adapter:hive-query', 'Unit | Adapter | hive query', {
 
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
-  assert.ok(adapter);
+  ok(adapter);
 });

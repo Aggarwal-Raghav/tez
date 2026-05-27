@@ -28,18 +28,18 @@ moduleFor('adapter:abstract', 'Unit | Adapter | abstract', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.equal(adapter.serverName, null);
+  ok(adapter);
+  equal(adapter.serverName, null);
 
-  assert.ok(adapter.host);
-  assert.ok(adapter.namespace);
-  assert.ok(adapter.pathTypeHash);
+  ok(adapter.host);
+  ok(adapter.namespace);
+  ok(adapter.pathTypeHash);
 
-  assert.ok(adapter.ajaxOptions);
-  assert.ok(adapter.pathForType);
+  ok(adapter.ajaxOptions);
+  ok(adapter.pathForType);
 
-  assert.ok(adapter.normalizeErrorResponse);
-  assert.ok(adapter._loaderAjax);
+  ok(adapter.normalizeErrorResponse);
+  ok(adapter._loaderAjax);
 });
 
 test('host, namespace & pathTypeHash test', function(assert) {
@@ -65,9 +65,9 @@ test('host, namespace & pathTypeHash test', function(assert) {
   adapter.env = testENV;
   adapter.set("serverName", testServerName);
 
-  assert.equal(adapter.get("host"), testHosts.sn);
-  assert.equal(adapter.get("namespace"), testENV.app.namespaces.webService.sn);
-  assert.equal(adapter.get("pathTypeHash"), testENV.app.paths.sn);
+  equal(adapter.get("host"), testHosts.sn);
+  equal(adapter.get("namespace"), testENV.app.namespaces.webService.sn);
+  equal(adapter.get("pathTypeHash"), testENV.app.paths.sn);
 });
 
 test('ajaxOptions test', function(assert) {
@@ -84,19 +84,19 @@ test('ajaxOptions test', function(assert) {
   // Without options
   adapter.serverName = testServer;
   result = adapter.ajaxOptions(testUrl, testMethod);
-  assert.ok(result);
-  assert.ok(result.crossDomain);
-  assert.ok(result.xhrFields.withCredentials);
-  assert.equal(result.targetServer, testServer);
+  ok(result);
+  ok(result.crossDomain);
+  ok(result.xhrFields.withCredentials);
+  equal(result.targetServer, testServer);
 
   // Without options
   adapter.serverName = testServer;
   result = adapter.ajaxOptions(testUrl, testMethod, testOptions);
-  assert.ok(result);
-  assert.ok(result.crossDomain);
-  assert.ok(result.xhrFields.withCredentials);
-  assert.equal(result.targetServer, testServer);
-  assert.equal(result.a, testOptions.a);
+  ok(result);
+  ok(result.crossDomain);
+  ok(result.xhrFields.withCredentials);
+  equal(result.targetServer, testServer);
+  equal(result.a, testOptions.a);
 });
 
 test('pathForType test', function(assert) {
@@ -105,11 +105,11 @@ test('pathForType test', function(assert) {
         typ: "type"
       };
 
-  assert.expect(2);
+  expect(2);
 
   adapter.pathTypeHash = testHash;
-  assert.equal(adapter.pathForType("typ"), testHash.typ);
-  assert.throws(function () {
+  equal(adapter.pathForType("typ"), testHash.typ);
+  throws(function () {
     adapter.pathForType("noType");
   });
 });
@@ -124,16 +124,16 @@ test('normalizeErrorResponse test', function(assert) {
       response;
 
   response = adapter.normalizeErrorResponse(status, testHeaders, strPayload);
-  assert.equal(response[0].title, undefined);
-  assert.equal(response[0].status, status);
-  assert.equal(response[0].detail, strPayload);
-  assert.equal(response[0].headers, testHeaders);
+  equal(response[0].title, undefined);
+  equal(response[0].status, status);
+  equal(response[0].detail, strPayload);
+  equal(response[0].headers, testHeaders);
 
   response = adapter.normalizeErrorResponse(status, testHeaders, objPayload);
-  assert.equal(response[0].title, testTitle);
-  assert.equal(response[0].status, status);
-  assert.deepEqual(response[0].detail, objPayload);
-  assert.equal(response[0].headers, testHeaders);
+  equal(response[0].title, testTitle);
+  equal(response[0].status, status);
+  deepEqual(response[0].detail, objPayload);
+  equal(response[0].headers, testHeaders);
 });
 
 test('normalizeErrorResponse html payload test', function(assert) {
@@ -144,22 +144,22 @@ test('normalizeErrorResponse html payload test', function(assert) {
       response;
 
   response = adapter.normalizeErrorResponse(status, testHeaders, htmlPayload);
-  assert.equal(response[0].detail, "StringPayload boldText");
+  equal(response[0].detail, "StringPayload boldText");
 });
 
 test('_loaderAjax resolve test', function(assert) {
   let result = {},
       adapter = this.subject({
         ajax: function () {
-          assert.ok(1);
+          ok(1);
           return Ember.RSVP.resolve(result);
         }
       });
 
-  assert.expect(1 + 1);
+  expect(1 + 1);
 
   adapter._loaderAjax().then(function (val) {
-    assert.equal(val.data, result);
+    equal(val.data, result);
   });
 });
 
@@ -175,7 +175,7 @@ test('_loaderAjax reject, without title test', function(assert) {
       adapter = this.subject({
         outOfReachMessage: "OutOfReach",
         ajax: function () {
-          assert.ok(1);
+          ok(1);
           return Ember.RSVP.reject({
             message: msg,
             errors:[errorInfo]
@@ -183,18 +183,18 @@ test('_loaderAjax reject, without title test', function(assert) {
         }
       });
 
-  assert.expect(1 + 7);
+  expect(1 + 7);
 
   adapter._loaderAjax(testUrl, testQuery, testNS).catch(function (val) {
-    assert.equal(val.message, `${msg} » ${errorInfo.status}: Error accessing ${testUrl}`);
-    assert.equal(val.details, errorInfo.detail);
-    assert.equal(val.requestInfo.adapterName, "abstract");
-    assert.equal(val.requestInfo.url, testUrl);
+    equal(val.message, `${msg} » ${errorInfo.status}: Error accessing ${testUrl}`);
+    equal(val.details, errorInfo.detail);
+    equal(val.requestInfo.adapterName, "abstract");
+    equal(val.requestInfo.url, testUrl);
 
-    assert.equal(val.requestInfo.queryParams, testQuery);
-    assert.equal(val.requestInfo.namespace, testNS);
+    equal(val.requestInfo.queryParams, testQuery);
+    equal(val.requestInfo.namespace, testNS);
 
-    assert.ok(val.requestInfo.hasOwnProperty("responseHeaders"));
+    ok(val.requestInfo.hasOwnProperty("responseHeaders"));
   });
 });
 
@@ -209,7 +209,7 @@ test('_loaderAjax reject, with title test', function(assert) {
       adapter = this.subject({
         outOfReachMessage: "OutOfReach",
         ajax: function () {
-          assert.ok(1);
+          ok(1);
           return Ember.RSVP.reject({
             message: msg,
             errors:[errorInfo]
@@ -217,15 +217,15 @@ test('_loaderAjax reject, with title test', function(assert) {
         }
       });
 
-  assert.expect(1 + 5);
+  expect(1 + 5);
 
   adapter._loaderAjax(testUrl).catch(function (val) {
-    assert.equal(val.message, `${msg} » ${errorInfo.status}: ${errorInfo.title}`);
-    assert.equal(val.details, errorInfo.detail);
-    assert.equal(val.requestInfo.adapterName, "abstract");
-    assert.equal(val.requestInfo.url, testUrl);
+    equal(val.message, `${msg} » ${errorInfo.status}: ${errorInfo.title}`);
+    equal(val.details, errorInfo.detail);
+    equal(val.requestInfo.adapterName, "abstract");
+    equal(val.requestInfo.url, testUrl);
 
-    assert.ok(val.requestInfo.hasOwnProperty("responseHeaders"));
+    ok(val.requestInfo.hasOwnProperty("responseHeaders"));
   });
 });
 
@@ -240,7 +240,7 @@ test('_loaderAjax reject, status 0 test', function(assert) {
       adapter = this.subject({
         outOfReachMessage: "OutOfReach",
         ajax: function () {
-          assert.ok(1);
+          ok(1);
           return Ember.RSVP.reject({
             message: msg,
             errors:[errorInfo]
@@ -248,14 +248,14 @@ test('_loaderAjax reject, status 0 test', function(assert) {
         }
       });
 
-  assert.expect(1 + 5);
+  expect(1 + 5);
 
   adapter._loaderAjax(testUrl).catch(function (val) {
-    assert.equal(val.message, `${msg} » ${adapter.outOfReachMessage}`);
-    assert.equal(val.details, errorInfo.detail);
-    assert.equal(val.requestInfo.adapterName, "abstract");
-    assert.equal(val.requestInfo.url, testUrl);
+    equal(val.message, `${msg} » ${adapter.outOfReachMessage}`);
+    equal(val.details, errorInfo.detail);
+    equal(val.requestInfo.adapterName, "abstract");
+    equal(val.requestInfo.url, testUrl);
 
-    assert.ok(val.requestInfo.hasOwnProperty("responseHeaders"));
+    ok(val.requestInfo.hasOwnProperty("responseHeaders"));
   });
 });

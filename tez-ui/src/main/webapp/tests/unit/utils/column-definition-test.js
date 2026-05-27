@@ -23,10 +23,10 @@ import { module, test } from 'qunit';
 module('Unit | Utility | column definition');
 
 test('Class creation test', function(assert) {
-  assert.ok(ColumnDefinition);
+  ok(ColumnDefinition);
 
-  assert.ok(ColumnDefinition.make);
-  assert.ok(ColumnDefinition.makeFromModel);
+  ok(ColumnDefinition.make);
+  ok(ColumnDefinition.makeFromModel);
 });
 
 test('make - Instance creation test', function(assert) {
@@ -41,16 +41,16 @@ test('make - Instance creation test', function(assert) {
   }]);
 
   // Single
-  assert.ok(definition);
+  ok(definition);
 
   // Multiple
-  assert.ok(definitions);
-  assert.ok(Array.isArray(definitions));
-  assert.equal(definitions.length, 2);
+  ok(definitions);
+  ok(Array.isArray(definitions));
+  equal(definitions.length, 2);
 });
 
 test('make - Instance creation failure test', function(assert) {
-  assert.throws(function () {
+  throws(function () {
     ColumnDefinition.make({});
   });
 });
@@ -71,11 +71,11 @@ test('makeFromModel test', function(assert) {
     getCellContent: getCellContent
   });
 
-  assert.equal(columns.length, 3);
-  assert.equal(columns[0].id, "attr1");
-  assert.equal(columns[0].headerTitle, "Attr1");
-  assert.equal(columns[0].contentPath, "attr1");
-  assert.equal(columns[0].getCellContent, getCellContent);
+  equal(columns.length, 3);
+  equal(columns[0].id, "attr1");
+  equal(columns[0].headerTitle, "Attr1");
+  equal(columns[0].contentPath, "attr1");
+  equal(columns[0].getCellContent, getCellContent);
 });
 
 test('Instance test', function(assert) {
@@ -89,16 +89,16 @@ test('Instance test', function(assert) {
     }
   });
 
-  assert.ok(definition.getCellContent);
-  assert.ok(definition.getSearchValue);
-  assert.ok(definition.getSortValue);
+  ok(definition.getCellContent);
+  ok(definition.getSearchValue);
+  ok(definition.getSortValue);
 
-  assert.equal(definition.id, "testId");
-  assert.equal(definition.headerTitle, "Not Available!");
-  assert.equal(definition.minWidth, "150px");
-  assert.equal(definition.contentPath, "a.b");
+  equal(definition.id, "testId");
+  equal(definition.headerTitle, "Not Available!");
+  equal(definition.minWidth, "150px");
+  equal(definition.contentPath, "a.b");
 
-  assert.equal(definition.getCellContent(data), 42);
-  assert.equal(definition.getSearchValue(data), 42);
-  assert.equal(definition.getSortValue(data), 42);
+  equal(definition.getCellContent(data), 42);
+  equal(definition.getSearchValue(data), 42);
+  equal(definition.getSortValue(data), 42);
 });

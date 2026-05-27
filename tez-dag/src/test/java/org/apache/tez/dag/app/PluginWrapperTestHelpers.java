@@ -18,7 +18,7 @@
  */
 package org.apache.tez.dag.app;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.junit.jupiter.api.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -69,8 +70,7 @@ public final class PluginWrapperTestHelpers {
         if (answer.compareAsPrimitive) {
           assertEquals(answer.lastRetValue, result);
         } else {
-          assertSame("Expected: " + System.identityHashCode(answer.lastRetValue) + ", actual=" +
-                  System.identityHashCode(result), answer.lastRetValue, result);
+          assertSame(answer.lastRetValue, result, "Expected: " + System.identityHashCode(answer.lastRetValue) + ", actual=" + System.identityHashCode(result));
         }
       }
     }

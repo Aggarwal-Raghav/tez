@@ -25,7 +25,7 @@ moduleFor('route:app', 'Unit | Route | app', {
 
 test('it exists', function(assert) {
   let route = this.subject();
-  assert.ok(route);
+  ok(route);
 });
 
 test('Test model - Without app data', function(assert) {
@@ -33,8 +33,8 @@ test('Test model - Without app data', function(assert) {
       route = this.subject({
         loader: {
           queryRecord: function (type, id) {
-            assert.ok(type === 'AhsApp' || type === 'appRm');
-            assert.equal(id, testID);
+            ok(type === 'AhsApp' || type === 'appRm');
+            equal(id, testID);
             return {
               catch: function (callBack) {
                 return callBack();
@@ -45,12 +45,12 @@ test('Test model - Without app data', function(assert) {
       }),
       data;
 
-  assert.expect(2 + 2 + 1);
+  expect(2 + 2 + 1);
 
   data = route.model({
     "app_id": testID
   });
-  assert.equal(data.get("entityID"), testID);
+  equal(data.get("entityID"), testID);
 });
 
 test('Test model - With app data', function(assert) {
@@ -62,7 +62,7 @@ test('Test model - With app data', function(assert) {
         loader: {
           queryRecord: function (type, id) {
             if(id === "123"){
-              assert.equal(type, 'AhsApp');
+              equal(type, 'AhsApp');
               return {
                 catch: function () {
                   return testData1;
@@ -77,7 +77,7 @@ test('Test model - With app data', function(assert) {
                   }
                 };
               }
-              assert.equal(type, 'appRm');
+              equal(type, 'appRm');
               return {
                 catch: function () {
                   return testData2;
@@ -89,15 +89,15 @@ test('Test model - With app data', function(assert) {
       }),
       data;
 
-  assert.expect(2 + 2);
+  expect(2 + 2);
 
   data = route.model({
     "app_id": testID1
   });
-  assert.equal(data, testData1);
+  equal(data, testData1);
 
   data = route.model({
     "app_id": testID2
   });
-  assert.equal(data, testData2);
+  equal(data, testData2);
 });

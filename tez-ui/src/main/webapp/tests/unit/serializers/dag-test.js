@@ -26,38 +26,38 @@ moduleFor('serializer:dag', 'Unit | Serializer | dag', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
+  ok(serializer);
 
-  assert.ok(serializer.normalizeResourceHash);
+  ok(serializer.normalizeResourceHash);
 
-  assert.ok(serializer.maps.atsStatus);
-  assert.ok(serializer.maps.startTime);
-  assert.ok(serializer.maps.endTime);
-  assert.ok(serializer.maps.containerLogs);
-  assert.ok(serializer.maps.vertexIdNameMap);
+  ok(serializer.maps.atsStatus);
+  ok(serializer.maps.startTime);
+  ok(serializer.maps.endTime);
+  ok(serializer.maps.containerLogs);
+  ok(serializer.maps.vertexIdNameMap);
 
-  assert.equal(Object.keys(serializer.get("maps")).length, 13 + 7); //13 own & 9 inherited (2 overwritten)
+  equal(Object.keys(serializer.get("maps")).length, 13 + 7); //13 own & 9 inherited (2 overwritten)
 });
 
 test('atsStatus test', function(assert) {
   let serializer = this.subject(),
       mapper = serializer.maps.atsStatus;
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "SOME_EVENT"}]
   }), undefined);
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "DAG_STARTED"}]
   }), "RUNNING");
 
-  assert.equal(mapper({
+  equal(mapper({
     otherinfo: {status: "STATUS1"},
     primaryfilters: {status: ["STATUS2"]},
     events: [{eventtype: "DAG_STARTED"}]
   }), "STATUS1");
 
-  assert.equal(mapper({
+  equal(mapper({
     primaryfilters: {status: ["STATUS2"]},
     events: [{eventtype: "DAG_STARTED"}]
   }), "STATUS2");
@@ -68,15 +68,15 @@ test('startTime test', function(assert) {
       mapper = serializer.maps.startTime,
       testTimestamp = Date.now();
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "SOME_EVENT"}]
   }), undefined);
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "DAG_STARTED", timestamp: testTimestamp}]
   }), testTimestamp);
 
-  assert.equal(mapper({
+  equal(mapper({
     otherinfo: {startTime: testTimestamp},
     events: [{eventtype: "DAG_STARTED"}]
   }), testTimestamp);
@@ -87,15 +87,15 @@ test('endTime test', function(assert) {
       mapper = serializer.maps.endTime,
       testTimestamp = Date.now();
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "SOME_EVENT"}]
   }), undefined);
 
-  assert.equal(mapper({
+  equal(mapper({
     events: [{eventtype: "DAG_FINISHED", timestamp: testTimestamp}]
   }), testTimestamp);
 
-  assert.equal(mapper({
+  equal(mapper({
     otherinfo: {endTime: testTimestamp},
     events: [{eventtype: "DAG_FINISHED"}]
   }), testTimestamp);
@@ -105,11 +105,11 @@ test('containerLogs test', function(assert) {
   let serializer = this.subject(),
       mapper = serializer.maps.containerLogs;
 
-  assert.deepEqual(mapper({
+  deepEqual(mapper({
     otherinfo: {},
   }), [], "No logs");
 
-  assert.deepEqual(mapper({
+  deepEqual(mapper({
 	  otherinfo: {inProgressLogsURL_1: "http://foo", inProgressLogsURL_2: "https://bar"},
   }), [{text: "1", href: "http://foo"}, {text: "2", href: "https://bar"}], "2 logs");
 });
@@ -128,7 +128,7 @@ test('vertexIdNameMap test', function(assert) {
     }
   };
 
-  assert.deepEqual(mapper(nameIdMap), {
+  deepEqual(mapper(nameIdMap), {
     ID1: "name1",
     ID2: "name2",
     ID3: "name3",
@@ -158,9 +158,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.equal(data.callerData.callerType, callerInfo.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  equal(data.callerData.callerType, callerInfo.callerType);
 
   // dagInfo test
   data = serializer.normalizeResourceHash({
@@ -173,9 +173,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.notOk(data.callerData.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  notOk(data.callerData.callerType);
 
   // dagInfo.blob test
   data = serializer.normalizeResourceHash({
@@ -191,9 +191,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.notOk(data.callerData.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  notOk(data.callerData.callerType);
 
   // dagContext have presidence over dagInfo
   data = serializer.normalizeResourceHash({
@@ -207,7 +207,7 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.equal(data.callerData.callerType, callerInfo.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  equal(data.callerData.callerType, callerInfo.callerType);
 });

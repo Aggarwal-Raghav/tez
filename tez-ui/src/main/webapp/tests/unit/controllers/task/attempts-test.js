@@ -35,11 +35,11 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
 
-  assert.equal(controller.get("columns.length"), 10);
+  equal(controller.get("columns.length"), 10);
 });
 
 test('Log column test', function(assert) {
@@ -55,14 +55,14 @@ test('Log column test', function(assert) {
   logColumnDef = controller.get("columns").findBy('id', 'log'),
   content;
 
-  assert.notOk(logColumnDef.getCellContent(Ember.Object.create()));
+  notOk(logColumnDef.getCellContent(Ember.Object.create()));
 
   content = logColumnDef.getCellContent(Ember.Object.create({
     logURL: url
   }));
-  assert.equal(content[0].href, url);
-  assert.equal(content[0].text, "View");
-  assert.equal(content[1].href, url);
-  assert.equal(content[1].text, "Download");
-  assert.equal(content[1].download, true);
+  equal(content[0].href, url);
+  equal(content[0].text, "View");
+  equal(content[1].href, url);
+  equal(content[1].text, "Download");
+  equal(content[1].download, true);
 });

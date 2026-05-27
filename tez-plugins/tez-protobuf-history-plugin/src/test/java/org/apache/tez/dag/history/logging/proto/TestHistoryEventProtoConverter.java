@@ -18,10 +18,13 @@
  */
 package org.apache.tez.dag.history.logging.proto;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
@@ -84,9 +87,7 @@ import org.apache.tez.runtime.api.TaskFailureType;
 
 import com.google.common.collect.Lists;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestHistoryEventProtoConverter {
   private ApplicationAttemptId applicationAttemptId;
@@ -103,7 +104,7 @@ public class TestHistoryEventProtoConverter {
   private String containerLogs = "containerLogs";
   private HistoryEventProtoConverter converter = new HistoryEventProtoConverter();
 
-  @Before
+  @BeforeEach
   public void setup() {
     applicationId = ApplicationId.newInstance(9999l, 1);
     applicationAttemptId = ApplicationAttemptId.newInstance(applicationId, 1);
@@ -122,7 +123,8 @@ public class TestHistoryEventProtoConverter {
     nodeId = NodeId.newInstance("node", 13435);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testHandlerExists() {
     for (HistoryEventType eventType : HistoryEventType.values()) {
       HistoryEvent event = null;
@@ -211,7 +213,7 @@ public class TestHistoryEventProtoConverter {
           event = new DAGKillRequestEvent();
           break;
         default:
-          Assert.fail("Unhandled event type " + eventType);
+          fail("Unhandled event type " + eventType);
       }
       if (event == null || !event.isHistoryEvent()) {
         continue;
@@ -238,17 +240,17 @@ public class TestHistoryEventProtoConverter {
   private void assertEventData(HistoryEventProto proto, String key, String value) {
     String evtVal = findEventData(proto, key);
     if (evtVal == null) {
-      Assert.fail("Cannot find kv pair: " + key);
+      fail("Cannot find kv pair: " + key);
     }
     if (value != null) {
-      Assert.assertEquals(value, evtVal);
+      assertEquals(value, evtVal);
     }
   }
 
   private void assertNoEventData(HistoryEventProto proto, String key) {
     for (KVPair data : proto.getEventDataList()) {
       if (data.getKey().equals(key)) {
-        Assert.fail("Found find kv pair: " + key);
+        fail("Found find kv pair: " + key);
       }
     }
   }
@@ -259,32 +261,33 @@ public class TestHistoryEventProtoConverter {
 
   private void assertCommon(HistoryEventProto proto, HistoryEventType type, long eventTime,
       EntityTypes entityType, ApplicationAttemptId appAttemptId, String user, int numData) {
-    Assert.assertEquals(type.name(), proto.getEventType());
-    Assert.assertEquals(eventTime, proto.getEventTime());
-    // Assert.assertEquals(safeToString(appId), proto.getAppId());
-    Assert.assertEquals(safeToString(appAttemptId), proto.getAppAttemptId());
-    Assert.assertEquals(safeToString(user), proto.getUser());
+    assertEquals(type.name(), proto.getEventType());
+    assertEquals(eventTime, proto.getEventTime());
+    // assertEquals(safeToString(appId), proto.getAppId());
+    assertEquals(safeToString(appAttemptId), proto.getAppAttemptId());
+    assertEquals(safeToString(user), proto.getUser());
     if (entityType != null) {
       switch (entityType) { // Intentional fallthrough.
       case TEZ_TASK_ATTEMPT_ID:
-        Assert.assertEquals(tezTaskAttemptID.toString(), proto.getTaskAttemptId());
+        assertEquals(tezTaskAttemptID.toString(), proto.getTaskAttemptId());
       case TEZ_TASK_ID:
-        Assert.assertEquals(tezTaskID.toString(), proto.getTaskId());
+        assertEquals(tezTaskID.toString(), proto.getTaskId());
       case TEZ_VERTEX_ID:
-        Assert.assertEquals(tezVertexID.toString(), proto.getVertexId());
+        assertEquals(tezVertexID.toString(), proto.getVertexId());
       case TEZ_DAG_ID:
-        Assert.assertEquals(tezDAGID.toString(), proto.getDagId());
+        assertEquals(tezDAGID.toString(), proto.getDagId());
       case TEZ_APPLICATION:
-        Assert.assertEquals(applicationId.toString(), proto.getAppId());
+        assertEquals(applicationId.toString(), proto.getAppId());
         break;
       default:
-        Assert.fail("Invalid type: " + entityType.name());
+        fail("Invalid type: " + entityType.name());
       }
     }
-    Assert.assertEquals(numData, proto.getEventDataCount());
+    assertEquals(numData, proto.getEventDataCount());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertAppLaunchedEvent() {
     long launchTime = random.nextLong();
     long submitTime = random.nextLong();
@@ -304,7 +307,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.DAG_AM_WEB_SERVICE_VERSION, AMWebController.VERSION);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertAMLaunchedEvent() {
     long launchTime = random.nextLong();
     long submitTime = random.nextLong();
@@ -316,7 +320,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.APP_SUBMIT_TIME, String.valueOf(submitTime));
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertAMStartedEvent() {
     long startTime = random.nextLong();
     AMStartedEvent event = new AMStartedEvent(applicationAttemptId, startTime, user);
@@ -325,7 +330,8 @@ public class TestHistoryEventProtoConverter {
         applicationAttemptId, user, 0);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertContainerLaunchedEvent() {
     long launchTime = random.nextLong();
     ContainerLaunchedEvent event = new ContainerLaunchedEvent(containerId, launchTime,
@@ -336,7 +342,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.CONTAINER_ID, containerId.toString());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertContainerStoppedEvent() {
     long stopTime = random.nextLong();
     int exitStatus = random.nextInt();
@@ -350,7 +357,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.FINISH_TIME, String.valueOf(stopTime));
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGStartedEvent() {
     long startTime = random.nextLong();
     String dagName = "testDagName";
@@ -362,7 +370,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.STATUS, DAGState.RUNNING.name());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGSubmittedEvent() {
     long submitTime = random.nextLong();
 
@@ -386,7 +395,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.DAG_PLAN, null);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertTaskAttemptFinishedEvent() {
     String vertexName = "testVertex";
     long creationTime = random.nextLong();
@@ -439,7 +449,8 @@ public class TestHistoryEventProtoConverter {
     assertNoEventData(proto, ATSConstants.TASK_FAILURE_TYPE);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGInitializedEvent() {
     long initTime = random.nextLong();
 
@@ -455,7 +466,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.VERTEX_NAME_ID_MAPPING, null);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGFinishedEvent() {
     long finishTime = random.nextLong();
     long startTime = random.nextLong();
@@ -485,7 +497,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.COUNTERS, null);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertVertexInitializedEvent() {
     long initRequestedTime = random.nextLong();
     long initedTime = random.nextLong();
@@ -509,29 +522,30 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.SERVICE_PLUGIN, null);
 
     /*
-    Assert.assertNotNull(timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN));
-    Assert.assertEquals("abc",
+    assertNotNull(timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN));
+    assertEquals("abc",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.CONTAINER_LAUNCHER_NAME));
-    Assert.assertEquals("def",
+    assertEquals("def",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_SCHEDULER_NAME));
-    Assert.assertEquals("ghi",
+    assertEquals("ghi",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_COMMUNICATOR_NAME));
-    Assert.assertEquals("abc1",
+    assertEquals("abc1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.CONTAINER_LAUNCHER_CLASS_NAME));
-    Assert.assertEquals("def1",
+    assertEquals("def1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_SCHEDULER_CLASS_NAME));
-    Assert.assertEquals("ghi1",
+    assertEquals("ghi1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_COMMUNICATOR_CLASS_NAME));
     */
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertVertexStartedEvent() {
     long startRequestedTime = random.nextLong();
     long startTime = random.nextLong();
@@ -544,7 +558,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.STATUS, VertexState.RUNNING.name());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertVertexFinishedEvent() {
     String vertexName = "v1";
     long initRequestedTime = random.nextLong();
@@ -581,28 +596,29 @@ public class TestHistoryEventProtoConverter {
 
     assertEventData(proto, ATSConstants.SERVICE_PLUGIN, null);
     /*
-    Assert.assertEquals("abc",
+    assertEquals("abc",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.CONTAINER_LAUNCHER_NAME));
-    Assert.assertEquals("def",
+    assertEquals("def",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_SCHEDULER_NAME));
-    Assert.assertEquals("ghi",
+    assertEquals("ghi",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_COMMUNICATOR_NAME));
-    Assert.assertEquals("abc1",
+    assertEquals("abc1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.CONTAINER_LAUNCHER_CLASS_NAME));
-    Assert.assertEquals("def1",
+    assertEquals("def1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_SCHEDULER_CLASS_NAME));
-    Assert.assertEquals("ghi1",
+    assertEquals("ghi1",
         ((Map<String, Object>)timelineEntity.getOtherInfo().get(ATSConstants.SERVICE_PLUGIN)).get(
             ATSConstants.TASK_COMMUNICATOR_CLASS_NAME));
     */
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertTaskStartedEvent() {
     long scheduleTime = random.nextLong();
     long startTime = random.nextLong();
@@ -615,7 +631,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.STATUS, TaskState.SCHEDULED.name());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertTaskAttemptStartedEvent() {
     long startTime = random.nextLong();
     TaskAttemptStartedEvent event = new TaskAttemptStartedEvent(tezTaskAttemptID, "v1",
@@ -632,7 +649,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.NODE_HTTP_ADDRESS, "nodeHttpAddress");
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertTaskFinishedEvent() {
     String vertexName = "testVertexName";
     long startTime = random.nextLong();
@@ -655,7 +673,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.COUNTERS, null);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertVertexReconfigreDoneEvent() {
     TezVertexID vId = tezVertexID;
     Map<String, EdgeProperty> edgeMgrs =
@@ -675,18 +694,19 @@ public class TestHistoryEventProtoConverter {
     /*
     Map<String, Object> updatedEdgeMgrs = (Map<String, Object>)
         evt.getEventInfo().get(ATSConstants.UPDATED_EDGE_MANAGERS);
-    Assert.assertEquals(1, updatedEdgeMgrs.size());
-    Assert.assertTrue(updatedEdgeMgrs.containsKey("a"));
+    assertEquals(1, updatedEdgeMgrs.size());
+    assertTrue(updatedEdgeMgrs.containsKey("a"));
     Map<String, Object> updatedEdgeMgr = (Map<String, Object>) updatedEdgeMgrs.get("a");
 
-    Assert.assertEquals(DataMovementType.CUSTOM.name(),
+    assertEquals(DataMovementType.CUSTOM.name(),
         updatedEdgeMgr.get(DAGUtils.DATA_MOVEMENT_TYPE_KEY));
-    Assert.assertEquals("In", updatedEdgeMgr.get(DAGUtils.EDGE_DESTINATION_CLASS_KEY));
-    Assert.assertEquals("a.class", updatedEdgeMgr.get(DAGUtils.EDGE_MANAGER_CLASS_KEY));
+    assertEquals("In", updatedEdgeMgr.get(DAGUtils.EDGE_DESTINATION_CLASS_KEY));
+    assertEquals("a.class", updatedEdgeMgr.get(DAGUtils.EDGE_MANAGER_CLASS_KEY));
     */
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGRecoveredEvent() {
     long recoverTime = random.nextLong();
     DAGRecoveredEvent event = new DAGRecoveredEvent(applicationAttemptId, tezDAGID,
@@ -699,7 +719,8 @@ public class TestHistoryEventProtoConverter {
     assertEventData(proto, ATSConstants.DAG_NAME, dagPlan.getName());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testConvertDAGRecoveredEvent2() {
     long recoverTime = random.nextLong();
 

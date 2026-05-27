@@ -29,7 +29,7 @@ moduleForComponent('em-table', 'Integration | Component | em table', {
 test('Basic rendering test', function(assert) {
   this.render(hbs`{{em-table}}`);
 
-  assert.equal(this.$('.table-message').text().trim(), 'No columns available!');
+  equal(this.$('.table-message').text().trim(), 'No columns available!');
 });
 
 test('Records missing test', function(assert) {
@@ -40,9 +40,9 @@ test('Records missing test', function(assert) {
   this.set("columns", [ColumnDefinition.fillerColumn]);
 
   this.render(hbs`{{em-table columns=columns}}`);
-  assert.equal(this.$('.table-message').text().trim(), 'No records available!');
+  equal(this.$('.table-message').text().trim(), 'No records available!');
 
   this.set("definition", definition);
   this.render(hbs`{{em-table columns=columns definition=definition}}`);
-  assert.equal(this.$('.table-message').text().trim(), 'No vertices available!');
+  equal(this.$('.table-message').text().trim(), 'No vertices available!');
 });

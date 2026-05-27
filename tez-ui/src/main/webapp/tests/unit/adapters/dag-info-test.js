@@ -26,5 +26,5 @@ moduleFor('adapter:dag-info', 'Unit | Adapter | dag info', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
+  ok(adapter);
 });

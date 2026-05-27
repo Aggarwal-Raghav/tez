@@ -27,11 +27,11 @@ test('Basic creation test', function(assert) {
   let model = this.subject();
   // let store = this.store();
 
-  assert.ok(!!model);
+  ok(!!model);
 
-  assert.ok(model.initTime);
-  assert.ok(model.startTime);
-  assert.ok(model.endTime);
-  assert.ok(model.firstTaskStartTime);
-  assert.ok(model.lastTaskFinishTime);
+  ok(model.initTime);
+  ok(model.startTime);
+  ok(model.endTime);
+  ok(model.firstTaskStartTime);
+  ok(model.lastTaskFinishTime);
 });

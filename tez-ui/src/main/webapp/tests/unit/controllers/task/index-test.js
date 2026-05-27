@@ -31,5 +31,5 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
+  ok(controller);
 });

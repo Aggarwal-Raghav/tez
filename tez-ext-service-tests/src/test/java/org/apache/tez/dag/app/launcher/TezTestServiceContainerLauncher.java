@@ -40,6 +40,7 @@ import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.RunContainer
 
 import com.google.protobuf.ByteString;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,10 +26,10 @@ moduleFor('route:query/index', 'Unit | Route | query/index', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.equal(route.get("title"), "Query Details");
-  assert.equal(route.get("loaderNamespace"), "query");
+  ok(route);
+  equal(route.get("title"), "Query Details");
+  equal(route.get("loaderNamespace"), "query");
 
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route.setupController);
+  ok(route.load);
 });

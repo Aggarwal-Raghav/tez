@@ -26,10 +26,10 @@ moduleFor('route:query/timeline', 'Unit | Route | query/timeline', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.equal(route.get("title"), "Query Timeline");
-  assert.equal(route.get("loaderNamespace"), "query");
+  ok(route);
+  equal(route.get("title"), "Query Timeline");
+  equal(route.get("loaderNamespace"), "query");
 
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route.setupController);
+  ok(route.load);
 });

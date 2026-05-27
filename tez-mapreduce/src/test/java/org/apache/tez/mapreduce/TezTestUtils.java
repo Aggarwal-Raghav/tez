@@ -32,6 +32,8 @@ import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.runtime.api.InputInitializerContext;
 
+import org.junit.jupiter.api.*;
+
 public final class TezTestUtils {
 
   private TezTestUtils() {}

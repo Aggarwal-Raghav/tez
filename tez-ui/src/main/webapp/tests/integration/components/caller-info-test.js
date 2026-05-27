@@ -30,7 +30,7 @@ test('Basic creation test', function(assert) {
   this.set("type", testType);
 
   this.render(hbs`{{caller-info type=type}}`);
-  assert.equal(this.$(".panel-heading").text().trim(), heading);
+  equal(this.$(".panel-heading").text().trim(), heading);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -38,5 +38,5 @@ test('Basic creation test', function(assert) {
       template block text
     {{/caller-info}}
   `);
-  assert.equal(this.$(".panel-heading").text().trim(), heading);
+  equal(this.$(".panel-heading").text().trim(), heading);
 });

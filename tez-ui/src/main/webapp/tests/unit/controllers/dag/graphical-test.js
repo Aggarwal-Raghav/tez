@@ -35,14 +35,14 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
+  ok(controller);
 
-  assert.ok(controller.columnSelectorTitle);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.equal(controller.columns.length, 14);
+  ok(controller.columnSelectorTitle);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  equal(controller.columns.length, 14);
 
-  assert.ok(controller.redirect);
-  assert.ok(controller.actions.entityClicked);
-  assert.ok(controller.viewData);
+  ok(controller.redirect);
+  ok(controller.actions.entityClicked);
+  ok(controller.viewData);
 });

@@ -31,11 +31,11 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.tabs);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.tabs);
 
-  assert.equal(controller.tabs.length, 3);
+  equal(controller.tabs.length, 3);
 });
 
 test('breadcrumbs test', function(assert) {
@@ -50,8 +50,8 @@ test('breadcrumbs test', function(assert) {
     }
   });
 
-  assert.equal(controller.get("breadcrumbs.length"), 1);
-  assert.equal(controller.get("breadcrumbs.0.text"), `Application [ ${appName} ]`);
-  assert.equal(controller.get("breadcrumbs.0.routeName"), 'app.index');
-  assert.equal(controller.get("breadcrumbs.0.model"), appID);
+  equal(controller.get("breadcrumbs.length"), 1);
+  equal(controller.get("breadcrumbs.0.text"), `Application [ ${appName} ]`);
+  equal(controller.get("breadcrumbs.0.routeName"), 'app.index');
+  equal(controller.get("breadcrumbs.0.model"), appID);
 });

@@ -33,6 +33,8 @@ import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.RunContainer
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 
+import org.junit.jupiter.api.*;
+
 
 public class TezTestServiceProtocolClientImpl implements TezTestServiceProtocolBlockingPB {
 

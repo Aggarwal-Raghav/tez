@@ -22,7 +22,7 @@ import { module, test } from 'qunit';
 module('Unit | Utility | facet types');
 
 test('Basic creation test', function(assert) {
-  assert.ok(facetTypes);
+  ok(facetTypes);
 
-  assert.ok(facetTypes.VALUES);
+  ok(facetTypes.VALUES);
 });

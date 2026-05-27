@@ -63,6 +63,7 @@ import org.apache.tez.test.TestProcessor;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

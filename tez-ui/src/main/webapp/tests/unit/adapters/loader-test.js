@@ -28,22 +28,22 @@ moduleFor('adapter:loader', 'Unit | Adapter | loader', {
 test('Basic creation', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.ok(adapter._isLoader);
-  assert.ok(adapter.buildURL);
-  assert.ok(adapter._loaderAjax);
-  assert.ok(adapter.queryRecord);
-  assert.ok(adapter.query);
+  ok(adapter);
+  ok(adapter._isLoader);
+  ok(adapter.buildURL);
+  ok(adapter._loaderAjax);
+  ok(adapter.queryRecord);
+  ok(adapter.query);
 
-  assert.equal(adapter.get("name"), "loader");
+  equal(adapter.get("name"), "loader");
 });
 
 test('buildURL test', function(assert) {
   let adapter = this.subject();
 
-  assert.equal(adapter.buildURL("dag"), "/dags");
-  assert.equal(adapter.buildURL("dag", "dag1"), "/dags/dag1");
-  assert.equal(adapter.buildURL("{x}dag", "dag1", null, null, null, {x: "x_x"}), "/x_xdags/dag1", "Test for substitution");
+  equal(adapter.buildURL("dag"), "/dags");
+  equal(adapter.buildURL("dag", "dag1"), "/dags/dag1");
+  equal(adapter.buildURL("{x}dag", "dag1", null, null, null, {x: "x_x"}), "/x_xdags/dag1", "Test for substitution");
 });
 
 test('_loaderAjax test', function(assert) {
@@ -53,23 +53,23 @@ test('_loaderAjax test', function(assert) {
       testRecord = {},
       testNameSpace = "ns";
 
-  assert.expect(2 + 1 + 2);
+  expect(2 + 1 + 2);
 
   adapter.ajax = function (url, method/*, options*/) {
 
-    assert.equal(url, testURL);
-    assert.equal(method, "GET");
+    equal(url, testURL);
+    equal(method, "GET");
 
     return Ember.RSVP.resolve(testRecord);
   };
 
   adapter.sortQueryParams = function (queryParams) {
-    assert.ok(queryParams, "sortQueryParams was called with query params");
+    ok(queryParams, "sortQueryParams was called with query params");
   };
 
   adapter._loaderAjax(testURL, testQueryParams, testNameSpace).then(function (data) {
-    assert.equal(data.nameSpace, testNameSpace, "Namespace returned");
-    assert.equal(data.data, testRecord, "Test record returned");
+    equal(data.nameSpace, testNameSpace, "Namespace returned");
+    equal(data.data, testRecord, "Test record returned");
   });
 });
 
@@ -85,21 +85,21 @@ test('queryRecord test', function(assert) {
         nameSpace: "ns"
       };
 
-  assert.expect(4 + 3);
+  expect(4 + 3);
 
   adapter.buildURL = function (modelName, id, snapshot, requestType, query, params) {
-    assert.equal(modelName, testModel.modelName);
-    assert.equal(id, testQuery.id);
-    assert.equal(query, testQuery.params);
-    assert.equal(params, testQuery.urlParams);
+    equal(modelName, testModel.modelName);
+    equal(id, testQuery.id);
+    equal(query, testQuery.params);
+    equal(params, testQuery.urlParams);
 
     return testURL;
   };
 
   adapter._loaderAjax = function (url, queryParams, nameSpace) {
-    assert.equal(url, testURL);
-    assert.equal(queryParams, testQuery.params);
-    assert.equal(nameSpace, testQuery.nameSpace);
+    equal(url, testURL);
+    equal(queryParams, testQuery.params);
+    equal(nameSpace, testQuery.nameSpace);
   };
 
   adapter.queryRecord(testStore, testModel, testQuery);
@@ -117,22 +117,22 @@ test('query test', function(assert) {
         nameSpace: "ns"
       };
 
-  assert.expect(5 + 3);
+  expect(5 + 3);
 
   adapter.buildURL = function (modelName, id, snapshot, requestType, query, params) {
-    assert.equal(modelName, testModel.modelName);
-    assert.equal(id, null);
-    assert.equal(requestType, "query");
-    assert.equal(query, testQuery.params);
-    assert.equal(params, testQuery.urlParams);
+    equal(modelName, testModel.modelName);
+    equal(id, null);
+    equal(requestType, "query");
+    equal(query, testQuery.params);
+    equal(params, testQuery.urlParams);
 
     return testURL;
   };
 
   adapter._loaderAjax = function (url, queryParams, nameSpace) {
-    assert.equal(url, testURL);
-    assert.equal(queryParams, testQuery.params);
-    assert.equal(nameSpace, testQuery.nameSpace);
+    equal(url, testURL);
+    equal(queryParams, testQuery.params);
+    equal(nameSpace, testQuery.nameSpace);
   };
 
   adapter.query(testStore, testModel, testQuery);

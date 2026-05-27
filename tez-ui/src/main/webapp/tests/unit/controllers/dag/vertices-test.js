@@ -35,10 +35,10 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.ok(controller.beforeSort);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  ok(controller.beforeSort);
 });
 
 test('beforeSort test', function(assert) {
@@ -52,7 +52,7 @@ test('beforeSort test', function(assert) {
     },
     send: function (actionName) {
       if(actionName === "openModal") {
-        assert.ok(true);
+        ok(true);
       }
     }
   });
@@ -65,19 +65,19 @@ test('beforeSort test', function(assert) {
     };
   };
 
-  assert.expect(1 + 3 + 3);
+  expect(1 + 3 + 3);
 
-  assert.ok(controller.beforeSort(Ember.Object.create({
+  ok(controller.beforeSort(Ember.Object.create({
     contentPath: "NonDisabledColumn"
   })), "NonDisabledColumn");
 
-  assert.notOk(controller.beforeSort(Ember.Object.create({
+  notOk(controller.beforeSort(Ember.Object.create({
     contentPath: "succeededTasks"
   })), "succeededTasks");
-  assert.notOk(controller.beforeSort(Ember.Object.create({
+  notOk(controller.beforeSort(Ember.Object.create({
     contentPath: "runningTasks"
   })), "runningTasks");
-  assert.notOk(controller.beforeSort(Ember.Object.create({
+  notOk(controller.beforeSort(Ember.Object.create({
     contentPath: "pendingTasks"
   })), "pendingTasks");
 

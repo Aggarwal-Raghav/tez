@@ -27,20 +27,20 @@ moduleForModel('timeline', 'Unit | Model | timeline', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(!!model);
+  ok(!!model);
 
-  assert.ok(model.needs);
+  ok(model.needs);
 
-  assert.ok(model.entityID);
-  assert.ok(model.appID);
-  assert.ok(model.app);
+  ok(model.entityID);
+  ok(model.appID);
+  ok(model.app);
 
-  assert.ok(model.atsStatus);
-  assert.ok(model.status);
-  assert.ok(model.progress);
+  ok(model.atsStatus);
+  ok(model.status);
+  ok(model.progress);
 
-  assert.ok(model._counterGroups);
-  assert.ok(model.counterGroupsHash);
+  ok(model._counterGroups);
+  ok(model.counterGroupsHash);
 });
 
 test('appID test', function(assert) {
@@ -48,7 +48,7 @@ test('appID test', function(assert) {
 
   Ember.run(function () {
     model.set("entityID", "a_1_2_3");
-    assert.equal(model.get("appID"), "application_1_2");
+    equal(model.get("appID"), "application_1_2");
   });
 });
 
@@ -57,12 +57,12 @@ test('status test', function(assert) {
 
   Ember.run(function () {
     model.set("atsStatus", "RUNNING");
-    assert.equal(model.get("status"), "RUNNING");
+    equal(model.get("status"), "RUNNING");
 
     model.set("app", {
       status: "FAILED"
     });
-    assert.equal(model.get("status"), "FAILED");
+    equal(model.get("status"), "FAILED");
   });
 });
 
@@ -71,10 +71,10 @@ test('progress test', function(assert) {
 
   Ember.run(function () {
     model.set("status", "RUNNING");
-    assert.equal(model.get("progress"), null);
+    equal(model.get("progress"), null);
 
     model.set("status", "SUCCEEDED");
-    assert.equal(model.get("progress"), 1);
+    equal(model.get("progress"), 1);
   });
 });
 
@@ -102,9 +102,9 @@ test('counterGroupsHash test', function(assert) {
 
   Ember.run(function () {
     model.set("_counterGroups", testCounterGroup);
-    assert.equal(model.get("counterGroupsHash.group_1.counter_1_1"), "value_1_1");
-    assert.equal(model.get("counterGroupsHash.group_1.counter_1_2"), "value_1_2");
-    assert.equal(model.get("counterGroupsHash.group_2.counter_2_1"), "value_2_1");
-    assert.equal(model.get("counterGroupsHash.group_2.counter_2_2"), "value_2_2");
+    equal(model.get("counterGroupsHash.group_1.counter_1_1"), "value_1_1");
+    equal(model.get("counterGroupsHash.group_1.counter_1_2"), "value_1_2");
+    equal(model.get("counterGroupsHash.group_2.counter_2_1"), "value_2_1");
+    equal(model.get("counterGroupsHash.group_2.counter_2_2"), "value_2_2");
   });
 });

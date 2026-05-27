@@ -26,6 +26,6 @@ moduleFor('adapter:rm', 'Unit | Adapter | rm', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.equal(adapter.serverName, "rm");
+  ok(adapter);
+  equal(adapter.serverName, "rm");
 });

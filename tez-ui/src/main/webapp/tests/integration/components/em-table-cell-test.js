@@ -41,5 +41,5 @@ test('Basic rendering test', function(assert) {
   this.set('row', row);
   this.render(hbs`{{em-table-cell columnDefinition=columnDefinition row=row}}`);
 
-  assert.equal(this.$().text().trim(), 'valueA');
+  equal(this.$().text().trim(), 'valueA');
 });

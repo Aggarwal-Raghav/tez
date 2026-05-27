@@ -31,9 +31,9 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.tabs);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.tabs);
 
-  assert.equal(controller.tabs.length, 2);
+  equal(controller.tabs.length, 2);
 });

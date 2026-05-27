@@ -26,8 +26,8 @@ moduleFor('serializer:task', 'Unit | Serializer | task', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.maps);
+  ok(serializer);
+  ok(serializer.maps);
 
-  assert.equal(Object.keys(serializer.maps).length, 5 + 7); // 5 own and 7 inherited
+  equal(Object.keys(serializer.maps).length, 5 + 7); // 5 own and 7 inherited
 });

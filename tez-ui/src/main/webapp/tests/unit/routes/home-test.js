@@ -26,7 +26,7 @@ moduleFor('route:home', 'Unit | Route | home', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.equal(route.get("title"), "Home");
-  assert.ok(route.get("actions.setLoadTime"));
+  ok(route);
+  equal(route.get("title"), "Home");
+  ok(route.get("actions.setLoadTime"));
 });

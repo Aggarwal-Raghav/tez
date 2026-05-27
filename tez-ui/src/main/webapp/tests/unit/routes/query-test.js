@@ -26,10 +26,10 @@ moduleFor('route:query', 'Unit | Route | query', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.model);
-  assert.ok(route.actions.setLoadTime);
+  ok(route);
+  ok(route.loaderQueryParams);
+  ok(route.model);
+  ok(route.actions.setLoadTime);
 
-  assert.equal(route.get("title"), "Query");
+  equal(route.get("title"), "Query");
 });

@@ -34,5 +34,5 @@ module('Unit | Initializer | hosts', {
 test('it works', function(assert) {
   HostsInitializer.initialize(application);
 
-  assert.ok(true);
+  ok(true);
 });

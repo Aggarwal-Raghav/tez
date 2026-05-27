@@ -26,7 +26,7 @@ moduleFor('controller:application', 'Unit | Controller | application', {
 test('Basic creation test', function(assert) {
   let controller = this.subject();
 
-  assert.ok(controller.prefixedBreadcrumbs);
+  ok(controller.prefixedBreadcrumbs);
 });
 
 test('prefixedBreadcrumbs test', function(assert) {
@@ -41,9 +41,9 @@ test('prefixedBreadcrumbs test', function(assert) {
   }];
   prefixedBreadcrumbs = controller.get("prefixedBreadcrumbs");
 
-  assert.equal(prefixedBreadcrumbs.length, 2);
-  assert.equal(prefixedBreadcrumbs[0].text, "Home");
-  assert.equal(prefixedBreadcrumbs[0].routeName, "application");
-  assert.equal(prefixedBreadcrumbs[1].text, testText);
-  assert.equal(prefixedBreadcrumbs[1].routeName, testRouteName);
+  equal(prefixedBreadcrumbs.length, 2);
+  equal(prefixedBreadcrumbs[0].text, "Home");
+  equal(prefixedBreadcrumbs[0].routeName, "application");
+  equal(prefixedBreadcrumbs[1].text, testText);
+  equal(prefixedBreadcrumbs[1].routeName, testRouteName);
 });

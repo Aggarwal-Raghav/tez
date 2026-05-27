@@ -27,12 +27,12 @@ test('Basic creation test', function(assert) {
   this.set("perf", {});
   this.render(hbs`{{query-timeline perf=perf}}`);
 
-  assert.equal(this.$().find(".bar").length, 9 + 4);
+  equal(this.$().find(".bar").length, 9 + 4);
 
   this.set("perf", null);
   this.render(hbs`{{query-timeline perf=perf}}`);
 
-  assert.equal(this.$().find(".bar").length, 9 + 4);
+  equal(this.$().find(".bar").length, 9 + 4);
 
   this.render(hbs`
     {{#query-timeline perf=perf}}
@@ -40,7 +40,7 @@ test('Basic creation test', function(assert) {
     {{/query-timeline}}
   `);
 
-  assert.equal(this.$().find(".bar").length, 9 + 4);
+  equal(this.$().find(".bar").length, 9 + 4);
 });
 
 test('Default value test', function(assert) {
@@ -48,17 +48,17 @@ test('Default value test', function(assert) {
   this.render(hbs`{{query-timeline perf=perf}}`);
 
   let bars = this.$().find(".sub-groups").find(".bar");
-  assert.equal(bars.length, 9);
+  equal(bars.length, 9);
 
-  assert.equal(bars[0].style.width, 0);
-  assert.equal(bars[1].style.width, 0);
-  assert.equal(bars[2].style.width, 0);
-  assert.equal(bars[3].style.width, 0);
-  assert.equal(bars[4].style.width, 0);
-  assert.equal(bars[5].style.width, 0);
-  assert.equal(bars[6].style.width, 0);
-  assert.equal(bars[7].style.width, 0);
-  assert.equal(bars[8].style.width, 0);
+  equal(bars[0].style.width, 0);
+  equal(bars[1].style.width, 0);
+  equal(bars[2].style.width, 0);
+  equal(bars[3].style.width, 0);
+  equal(bars[4].style.width, 0);
+  equal(bars[5].style.width, 0);
+  equal(bars[6].style.width, 0);
+  equal(bars[7].style.width, 0);
+  equal(bars[8].style.width, 0);
 });
 
 test('alignBars test', function(assert) {
@@ -85,18 +85,18 @@ test('alignBars test', function(assert) {
     var elementWidth = (parseFloat(domElement.style.width) / 100).toFixed(4),
         expectedWidth = (factor / total).toFixed(4);
 
-    assert.equal(elementWidth, expectedWidth, `Unexpected value for factor ${factor}`);
+    equal(elementWidth, expectedWidth, `Unexpected value for factor ${factor}`);
   }
 
   bars = this.$().find(".groups").find(".bar");
-  assert.equal(bars.length, 4);
+  equal(bars.length, 4);
   assertWidth(bars[0], 10 + 20 + 40);
   assertWidth(bars[1], 50 + 60);
   assertWidth(bars[2], 70);
   assertWidth(bars[3], 80 + 90 + 100);
 
   bars = this.$().find(".sub-groups").find(".bar");
-  assert.equal(bars.length, 9);
+  equal(bars.length, 9);
   assertWidth(bars[0], 10);
   assertWidth(bars[1], 20);
   assertWidth(bars[2], 40);
@@ -132,18 +132,18 @@ test('alignBars - without RenameOrMoveFiles test', function(assert) {
     var elementWidth = (parseFloat(domElement.style.width) / 100).toFixed(4),
         expectedWidth = (factor / total).toFixed(4);
 
-    assert.equal(elementWidth, expectedWidth, `Unexpected value for factor ${factor}`);
+    equal(elementWidth, expectedWidth, `Unexpected value for factor ${factor}`);
   }
 
   bars = this.$().find(".groups").find(".bar");
-  assert.equal(bars.length, 4);
+  equal(bars.length, 4);
   assertWidth(bars[0], 10 + 20 + 40);
   assertWidth(bars[1], 50 + 60);
   assertWidth(bars[2], 70);
   assertWidth(bars[3], 80 + 90);
 
   bars = this.$().find(".sub-groups").find(".bar");
-  assert.equal(bars.length, 9);
+  equal(bars.length, 9);
   assertWidth(bars[0], 10);
   assertWidth(bars[1], 20);
   assertWidth(bars[2], 40);
@@ -163,20 +163,20 @@ test('tables test', function(assert) {
   });
   this.render(hbs`{{query-timeline perf=perf}}`);
 
-  assert.equal(this.$().find("table").length, 4);
-  assert.equal(this.$().find(".detail-list").length, 4);
+  equal(this.$().find("table").length, 4);
+  equal(this.$().find(".detail-list").length, 4);
 
-  assert.equal(this.$().find("table").find("td").length, 9 * 2);
-  assert.equal(this.$().find("table").find("i").length, 9);
+  equal(this.$().find("table").find("td").length, 9 * 2);
+  equal(this.$().find("table").find("i").length, 9);
 });
 
 test('tables post test', function(assert) {
   this.set("perf", {});
   this.render(hbs`{{query-timeline perf=perf}}`);
 
-  assert.equal(this.$().find("table").length, 4);
-  assert.equal(this.$().find(".detail-list").length, 4);
+  equal(this.$().find("table").length, 4);
+  equal(this.$().find(".detail-list").length, 4);
 
-  assert.equal(this.$().find("table").find("td").length, 6 * 2);
-  assert.equal(this.$().find("table").find("i").length, 6);
+  equal(this.$().find("table").find("td").length, 6 * 2);
+  equal(this.$().find("table").find("i").length, 6);
 });

@@ -26,9 +26,9 @@ test('Basic creation test', function(assert) {
   let AutoCounterColumnObject = Ember.Object.extend(AutoCounterColumnMixin);
   let subject = AutoCounterColumnObject.create();
 
-  assert.ok(subject);
-  assert.ok(subject.columnSelectorMessage);
-  assert.ok(subject.getCounterColumns);
+  ok(subject);
+  ok(subject.columnSelectorMessage);
+  ok(subject.getCounterColumns);
 });
 
 test('getCounterColumns test', function(assert) {
@@ -60,19 +60,19 @@ test('getCounterColumns test', function(assert) {
   });
 
   let columns = subject.getCounterColumns();
-  assert.equal(columns.length, 6);
-  assert.equal(columns[0].counterGroupName, "gp1");
-  assert.equal(columns[0].counterName, "c11");
-  assert.equal(columns[1].counterGroupName, "gp1");
-  assert.equal(columns[1].counterName, "c12");
+  equal(columns.length, 6);
+  equal(columns[0].counterGroupName, "gp1");
+  equal(columns[0].counterName, "c11");
+  equal(columns[1].counterGroupName, "gp1");
+  equal(columns[1].counterName, "c12");
 
-  assert.equal(columns[2].counterGroupName, "gp2");
-  assert.equal(columns[2].counterName, "c21");
-  assert.equal(columns[3].counterGroupName, "gp2");
-  assert.equal(columns[3].counterName, "c22");
+  equal(columns[2].counterGroupName, "gp2");
+  equal(columns[2].counterName, "c21");
+  equal(columns[3].counterGroupName, "gp2");
+  equal(columns[3].counterName, "c22");
 
-  assert.equal(columns[4].counterGroupName, "gp3");
-  assert.equal(columns[4].counterName, "c31");
-  assert.equal(columns[5].counterGroupName, "gp3");
-  assert.equal(columns[5].counterName, "c32");
+  equal(columns[4].counterGroupName, "gp3");
+  equal(columns[4].counterName, "c31");
+  equal(columns[5].counterGroupName, "gp3");
+  equal(columns[5].counterName, "c32");
 });

@@ -35,7 +35,7 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller._visibleColumnsObserver);
-  assert.ok(controller.sendCountersChanged);
+  ok(controller);
+  ok(controller._visibleColumnsObserver);
+  ok(controller.sendCountersChanged);
 });

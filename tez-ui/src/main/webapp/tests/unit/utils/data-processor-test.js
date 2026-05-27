@@ -25,7 +25,7 @@ import { module, test } from 'qunit';
 module('Unit | Utility | data processor');
 
 test('Class creation test', function(assert) {
-  assert.ok(DataProcessor);
+  ok(DataProcessor);
 });
 
 test('Instance default test', function(assert) {
@@ -43,17 +43,17 @@ test('Instance default test', function(assert) {
     });
   });
 
-  assert.ok(processor);
-  assert.equal(processor.get('isSorting'), false);
-  assert.equal(processor.get('isSearching'), false);
+  ok(processor);
+  equal(processor.get('isSorting'), false);
+  equal(processor.get('isSearching'), false);
 
-  assert.ok(processor._searchObserver);
-  assert.ok(processor._sortObserver);
-  assert.ok(processor.startSearch);
-  assert.ok(processor.startSort);
-  assert.ok(processor.compareFunction);
-  assert.ok(processor.totalPages);
-  assert.ok(processor.processedRows);
+  ok(processor._searchObserver);
+  ok(processor._sortObserver);
+  ok(processor.startSearch);
+  ok(processor.startSort);
+  ok(processor.compareFunction);
+  ok(processor.totalPages);
+  ok(processor.processedRows);
 });
 
 test('compareFunction test', function(assert) {
@@ -67,38 +67,38 @@ test('compareFunction test', function(assert) {
     });
   });
 
-  assert.equal(processor.compareFunction(1, 1), 0);
-  assert.equal(processor.compareFunction(1, 2), -1);
-  assert.equal(processor.compareFunction(2, 1), 1);
+  equal(processor.compareFunction(1, 1), 0);
+  equal(processor.compareFunction(1, 2), -1);
+  equal(processor.compareFunction(2, 1), 1);
 
-  assert.equal(processor.compareFunction("a", "a"), 0);
-  assert.equal(processor.compareFunction("a", "b"), -1);
-  assert.equal(processor.compareFunction("b", "a"), 1);
+  equal(processor.compareFunction("a", "a"), 0);
+  equal(processor.compareFunction("a", "b"), -1);
+  equal(processor.compareFunction("b", "a"), 1);
 
-  assert.equal(processor.compareFunction(null, null), -1);
-  assert.equal(processor.compareFunction(1, null), 1);
-  assert.equal(processor.compareFunction(null, 2), -1);
-  assert.equal(processor.compareFunction("a", null), 1);
-  assert.equal(processor.compareFunction(null, "b"), -1);
+  equal(processor.compareFunction(null, null), -1);
+  equal(processor.compareFunction(1, null), 1);
+  equal(processor.compareFunction(null, 2), -1);
+  equal(processor.compareFunction("a", null), 1);
+  equal(processor.compareFunction(null, "b"), -1);
 
-  assert.equal(processor.compareFunction(undefined, undefined), -1);
-  assert.equal(processor.compareFunction(1, undefined), 1);
-  assert.equal(processor.compareFunction(undefined, 2), -1);
-  assert.equal(processor.compareFunction("a", undefined), 1);
-  assert.equal(processor.compareFunction(undefined, "b"), -1);
+  equal(processor.compareFunction(undefined, undefined), -1);
+  equal(processor.compareFunction(1, undefined), 1);
+  equal(processor.compareFunction(undefined, 2), -1);
+  equal(processor.compareFunction("a", undefined), 1);
+  equal(processor.compareFunction(undefined, "b"), -1);
 });
 
 test('startSearch test', function(assert) {
   var processor,
       runLater = Ember.run.later;
 
-  assert.expect(3);
+  expect(3);
 
   Ember.run.later = function (callback) {
     callback();
-    assert.equal(processor.get("_searchedRows.length"), 2);
-    assert.equal(processor.get("_searchedRows.0.foo"), "Foo1");
-    assert.equal(processor.get("_searchedRows.1.foo"), "Foo12");
+    equal(processor.get("_searchedRows.length"), 2);
+    equal(processor.get("_searchedRows.0.foo"), "Foo1");
+    equal(processor.get("_searchedRows.1.foo"), "Foo12");
 
     Ember.run.later = runLater; // Reset
   };

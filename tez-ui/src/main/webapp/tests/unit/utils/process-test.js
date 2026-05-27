@@ -24,49 +24,49 @@ module('Unit | Utility | process');
 test('Basic creation test', function(assert) {
   let process = Process.create();
 
-  assert.ok(process);
+  ok(process);
 
-  assert.ok(process.consolidateStartTime);
-  assert.ok(process.consolidateEndTime);
+  ok(process.consolidateStartTime);
+  ok(process.consolidateEndTime);
 
-  assert.ok(process.init);
+  ok(process.init);
 
-  assert.ok(process.getBarColor);
-  assert.ok(process.getConsolidateColor);
+  ok(process.getBarColor);
+  ok(process.getConsolidateColor);
 
-  assert.ok(process.getColor);
-  assert.ok(process.startEvent);
-  assert.ok(process.endEvent);
-  assert.ok(process.getAllBlockers);
-  assert.ok(process.getTooltipContents);
+  ok(process.getColor);
+  ok(process.startEvent);
+  ok(process.endEvent);
+  ok(process.getAllBlockers);
+  ok(process.getTooltipContents);
 });
 
 test('_id test', function(assert) {
   let nextID = parseInt(Process.create().get("_id").split("-")[2]) + 1;
 
   let process = Process.create();
-  assert.equal(process.get("_id"), "process-id-" + nextID);
+  equal(process.get("_id"), "process-id-" + nextID);
 });
 
 
 test('getColor test', function(assert) {
   let process = Process.create();
 
-  assert.equal(process.getColor(), "#0");
+  equal(process.getColor(), "#0");
 
   process.set("color", {
     h: 10,
     s: 20,
     l: 30
   });
-  assert.equal(process.getColor(), "hsl( 10, 20%, 30% )");
-  assert.equal(process.getColor(0.2), "hsl( 10, 20%, 40% )");
+  equal(process.getColor(), "hsl( 10, 20%, 30% )");
+  equal(process.getColor(0.2), "hsl( 10, 20%, 40% )");
 });
 
 test('startEvent test', function(assert) {
   let process = Process.create();
 
-  assert.equal(process.get("startEvent"), undefined);
+  equal(process.get("startEvent"), undefined);
 
   process.set("events", [{
     time: 50,
@@ -77,7 +77,7 @@ test('startEvent test', function(assert) {
   }, {
     time: 80,
   }]);
-  assert.equal(process.get("startEvent").time, 20);
+  equal(process.get("startEvent").time, 20);
 
   process.set("events", [{
     time: 50,
@@ -86,13 +86,13 @@ test('startEvent test', function(assert) {
   }, {
     time: 80,
   }]);
-  assert.equal(process.get("startEvent").time, 50);
+  equal(process.get("startEvent").time, 50);
 });
 
 test('endEvent test', function(assert) {
   let process = Process.create();
 
-  assert.equal(process.get("endEvent"), undefined);
+  equal(process.get("endEvent"), undefined);
 
   process.set("events", [{
     time: 50,
@@ -103,7 +103,7 @@ test('endEvent test', function(assert) {
   }, {
     time: 80,
   }]);
-  assert.equal(process.get("endEvent").time, 80);
+  equal(process.get("endEvent").time, 80);
 
   process.set("events", [{
     time: 50,
@@ -112,7 +112,7 @@ test('endEvent test', function(assert) {
   }, {
     time: 20,
   }]);
-  assert.equal(process.get("endEvent").time, 70);
+  equal(process.get("endEvent").time, 70);
 });
 
 test('getAllBlockers test', function(assert) {
@@ -150,16 +150,16 @@ test('getAllBlockers test', function(assert) {
 
   var all = process.getAllBlockers();
 
-  assert.equal(all.length, 9);
+  equal(all.length, 9);
 
-  assert.equal(all[0].get("name"), "p1");
-  assert.equal(all[1].get("name"), "p2");
-  assert.equal(all[2].get("name"), "p21");
-  assert.equal(all[3].get("name"), "p22");
-  assert.equal(all[4].get("name"), "p221");
-  assert.equal(all[5].get("name"), "p3");
-  assert.equal(all[6].get("name"), "p4");
-  assert.equal(all[7].get("name"), "p5");
-  assert.equal(all[8].get("name"), "p6");
+  equal(all[0].get("name"), "p1");
+  equal(all[1].get("name"), "p2");
+  equal(all[2].get("name"), "p21");
+  equal(all[3].get("name"), "p22");
+  equal(all[4].get("name"), "p221");
+  equal(all[5].get("name"), "p3");
+  equal(all[6].get("name"), "p4");
+  equal(all[7].get("name"), "p5");
+  equal(all[8].get("name"), "p6");
 
 });

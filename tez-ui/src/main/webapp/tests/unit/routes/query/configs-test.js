@@ -26,8 +26,8 @@ moduleFor('route:query/configs', 'Unit | Route | query/configs', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.equal(route.get("loaderNamespace"), "query");
-  assert.ok(route.get("setupController"));
-  assert.ok(route.get("load"));
+  ok(route);
+  equal(route.get("loaderNamespace"), "query");
+  ok(route.get("setupController"));
+  ok(route.get("load"));
 });

@@ -26,10 +26,10 @@ moduleFor('adapter:am', 'Unit | Adapter | am', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.equal(adapter.serverName, "am");
+  ok(adapter);
+  equal(adapter.serverName, "am");
 
-  assert.ok(adapter.queryRecord);
+  ok(adapter.queryRecord);
 });
 
 test('queryRecord test', function(assert) {
@@ -39,12 +39,12 @@ test('queryRecord test', function(assert) {
 
       adapter = this.subject({
         query: function (store, type, query) {
-          assert.equal(store, testStore);
-          assert.equal(type, testType);
-          assert.equal(query, testQuery);
+          equal(store, testStore);
+          equal(type, testType);
+          equal(query, testQuery);
         }
       });
 
-  assert.expect(3);
+  expect(3);
   adapter.queryRecord(testStore, testType, testQuery);
 });

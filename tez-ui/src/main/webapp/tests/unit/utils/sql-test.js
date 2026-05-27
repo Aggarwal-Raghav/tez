@@ -25,31 +25,31 @@ module('Unit | Utility | sql');
 test('Class creation test', function(assert) {
   var sql = SQL.create();
 
-  assert.ok(sql.constructQuery);
-  assert.ok(sql.validateClause);
-  assert.ok(sql.normaliseClause);
-  assert.ok(sql.search);
+  ok(sql.constructQuery);
+  ok(sql.validateClause);
+  ok(sql.normaliseClause);
+  ok(sql.search);
 });
 
 test('constructQuery test', function(assert) {
   var sql = SQL.create();
 
-  assert.equal(sql.constructQuery("x = y"), "SELECT * FROM ? WHERE x = y");
+  equal(sql.constructQuery("x = y"), "SELECT * FROM ? WHERE x = y");
 });
 
 test('validateClause test', function(assert) {
   var sql = SQL.create();
 
-  assert.ok(sql.validateClause("x = y"));
-  assert.ok(sql.validateClause("x = y AND a = b"));
-  assert.ok(sql.validateClause("(x = y OR y = z) AND a = b"));
-  assert.ok(sql.validateClause("x BETWEEN 1 AND 2"));
+  ok(sql.validateClause("x = y"));
+  ok(sql.validateClause("x = y AND a = b"));
+  ok(sql.validateClause("(x = y OR y = z) AND a = b"));
+  ok(sql.validateClause("x BETWEEN 1 AND 2"));
 
-  assert.notOk(sql.validateClause("foo"));
-  assert.notOk(sql.validateClause("foo bar"));
-  assert.notOk(sql.validateClause("^[a-z0-9_-]{3,16}$"));
-  assert.notOk(sql.validateClause("^[a-z0-9_-]{6,18}$"));
-  assert.notOk(sql.validateClause("^[a-z0-9-]+$"));
+  notOk(sql.validateClause("foo"));
+  notOk(sql.validateClause("foo bar"));
+  notOk(sql.validateClause("^[a-z0-9_-]{3,16}$"));
+  notOk(sql.validateClause("^[a-z0-9_-]{6,18}$"));
+  notOk(sql.validateClause("^[a-z0-9-]+$"));
 });
 
 test('normaliseClause test', function(assert) {
@@ -60,8 +60,8 @@ test('normaliseClause test', function(assert) {
         contentPath: "col"
       });
 
-  assert.equal(sql.normaliseClause('"Column Header" = value', [column]), "columnID = value");
-  assert.equal(sql.normaliseClause('"Another Column Header" = value', [column]), '"Another Column Header" = value');
+  equal(sql.normaliseClause('"Column Header" = value', [column]), "columnID = value");
+  equal(sql.normaliseClause('"Another Column Header" = value', [column]), '"Another Column Header" = value');
 });
 
 test('search test', function(assert) {
@@ -84,7 +84,7 @@ test('search test', function(assert) {
 
   var result = sql.search('"Column A" = "x1"', data, columns);
 
-  assert.equal(result.length, 2);
-  assert.equal(result[0].colB, "y1");
-  assert.equal(result[1].colB, "y3");
+  equal(result.length, 2);
+  equal(result[0].colB, "y1");
+  equal(result[1].colB, "y3");
 });

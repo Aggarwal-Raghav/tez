@@ -31,7 +31,7 @@ test('Basic render test', function(assert) {
   this.set("tmpFacetConditions", {});
   this.render(hbs`{{em-table-facet-panel-values tmpFacetConditions=tmpFacetConditions}}`);
 
-  assert.ok(this.$().text().trim());
+  ok(this.$().text().trim());
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -40,5 +40,5 @@ test('Basic render test', function(assert) {
     {{/em-table-facet-panel-values}}
   `);
 
-  assert.ok(this.$().text().trim());
+  ok(this.$().text().trim());
 });

@@ -26,8 +26,8 @@ test('Basic creation', function(assert) {
   let NameObject = Ember.Object.extend(NameMixin);
   let subject = NameObject.create();
 
-  assert.ok(subject);
-  assert.ok(subject.name);
+  ok(subject);
+  ok(subject.name);
 });
 
 test('name test', function(assert) {
@@ -40,5 +40,5 @@ test('name test', function(assert) {
     }
   });
 
-  assert.equal(subject.get("name"), testName);
+  equal(subject.get("name"), testName);
 });

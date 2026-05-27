@@ -25,42 +25,42 @@ moduleFor('service:hosts', 'Unit | Service | hosts', {
 
 test('Test creation', function(assert) {
   let service = this.subject();
-  assert.ok(service);
+  ok(service);
 });
 
 test('Test correctProtocol', function(assert) {
   let service = this.subject();
 
   //No correction
-  assert.equal(service.correctProtocol("http://localhost:8088"), "http://localhost:8088");
+  equal(service.correctProtocol("http://localhost:8088"), "http://localhost:8088");
 
   // Correction
-  assert.equal(service.correctProtocol("localhost:8088"), "http://localhost:8088");
-  assert.equal(service.correctProtocol("https://localhost:8088"), "https://localhost:8088");
-  assert.equal(service.correctProtocol("file://localhost:8088"), "http://localhost:8088");
+  equal(service.correctProtocol("localhost:8088"), "http://localhost:8088");
+  equal(service.correctProtocol("https://localhost:8088"), "https://localhost:8088");
+  equal(service.correctProtocol("file://localhost:8088"), "http://localhost:8088");
 
-  assert.equal(service.correctProtocol("localhost:8088", "http:"), "http://localhost:8088");
-  assert.equal(service.correctProtocol("https://localhost:8088", "http:"), "https://localhost:8088");
-  assert.equal(service.correctProtocol("file://localhost:8088", "http:"), "http://localhost:8088");
+  equal(service.correctProtocol("localhost:8088", "http:"), "http://localhost:8088");
+  equal(service.correctProtocol("https://localhost:8088", "http:"), "https://localhost:8088");
+  equal(service.correctProtocol("file://localhost:8088", "http:"), "http://localhost:8088");
 
-  assert.equal(service.correctProtocol("localhost:8088", "https:"), "https://localhost:8088");
-  assert.equal(service.correctProtocol("https://localhost:8088", "https:"), "https://localhost:8088");
-  assert.equal(service.correctProtocol("file://localhost:8088", "https:"), "https://localhost:8088");
+  equal(service.correctProtocol("localhost:8088", "https:"), "https://localhost:8088");
+  equal(service.correctProtocol("https://localhost:8088", "https:"), "https://localhost:8088");
+  equal(service.correctProtocol("file://localhost:8088", "https:"), "https://localhost:8088");
 });
 
 test('Test correctProtocol with protocol=file:', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.correctProtocol("file://localhost:8088", "file:"), "file://localhost:8088");
-  assert.equal(service.correctProtocol("http://localhost:8088", "file:"), "http://localhost:8088");
-  assert.equal(service.correctProtocol("https://localhost:8088", "file:"), "https://localhost:8088");
+  equal(service.correctProtocol("file://localhost:8088", "file:"), "file://localhost:8088");
+  equal(service.correctProtocol("http://localhost:8088", "file:"), "http://localhost:8088");
+  equal(service.correctProtocol("https://localhost:8088", "file:"), "https://localhost:8088");
 });
 
 test('Test host URLs', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.get("timeline"), "http://localhost:8188");
-  assert.equal(service.get("rm"), "http://localhost:8088");
+  equal(service.get("timeline"), "http://localhost:8188");
+  equal(service.get("rm"), "http://localhost:8088");
 });
 
 test('Test host URLs with ENV set', function(assert) {
@@ -72,6 +72,6 @@ test('Test host URLs with ENV set', function(assert) {
       rm: "https://localhost:4444"
     }
   };
-  assert.equal(service.get("timeline"), "https://localhost:3333");
-  assert.equal(service.get("rm"), "https://localhost:4444");
+  equal(service.get("timeline"), "https://localhost:3333");
+  equal(service.get("rm"), "https://localhost:4444");
 });

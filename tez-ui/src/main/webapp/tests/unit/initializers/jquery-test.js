@@ -34,6 +34,6 @@ module('Unit | Initializer | jquery', {
 test('Basic creation test', function(assert) {
   JqueryInitializer.initialize(application);
 
-  assert.ok(Ember.$(document).tooltip( "instance" ));
-  assert.equal(Ember.$.ajaxSetup().cache, false);
+  ok(Ember.$(document).tooltip( "instance" ));
+  equal(Ember.$.ajaxSetup().cache, false);
 });

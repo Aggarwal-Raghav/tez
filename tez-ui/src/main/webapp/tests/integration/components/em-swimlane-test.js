@@ -37,8 +37,8 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane processes=processes}}`);
 
-  assert.equal(this.$().text().trim().indexOf(testName1), 0);
-  assert.notEqual(this.$().text().trim().indexOf(testName2), -1);
+  equal(this.$().text().trim().indexOf(testName1), 0);
+  notEqual(this.$().text().trim().indexOf(testName2), -1);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -47,8 +47,8 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane}}
   `);
 
-  assert.equal(this.$().text().trim().indexOf(testName1), 0);
-  assert.notEqual(this.$().text().trim().indexOf(testName2), -1);
+  equal(this.$().text().trim().indexOf(testName1), 0);
+  notEqual(this.$().text().trim().indexOf(testName2), -1);
 });
 
 test('Normalization (Blocker based sorting) test - On a graph', function(assert) {
@@ -77,17 +77,17 @@ test('Normalization (Blocker based sorting) test - On a graph', function(assert)
 
   let names = this.$(".em-swimlane-process-name");
 
-  assert.equal(names.length, 5);
-  assert.equal(names.eq(0).text().trim(), p1.name);
-  assert.equal(names.eq(1).text().trim(), p4.name);
-  assert.equal(names.eq(2).text().trim(), p2.name);
-  assert.equal(names.eq(3).text().trim(), p3.name);
-  assert.equal(names.eq(4).text().trim(), p5.name);
+  equal(names.length, 5);
+  equal(names.eq(0).text().trim(), p1.name);
+  equal(names.eq(1).text().trim(), p4.name);
+  equal(names.eq(2).text().trim(), p2.name);
+  equal(names.eq(3).text().trim(), p3.name);
+  equal(names.eq(4).text().trim(), p5.name);
 });
 
 test('Zoom test', function(assert) {
   this.set("processes", [Process.create()]);
 
   this.render(hbs`{{em-swimlane processes=processes zoom=500}}`);
-  assert.equal(this.$(".zoom-panel").attr("style").trim(), "width: 500%;");
+  equal(this.$(".zoom-panel").attr("style").trim(), "width: 500%;");
 });

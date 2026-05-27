@@ -18,10 +18,7 @@
  */
 package org.apache.tez.dag.app;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -44,6 +41,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -93,10 +91,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.protobuf.ByteString;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -111,18 +106,19 @@ public class TestDAGAppMaster {
   private static final File TEST_DIR = new File(System.getProperty("test.build.data"),
       TestDAGAppMaster.class.getName()).getAbsoluteFile();
 
-  @Before
-  public void setup() {
+  @BeforeAll
+  public static void setup() {
     FileUtil.fullyDelete(TEST_DIR);
     TEST_DIR.mkdirs();
   }
 
-  @After
-  public void teardown() {
+  @AfterAll
+  public static void teardown() {
     FileUtil.fullyDelete(TEST_DIR);
   }
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidSession() throws Exception {
     // AM should fail if not the first attempt and in session mode and
     // DAG recovery is disabled, otherwise the app can succeed without
@@ -144,11 +140,12 @@ public class TestDAGAppMaster {
         break;
       }
     }
-    Assert.assertTrue("Missing invalid session diagnostics", found);
+    assertTrue(found, "Missing invalid session diagnostics");
     dam.stop();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testPluginParsing() throws IOException {
     BiMap<String, Integer> pluginMap = HashBiMap.create();
     Configuration conf = new Configuration(false);
@@ -165,7 +162,7 @@ public class TestDAGAppMaster {
     assertEquals(1, pluginMap.size());
     assertEquals(1, entities.size());
     assertTrue(pluginMap.containsKey(TezConstants.getTezYarnServicePluginName()));
-    assertTrue(0 == pluginMap.get(TezConstants.getTezYarnServicePluginName()));
+    assertEquals(0, (int) pluginMap.get(TezConstants.getTezYarnServicePluginName()));
     assertEquals("testval",
         TezUtils.createConfFromUserPayload(entities.get(0).getUserPayload()).get("testkey"));
 
@@ -176,7 +173,7 @@ public class TestDAGAppMaster {
     assertEquals(1, pluginMap.size());
     assertEquals(1, entities.size());
     assertTrue(pluginMap.containsKey(TezConstants.getTezUberServicePluginName()));
-    assertTrue(0 == pluginMap.get(TezConstants.getTezUberServicePluginName()));
+    assertEquals(0, (int) pluginMap.get(TezConstants.getTezUberServicePluginName()));
     assertEquals("testval",
         TezUtils.createConfFromUserPayload(entities.get(0).getUserPayload()).get("testkey"));
 
@@ -187,9 +184,9 @@ public class TestDAGAppMaster {
     assertEquals(2, pluginMap.size());
     assertEquals(2, entities.size());
     assertTrue(pluginMap.containsKey(TezConstants.getTezYarnServicePluginName()));
-    assertTrue(0 == pluginMap.get(TezConstants.getTezYarnServicePluginName()));
+    assertEquals(0, (int) pluginMap.get(TezConstants.getTezYarnServicePluginName()));
     assertTrue(pluginMap.containsKey(TezConstants.getTezUberServicePluginName()));
-    assertTrue(1 == pluginMap.get(TezConstants.getTezUberServicePluginName()));
+    assertEquals(1, (int) pluginMap.get(TezConstants.getTezUberServicePluginName()));
 
 
     String pluginName = "d1";
@@ -210,7 +207,7 @@ public class TestDAGAppMaster {
     assertEquals(1, pluginMap.size());
     assertEquals(1, entities.size());
     assertTrue(pluginMap.containsKey(pluginName));
-    assertTrue(0 == pluginMap.get(pluginName));
+    assertEquals(0, (int) pluginMap.get(pluginName));
 
     // Test descriptor, yarn and uber
     pluginMap.clear();
@@ -219,16 +216,17 @@ public class TestDAGAppMaster {
     assertEquals(3, pluginMap.size());
     assertEquals(3, entities.size());
     assertTrue(pluginMap.containsKey(TezConstants.getTezYarnServicePluginName()));
-    assertTrue(0 == pluginMap.get(TezConstants.getTezYarnServicePluginName()));
+    assertEquals(0, (int) pluginMap.get(TezConstants.getTezYarnServicePluginName()));
     assertTrue(pluginMap.containsKey(TezConstants.getTezUberServicePluginName()));
-    assertTrue(1 == pluginMap.get(TezConstants.getTezUberServicePluginName()));
+    assertEquals(1, (int) pluginMap.get(TezConstants.getTezUberServicePluginName()));
     assertTrue(pluginMap.containsKey(pluginName));
-    assertTrue(2 == pluginMap.get(pluginName));
+    assertEquals(2, (int) pluginMap.get(pluginName));
     entityDescriptors.clear();
   }
 
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testParseAllPluginsNoneSpecified() throws IOException {
     PluginManager pluginManager = new PluginManager();
     Configuration conf = new Configuration(false);
@@ -263,7 +261,8 @@ public class TestDAGAppMaster {
         TezConstants.getTezUberServicePluginName());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testParseAllPluginsCustomAndYarnSpecified() throws IOException {
     Configuration conf = new Configuration(false);
     conf.set(TEST_KEY, TEST_VAL);
@@ -293,7 +292,8 @@ public class TestDAGAppMaster {
     assertEquals(TC_NAME + CLASS_SUFFIX, pluginDescriptors.getTaskCommunicatorDescriptors().get(1).getClassName());
   }
 
-  @Test(timeout = 60000)
+  @Test
+  @Timeout(value = 60000, unit = TimeUnit.MILLISECONDS)
   public void testShutdownTezAMWithMissingRecoveryAndFailureOnMissingData() throws Exception {
 
     TezConfiguration conf = new TezConfiguration();
@@ -327,8 +327,8 @@ public class TestDAGAppMaster {
     // This ensures that recovery data file system was called for getting summary files, and it will return false
     verify(mockFs, times(2)).exists(captor.capture());
 
-    Assert.assertTrue(captor.getAllValues().get(1).toString().contains("/recovery/1/summary"));
-    Assert.assertTrue(captor.getAllValues().get(0).toString().contains("/recovery/1/RecoveryFatalErrorOccurred"));
+    assertTrue(captor.getAllValues().get(1).toString().contains("/recovery/1/summary"));
+    assertTrue(captor.getAllValues().get(0).toString().contains("/recovery/1/RecoveryFatalErrorOccurred"));
 
     verify(dam.mockScheduler).setShouldUnregisterFlag();
     verify(dam.mockShutdown).shutdown();
@@ -371,8 +371,8 @@ public class TestDAGAppMaster {
     // This ensures that recovery data file system was called for getting summary files, and it will return false
     verify(mockFs, times(2)).exists(captor.capture());
 
-    Assert.assertTrue(captor.getAllValues().get(1).toString().contains("/recovery/1/summary"));
-    Assert.assertTrue(captor.getAllValues().get(0).toString().contains("/recovery/1/RecoveryFatalErrorOccurred"));
+    assertTrue(captor.getAllValues().get(1).toString().contains("/recovery/1/summary"));
+    assertTrue(captor.getAllValues().get(0).toString().contains("/recovery/1/RecoveryFatalErrorOccurred"));
 
     verify(dam.mockScheduler).setShouldUnregisterFlag();
     verify(dam.mockShutdown).shutdown();
@@ -397,8 +397,8 @@ public class TestDAGAppMaster {
         assertEquals(TEST_VAL,
             TezUtils.createConfFromUserPayload(descriptors.get(0).getUserPayload()).get(TEST_KEY));
       }
-      assertTrue(map.get(expectedNames[i]) == i);
-      assertTrue(map.inverse().get(i) == expectedNames[i]);
+      assertEquals((int) map.get(expectedNames[i]), i);
+      assertSame(map.inverse().get(i), expectedNames[i]);
     }
   }
 
@@ -530,20 +530,16 @@ public class TestDAGAppMaster {
     map.put(mockVertexID, mockVertex);
     when(dag.getVertices()).thenReturn(map);
     when(dag.getTotalVertices()).thenReturn(1);
-    Assert.assertEquals("Progress was NaN and should be reported as 0",
-        0, am.getProgress(), 0);
+    assertEquals(0, am.getProgress(), 0, "Progress was NaN and should be reported as 0");
     when(mockVertex.getProgress()).thenReturn(-10f);
-    Assert.assertEquals("Progress was negative and should be reported as 0",
-        0, am.getProgress(), 0);
+    assertEquals(0, am.getProgress(), 0, "Progress was negative and should be reported as 0");
     when(mockVertex.getProgress()).thenReturn(1.0000567f);
-    Assert.assertEquals(
+    assertEquals(1.0f, am.getProgress(), 0.0f,
         "Progress was greater than 1 by a small float precision "
-            + "1.0000567 and should be reported as 1",
-        1.0f, am.getProgress(), 0.0f);
+            + "1.0000567 and should be reported as 1");
     when(mockVertex.getProgress()).thenReturn(10f);
-    Assert.assertEquals(
-        "Progress was greater than 1 and should be reported as 1",
-        1.0f, am.getProgress(), 0.0f);
+    assertEquals(1.0f, am.getProgress(), 0.0f,
+        "Progress was greater than 1 and should be reported as 1");
   }
 
   @SuppressWarnings("deprecation")
@@ -614,22 +610,21 @@ public class TestDAGAppMaster {
     Token<? extends TokenIdentifier> fetchedToken1 =
         fetchedDagCreds.getToken(tokenAlias1);
     if (doMerge) {
-      assertNotNull("AM creds missing from DAG creds", fetchedToken1);
+      assertNotNull(fetchedToken1, "AM creds missing from DAG creds");
       compareTestTokens(amToken1, fetchedDagCreds.getToken(tokenAlias1));
     } else {
-      assertNull("AM creds leaked to DAG creds", fetchedToken1);
+      assertNull(fetchedToken1, "AM creds leaked to DAG creds");
     }
     compareTestTokens(dagToken1, fetchedDagCreds.getToken(tokenAlias2));
     compareTestTokens(dagToken2, fetchedDagCreds.getToken(tokenAlias3));
   }
 
   private static void compareTestTokens(
-      Token<? extends TokenIdentifier> expected,
-      Token<? extends TokenIdentifier> actual) throws IOException {
+      Token<? extends TokenIdentifier> expected, Token<? extends TokenIdentifier> actual)
+      throws IOException {
     TestTokenIdentifier expectedId = getTestTokenIdentifier(expected);
     TestTokenIdentifier actualId = getTestTokenIdentifier(actual);
-    assertEquals("Token id not preserved", expectedId.getTestId(),
-        actualId.getTestId());
+    assertEquals(expectedId.getTestId(), actualId.getTestId(), "Token id not preserved");
   }
 
   private static TestTokenIdentifier getTestTokenIdentifier(

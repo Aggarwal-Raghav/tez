@@ -27,25 +27,25 @@ moduleFor('route:vertex/configs', 'Unit | Route | vertex/configs', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'vertex');
+      equal(type, 'vertex');
       return Ember.Object.create({
         entityID: 'vertex_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 

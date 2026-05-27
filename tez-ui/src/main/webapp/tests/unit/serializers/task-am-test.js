@@ -26,6 +26,6 @@ moduleFor('serializer:task-am', 'Unit | Serializer | task am', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
-  assert.ok(serializer.payloadNamespace);
+  ok(serializer);
+  ok(serializer.payloadNamespace);
 });

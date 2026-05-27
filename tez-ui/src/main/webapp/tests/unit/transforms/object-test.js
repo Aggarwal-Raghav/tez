@@ -26,5 +26,5 @@ moduleFor('transform:object', 'Unit | Transform | object', {
 // Replace this with your real tests.
 test('it exists', function(assert) {
   let transform = this.subject();
-  assert.ok(transform);
+  ok(transform);
 });

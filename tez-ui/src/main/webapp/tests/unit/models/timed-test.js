@@ -27,10 +27,10 @@ moduleForModel('timed', 'Unit | Model | timed', {
 test('it exists', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
-  assert.ok(model.startTime);
-  assert.ok(model.duration);
-  assert.ok(model.endTime);
+  ok(model);
+  ok(model.startTime);
+  ok(model.duration);
+  ok(model.endTime);
 });
 
 test('duration test', function(assert) {
@@ -40,47 +40,47 @@ test('duration test', function(assert) {
     model.set("startTime", 100);
     model.set("endTime", 200);
 
-    assert.equal(model.get("duration"), 100);
+    equal(model.get("duration"), 100);
   }
 
   Ember.run(function () {
     resetAndCheckModel();
     model.set("endTime", 100);
-    assert.equal(model.get("duration"), 0);
+    equal(model.get("duration"), 0);
 
     model.set("startTime", 0);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("endTime", 0);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("endTime", 50);
-    assert.equal(model.get("duration").message, "Start time is greater than end time by 50 msecs!");
+    equal(model.get("duration").message, "Start time is greater than end time by 50 msecs!");
 
     resetAndCheckModel();
     model.set("startTime", -100);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("endTime", -200);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("startTime", undefined);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("endTime", undefined);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("startTime", null);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
 
     resetAndCheckModel();
     model.set("endTime", null);
-    assert.equal(model.get("duration"), undefined);
+    equal(model.get("duration"), undefined);
   });
 });

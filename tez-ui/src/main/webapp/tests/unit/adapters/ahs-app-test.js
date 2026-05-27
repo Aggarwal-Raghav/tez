@@ -26,9 +26,9 @@ moduleFor('adapter:ahs-app', 'Unit | Adapter | ahs app', {
 test('Basic creation test', function(assert) {
   let adapter = this.subject();
 
-  assert.ok(adapter);
-  assert.ok(adapter.namespace);
-  assert.ok(adapter.pathForType);
+  ok(adapter);
+  ok(adapter.namespace);
+  ok(adapter.pathForType);
 
-  assert.equal(adapter.pathForType(), "apps");
+  equal(adapter.pathForType(), "apps");
 });

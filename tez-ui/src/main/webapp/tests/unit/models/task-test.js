@@ -26,21 +26,21 @@ moduleForModel('task', 'Unit | Model | task', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
-  assert.ok(model.needs.dag);
-  assert.ok(model.needs.am);
+  ok(model);
+  ok(model.needs.dag);
+  ok(model.needs.am);
 
-  assert.ok(model.vertexID);
-  assert.ok(model.vertexIndex);
-  assert.ok(model.vertexName);
+  ok(model.vertexID);
+  ok(model.vertexIndex);
+  ok(model.vertexName);
 
-  assert.ok(model.dagID);
-  assert.ok(model.dag);
+  ok(model.dagID);
+  ok(model.dag);
 
-  assert.ok(model.failedTaskAttempts);
+  ok(model.failedTaskAttempts);
 
-  assert.ok(model.successfulAttemptID);
-  assert.ok(model.attemptIDs);
+  ok(model.successfulAttemptID);
+  ok(model.attemptIDs);
 });
 
 test('index test', function(assert) {
@@ -48,7 +48,7 @@ test('index test', function(assert) {
         entityID: "1_2_3",
       });
 
-  assert.equal(model.get("index"), "3");
+  equal(model.get("index"), "3");
 });
 
 test('vertexName test', function(assert) {
@@ -62,5 +62,5 @@ test('vertexName test', function(assert) {
         }
       });
 
-  assert.equal(model.get("vertexName"), testVertexName);
+  equal(model.get("vertexName"), testVertexName);
 });

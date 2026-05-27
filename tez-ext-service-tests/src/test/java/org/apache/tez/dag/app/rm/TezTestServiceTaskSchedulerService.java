@@ -45,6 +45,7 @@ import org.apache.tez.serviceplugins.api.TaskSchedulerContext;
 
 import com.google.common.primitives.Ints;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

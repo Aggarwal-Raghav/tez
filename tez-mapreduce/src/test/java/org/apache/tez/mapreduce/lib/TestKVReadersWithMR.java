@@ -18,15 +18,13 @@
  */
 package org.apache.tez.mapreduce.lib;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapred.JobConf;
@@ -39,8 +37,7 @@ import org.apache.tez.common.counters.TezCounters;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.runtime.api.InputContext;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestKVReadersWithMR {
 
@@ -48,14 +45,15 @@ public class TestKVReadersWithMR {
   private TezCounters counters;
   private TezCounter inputRecordCounter;
 
-  @Before
+  @BeforeEach
   public void setup() {
     conf = new JobConf();
     counters = new TezCounters();
     inputRecordCounter = counters.findCounter(TaskCounter.INPUT_RECORDS_PROCESSED);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   public void testMRReaderMapred() throws IOException {
     //empty
     testWithSpecificNumberOfKV(0);
@@ -78,7 +76,7 @@ public class TestKVReadersWithMR {
       records++;
       verify(mockContext, times(records)).notifyProgress();
     }
-    assertTrue(kvPairs == records);
+    assertEquals(kvPairs, records);
 
     //reading again should fail
     try {
@@ -101,7 +99,7 @@ public class TestKVReadersWithMR {
       records++;
       verify(mockContext, times(records)).notifyProgress();
     }
-    assertTrue(kvPairs == records);
+    assertEquals(kvPairs, records);
 
     //reading again should fail
     try {

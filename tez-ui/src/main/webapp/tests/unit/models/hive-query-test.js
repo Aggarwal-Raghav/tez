@@ -27,30 +27,30 @@ moduleForModel('hive-query', 'Unit | Model | hive query', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
 
-  assert.ok(model);
+  ok(model);
 
-  assert.ok(model.domain);
+  ok(model.domain);
 
-  assert.ok(model.user);
-  assert.ok(model.requestUser);
+  ok(model.user);
+  ok(model.requestUser);
 
-  assert.ok(model.version);
+  ok(model.version);
 
-  assert.ok(model.llapAppID);
-  assert.ok(model.sessionID);
-  assert.ok(model.threadName);
+  ok(model.llapAppID);
+  ok(model.sessionID);
+  ok(model.threadName);
 
-  assert.ok(model.queryText);
+  ok(model.queryText);
 
-  assert.ok(model.dagID);
+  ok(model.dagID);
 
-  assert.ok(model.configsJSON);
+  ok(model.configsJSON);
 
-  assert.ok(model.startTime);
-  assert.ok(model.endTime);
-  assert.ok(model.duration);
+  ok(model.startTime);
+  ok(model.endTime);
+  ok(model.duration);
 
-  assert.ok(model.perf);
+  ok(model.perf);
 });
 
 test('duration test', function(assert) {
@@ -59,6 +59,6 @@ test('duration test', function(assert) {
   Ember.run(function () {
     model.set("startTime", 100);
     model.set("endTime", 200);
-    assert.equal(model.get("duration"), 100);
+    equal(model.get("duration"), 100);
   });
 });

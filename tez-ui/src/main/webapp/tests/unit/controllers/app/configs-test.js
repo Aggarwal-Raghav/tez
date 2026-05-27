@@ -31,10 +31,10 @@ test('Basic creation test', function(assert) {
     initVisibleColumns: Ember.K
   });
 
-  assert.ok(controller);
-  assert.ok(controller.breadcrumbs);
-  assert.ok(controller.columns);
-  assert.ok(controller.configs);
+  ok(controller);
+  ok(controller.breadcrumbs);
+  ok(controller.columns);
+  ok(controller.configs);
 
-  assert.ok(controller.get("searchText"), "tez");
+  ok(controller.get("searchText"), "tez");
 });

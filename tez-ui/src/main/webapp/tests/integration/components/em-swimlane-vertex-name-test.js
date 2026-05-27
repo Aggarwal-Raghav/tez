@@ -30,7 +30,7 @@ moduleForComponent('em-swimlane-vertex-name', 'Integration | Component | em swim
 test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-vertex-name}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -38,7 +38,7 @@ test('Basic creation test', function(assert) {
       template block text
     {{/em-swimlane-vertex-name}}
   `);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });
 
 test('Name test', function(assert) {
@@ -49,7 +49,7 @@ test('Name test', function(assert) {
   this.render(hbs`{{em-swimlane-vertex-name process=process}}`);
   return wait().then(() => {
     var content = this.$().text().trim();
-    assert.equal(content.substr(content.length - 8), 'TestName');
+    equal(content.substr(content.length - 8), 'TestName');
   });
 });
 
@@ -63,7 +63,7 @@ test('Progress test', function(assert) {
 
   this.render(hbs`{{em-swimlane-vertex-name process=process}}`);
   return wait().then(() => {
-    assert.equal(this.$(".progress-text").text().trim(), '50%');
+    equal(this.$(".progress-text").text().trim(), '50%');
   });
 });
 
@@ -76,6 +76,6 @@ test('finalStatus test', function(assert) {
 
   this.render(hbs`{{em-swimlane-vertex-name process=process}}`);
   return wait().then(() => {
-    assert.equal(this.$().text().trim(), 'STAT');
+    equal(this.$().text().trim(), 'STAT');
   });
 });

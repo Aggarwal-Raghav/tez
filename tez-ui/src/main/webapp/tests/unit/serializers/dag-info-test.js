@@ -26,14 +26,14 @@ moduleFor('serializer:dag-info', 'Unit | Serializer | dag info', {
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
 
-  assert.ok(serializer);
+  ok(serializer);
 
-  assert.ok(serializer.normalizeResourceHash);
+  ok(serializer.normalizeResourceHash);
 
-  assert.ok(serializer.maps.dagPlan);
-  assert.ok(serializer.maps.callerData);
+  ok(serializer.maps.dagPlan);
+  ok(serializer.maps.callerData);
 
-  assert.equal(Object.keys(serializer.get("maps")).length, 2 + 7); //2 own & 7 inherited
+  equal(Object.keys(serializer.get("maps")).length, 2 + 7); //2 own & 7 inherited
 });
 
 test('normalizeResourceHash test', function(assert) {
@@ -59,9 +59,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.equal(data.callerData.callerType, callerInfo.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  equal(data.callerData.callerType, callerInfo.callerType);
 
   // dagInfo test
   data = serializer.normalizeResourceHash({
@@ -74,9 +74,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.notOk(data.callerData.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  notOk(data.callerData.callerType);
 
   // dagInfo.blob test
   data = serializer.normalizeResourceHash({
@@ -92,9 +92,9 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.notOk(data.callerData.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  notOk(data.callerData.callerType);
 
   // dagContext have presidence over dagInfo
   data = serializer.normalizeResourceHash({
@@ -108,7 +108,7 @@ test('normalizeResourceHash test', function(assert) {
     }
   }).data;
 
-  assert.equal(data.callerData.callerContext, callerInfo.context);
-  assert.equal(data.callerData.callerDescription, callerInfo.description);
-  assert.equal(data.callerData.callerType, callerInfo.callerType);
+  equal(data.callerData.callerContext, callerInfo.context);
+  equal(data.callerData.callerDescription, callerInfo.description);
+  equal(data.callerData.callerType, callerInfo.callerType);
 });

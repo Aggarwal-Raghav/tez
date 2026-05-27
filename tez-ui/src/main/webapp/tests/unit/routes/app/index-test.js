@@ -28,25 +28,25 @@ moduleFor('route:app/index', 'Unit | Route | app/index', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'app');
+      equal(type, 'app');
       return Ember.Object.create({
         entityID: 'app_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 
@@ -59,7 +59,7 @@ test('Test load', function(assert) {
       testErr = {},
       route = this.subject({
         modelFor: function (type) {
-          assert.equal(type, "app");
+          equal(type, "app");
           return Ember.Object.create({
             entityID: testID
           });
@@ -67,9 +67,9 @@ test('Test load', function(assert) {
         get: function () {
           return { // loader
             queryRecord: function (type, id, options) {
-              assert.equal(type, "app");
-              assert.equal(id, "tez_123");
-              assert.equal(options, testOptions);
+              equal(type, "app");
+              equal(id, "tez_123");
+              equal(options, testOptions);
               return {
                 catch: function (callback) {
                   return callback(testErr);
@@ -77,10 +77,10 @@ test('Test load', function(assert) {
               };
             },
             query: function (type, query, options) {
-              assert.equal(type, "dag");
-              assert.equal(query.appID, testID);
-              assert.equal(query.limit, 1);
-              assert.equal(options, testOptions);
+              equal(type, "dag");
+              equal(query.appID, testID);
+              equal(query.limit, 1);
+              equal(options, testOptions);
               return {
                 then: function (callback) {
                   return callback([]);
@@ -91,9 +91,9 @@ test('Test load', function(assert) {
         }
       });
 
-  assert.expect(1 + 3 + 4 + 1);
+  expect(1 + 3 + 4 + 1);
 
-  assert.throws(function () {
+  throws(function () {
     route.load(null, null, testOptions);
   });
 });

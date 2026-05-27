@@ -28,25 +28,25 @@ moduleFor('route:app/configs', 'Unit | Route | app/configs', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
 });
 
 test('setupController test', function(assert) {
-  assert.expect(2);
+  expect(2);
 
   let route = this.subject({
     modelFor: function (type) {
-      assert.equal(type, 'app');
+      equal(type, 'app');
       return Ember.Object.create({
         entityID: 'app_123'
       });
     },
     startCrumbBubble: function () {
-      assert.ok(true);
+      ok(true);
     }
   });
 
@@ -59,7 +59,7 @@ test('load test', function(assert) {
       testData = {},
       route = this.subject({
         modelFor: function (type) {
-          assert.equal(type, "app");
+          equal(type, "app");
           return Ember.Object.create({
             entityID: entityID
           });
@@ -67,24 +67,24 @@ test('load test', function(assert) {
       });
   route.loader = {
     queryRecord: function (type, id, options) {
-      assert.equal(type, "app");
-      assert.equal(id, "tez_123");
-      assert.equal(options, testOptions);
+      equal(type, "app");
+      equal(id, "tez_123");
+      equal(options, testOptions);
       return Ember.RSVP.resolve(testData);
     }
   };
 
   route.load(null, null, testOptions).then(function (data) {
-    assert.equal(data, testData);
+    equal(data, testData);
   });
 
-  assert.expect(1 + 3 + 1);
+  expect(1 + 3 + 1);
 });
 
 test('load failure test', function(assert) {
   let route = this.subject({
         modelFor: function (type) {
-          assert.equal(type, "app");
+          equal(type, "app");
           return Ember.Object.create();
         },
       });
@@ -95,9 +95,9 @@ test('load failure test', function(assert) {
   };
 
   route.load(null, null, {}).then(function (data) {
-    assert.ok(Array.isArray(data));
-    assert.equal(data.length, 0);
+    ok(Array.isArray(data));
+    equal(data.length, 0);
   });
 
-  assert.expect(1 + 2);
+  expect(1 + 2);
 });

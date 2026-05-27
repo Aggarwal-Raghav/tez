@@ -18,9 +18,7 @@
  */
 package org.apache.tez.dag.app.dag.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -41,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.io.DataInputByteBuffer;
 import org.apache.hadoop.io.Writable;
@@ -74,13 +73,13 @@ import org.apache.tez.test.EdgeManagerForTest;
 
 import com.google.common.collect.Maps;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 
 public class TestEdge {
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testOneToOneEdgeManager() {
     EdgeManagerPluginContext mockContext = mock(EdgeManagerPluginContext.class);
     when(mockContext.getSourceVertexName()).thenReturn("Source");
@@ -95,22 +94,23 @@ public class TestEdge {
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(4);
     try {
       manager.routeDataMovementEventToDestination(event, 1, 1, destinationTaskAndInputIndices);
-      Assert.fail();
+      fail();
     } catch (IllegalStateException e) {
-      Assert.assertTrue(e.getMessage().contains("1-1 source and destination task counts must match"));
+      assertTrue(e.getMessage().contains("1-1 source and destination task counts must match"));
     }
 
     // now make it consistent
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(3);
     manager.routeDataMovementEventToDestination(event, 1, 1, destinationTaskAndInputIndices);
-    Assert.assertEquals(1, destinationTaskAndInputIndices.size());
-    Assert.assertEquals(1, destinationTaskAndInputIndices.entrySet().iterator().next().getKey()
+    assertEquals(1, destinationTaskAndInputIndices.size());
+    assertEquals(1, destinationTaskAndInputIndices.entrySet().iterator().next().getKey()
         .intValue());
-    Assert.assertEquals(0, destinationTaskAndInputIndices.entrySet().iterator().next().getValue()
+    assertEquals(0, destinationTaskAndInputIndices.entrySet().iterator().next().getValue()
         .get(0).intValue());
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testOneToOneEdgeManagerODR() {
     EdgeManagerPluginContext mockContext = mock(EdgeManagerPluginContext.class);
     when(mockContext.getSourceVertexName()).thenReturn("Source");
@@ -125,22 +125,23 @@ public class TestEdge {
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(4);
     try {
       manager.routeDataMovementEventToDestination(event, 1, 1, destinationTaskAndInputIndices);
-      Assert.fail();
+      fail();
     } catch (IllegalStateException e) {
-      Assert.assertTrue(e.getMessage().contains("1-1 source and destination task counts must match"));
+      assertTrue(e.getMessage().contains("1-1 source and destination task counts must match"));
     }
 
     // now make it consistent
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(3);
     manager.routeDataMovementEventToDestination(event, 1, 1, destinationTaskAndInputIndices);
-    Assert.assertEquals(1, destinationTaskAndInputIndices.size());
-    Assert.assertEquals(1, destinationTaskAndInputIndices.entrySet().iterator().next().getKey()
+    assertEquals(1, destinationTaskAndInputIndices.size());
+    assertEquals(1, destinationTaskAndInputIndices.entrySet().iterator().next().getKey()
         .intValue());
-    Assert.assertEquals(0, destinationTaskAndInputIndices.entrySet().iterator().next().getValue()
+    assertEquals(0, destinationTaskAndInputIndices.entrySet().iterator().next().getValue()
         .get(0).intValue());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testScatterGatherManager() {
     EdgeManagerPluginContext mockContext = mock(EdgeManagerPluginContext.class);
     when(mockContext.getSourceVertexName()).thenReturn("Source");
@@ -151,10 +152,10 @@ public class TestEdge {
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(-1);
     try {
       manager.getNumSourceTaskPhysicalOutputs(0);
-      Assert.fail();
+      fail();
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
-      Assert.assertTrue(e.getMessage()
+      assertTrue(e.getMessage()
           .contains("ScatterGather edge manager must have destination vertex task parallelism specified"));
     }
     when(mockContext.getDestinationVertexNumTasks()).thenReturn(0);
@@ -162,7 +163,8 @@ public class TestEdge {
   }
 
   @SuppressWarnings({ "rawtypes" })
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testCompositeEventHandling() throws TezException {
     EventHandler eventHandler = mock(EventHandler.class);
     EdgeProperty edgeProp = EdgeProperty.create(DataMovementType.SCATTER_GATHER,
@@ -226,7 +228,7 @@ public class TestEdge {
       assertEquals(srcTAID.getTaskID().getId(), dmEvent.getTargetIndex());
       byte[] res = new byte[dmEvent.getUserPayload().limit() - dmEvent.getUserPayload().position()];
       dmEvent.getUserPayload().slice().get(res);
-      assertTrue(Arrays.equals("bytes".getBytes(), res));
+      assertArrayEquals("bytes".getBytes(), res);
     }
   }
 
@@ -273,7 +275,8 @@ public class TestEdge {
     return taskAttemptID;
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidPhysicalInputCount() throws Exception {
     EventHandler mockEventHandler = mock(EventHandler.class);
     Edge edge = new Edge(EdgeProperty.create(
@@ -290,14 +293,15 @@ public class TestEdge {
     edge.initialize();
     try {
       edge.getDestinationSpec(0);
-      Assert.fail();
+      fail();
     } catch (AMUserCodeException e) {
       e.printStackTrace();
       assertTrue(e.getCause().getMessage().contains("PhysicalInputCount should not be negative"));
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidPhysicalOutputCount() throws Exception {
     EventHandler mockEventHandler = mock(EventHandler.class);
     Edge edge = new Edge(EdgeProperty.create(
@@ -314,14 +318,15 @@ public class TestEdge {
     edge.initialize();
     try {
       edge.getSourceSpec(0);
-      Assert.fail();
+      fail();
     } catch (AMUserCodeException e) {
       e.printStackTrace();
       assertTrue(e.getCause().getMessage().contains("PhysicalOutputCount should not be negative"));
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidConsumerNumber() throws Exception {
     EventHandler mockEventHandler = mock(EventHandler.class);
     Edge edge = new Edge(EdgeProperty.create(
@@ -341,14 +346,15 @@ public class TestEdge {
           new EventMetaData(EventProducerConsumerType.INPUT, "v2", "v1",
               TezTaskAttemptID.getInstance(TezTaskID.getInstance(v2Id, 1), 1)));
       edge.sendTezEventToSourceTasks(ireEvent);
-      Assert.fail();
+      fail();
     } catch (AMUserCodeException e) {
       e.printStackTrace();
       assertTrue(e.getCause().getMessage().contains("ConsumerTaskNum must be positive"));
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidSourceTaskIndex() throws Exception {
     EventHandler mockEventHandler = mock(EventHandler.class);
     Edge edge = new Edge(EdgeProperty.create(
@@ -368,7 +374,7 @@ public class TestEdge {
           new EventMetaData(EventProducerConsumerType.INPUT, "v2", "v1",
               TezTaskAttemptID.getInstance(TezTaskID.getInstance(v2Id, 1), 1)));
       edge.sendTezEventToSourceTasks(ireEvent);
-      Assert.fail();
+      fail();
     } catch (AMUserCodeException e) {
       e.printStackTrace();
       assertTrue(e.getCause().getMessage().contains("SourceTaskIndex should not be negative"));
@@ -481,7 +487,8 @@ public class TestEdge {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testEdgeManagerPluginCtxGetVertexGroupName() throws TezException {
     EdgeManagerPluginDescriptor edgeManagerDescriptor =
       EdgeManagerPluginDescriptor.create(EdgeManagerForTest.class.getName());

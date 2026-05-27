@@ -27,39 +27,39 @@ moduleFor('route:home/queries', 'Unit | Route | home/queries', {
 test('it exists', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
+  ok(route);
+  ok(route.title);
 
-  assert.ok(route.queryParams);
-  assert.ok(route.loaderQueryParams);
-  assert.ok(route.setupController);
+  ok(route.queryParams);
+  ok(route.loaderQueryParams);
+  ok(route.setupController);
 
-  assert.equal(route.entityType, "hive-query");
-  assert.equal(route.loaderNamespace, "queries");
+  equal(route.entityType, "hive-query");
+  equal(route.loaderNamespace, "queries");
 
-  assert.ok(route.actions.willTransition);
+  ok(route.actions.willTransition);
 });
 
 test('refresh test', function(assert) {
   let route = this.subject();
 
-  assert.equal(route.get("queryParams.queryID.refreshModel"), true);
-  assert.equal(route.get("queryParams.dagID.refreshModel"), true);
-  assert.equal(route.get("queryParams.appID.refreshModel"), true);
-  assert.equal(route.get("queryParams.executionMode.refreshModel"), true);
-  assert.equal(route.get("queryParams.user.refreshModel"), true);
-  assert.equal(route.get("queryParams.requestUser.refreshModel"), true);
-  assert.equal(route.get("queryParams.tablesRead.refreshModel"), true);
-  assert.equal(route.get("queryParams.tablesWritten.refreshModel"), true);
-  assert.equal(route.get("queryParams.operationID.refreshModel"), true);
-  assert.equal(route.get("queryParams.queue.refreshModel"), true);
+  equal(route.get("queryParams.queryID.refreshModel"), true);
+  equal(route.get("queryParams.dagID.refreshModel"), true);
+  equal(route.get("queryParams.appID.refreshModel"), true);
+  equal(route.get("queryParams.executionMode.refreshModel"), true);
+  equal(route.get("queryParams.user.refreshModel"), true);
+  equal(route.get("queryParams.requestUser.refreshModel"), true);
+  equal(route.get("queryParams.tablesRead.refreshModel"), true);
+  equal(route.get("queryParams.tablesWritten.refreshModel"), true);
+  equal(route.get("queryParams.operationID.refreshModel"), true);
+  equal(route.get("queryParams.queue.refreshModel"), true);
 
-  assert.equal(route.get("queryParams.rowCount.refreshModel"), true);
+  equal(route.get("queryParams.rowCount.refreshModel"), true);
 });
 
 test('loaderQueryParams test', function(assert) {
   let route = this.subject();
-  assert.equal(Object.keys(route.get("loaderQueryParams")).length, 10 + 1);
+  equal(Object.keys(route.get("loaderQueryParams")).length, 10 + 1);
 });
 
 test('load - query test', function(assert) {
@@ -81,20 +81,20 @@ test('load - query test', function(assert) {
 
   route.loader = Ember.Object.create({
     query: function (type, query, options) {
-      assert.equal(type, "hive-query");
-      assert.equal(query.limit, 6);
-      assert.equal(options.reload, true);
+      equal(type, "hive-query");
+      equal(query.limit, 6);
+      equal(options.reload, true);
       return Ember.RSVP.resolve(resultRecords);
     },
   });
 
-  assert.expect(3 + 1 + 2);
+  expect(3 + 1 + 2);
 
   return route.load(null, query).then(function (records) {
-    assert.ok(Array.isArray(records));
+    ok(Array.isArray(records));
 
-    assert.equal(records.get("length"), 1);
-    assert.equal(records.get("0.entityID"), testEntityID1);
+    equal(records.get("length"), 1);
+    equal(records.get("0.entityID"), testEntityID1);
   });
 
 });
@@ -107,7 +107,7 @@ test('actions.willTransition test', function(assert) {
   route.set("loader", {
     unloadAll: function (type) {
       if(type === "hive-query") {
-        assert.ok(true);
+        ok(true);
       }
       else {
         throw(new Error("Invalid type!"));
@@ -115,6 +115,6 @@ test('actions.willTransition test', function(assert) {
     }
   });
 
-  assert.expect(1);
+  expect(1);
   route.send("willTransition");
 });

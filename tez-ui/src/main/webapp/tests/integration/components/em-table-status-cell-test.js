@@ -26,7 +26,7 @@ moduleForComponent('em-table-status-cell', 'Integration | Component | em table s
 test('Basic render test', function(assert) {
 
   this.render(hbs`{{em-table-status-cell}}`);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -34,11 +34,11 @@ test('Basic render test', function(assert) {
       template block text
     {{/em-table-status-cell}}
   `);
-  assert.equal(this.$().text().trim(), 'Not Available!');
+  equal(this.$().text().trim(), 'Not Available!');
 });
 
 test('Basic test', function(assert) {
   this.render(hbs`{{em-table-status-cell content="inited"}}`);
-  assert.equal(this.$().text().trim(), 'inited');
-  assert.equal(this.$("span")[0].className, 'status status-inited');
+  equal(this.$().text().trim(), 'inited');
+  equal(this.$("span")[0].className, 'status status-inited');
 });

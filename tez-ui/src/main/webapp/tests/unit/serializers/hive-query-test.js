@@ -26,21 +26,21 @@ moduleFor('serializer:hive-query', 'Unit | Serializer | hive query', {
 
 test('Basic creation test', function(assert) {
   let serializer = this.subject();
-  assert.equal(Object.keys(serializer.get("maps")).length, 23 + 6); // 23 own and 6 inherited
-  assert.ok(serializer.get("extractAttributes"));
+  equal(Object.keys(serializer.get("maps")).length, 23 + 6); // 23 own and 6 inherited
+  ok(serializer.get("extractAttributes"));
 });
 
 test('getStatus test', function(assert) {
   let serializer = this.subject(),
       getStatus = serializer.get("maps.status");
 
-  assert.equal(getStatus({}), "RUNNING");
-  assert.equal(getStatus({
+  equal(getStatus({}), "RUNNING");
+  equal(getStatus({
     otherinfo: {
       STATUS: true
     }
   }), "SUCCEEDED");
-  assert.equal(getStatus({
+  equal(getStatus({
     otherinfo: {
       STATUS: false
     }
@@ -52,15 +52,15 @@ test('getEndTime test', function(assert) {
       getEndTime = serializer.get("maps.endTime"),
       endTime = 23;
 
-  assert.equal(getEndTime({}), undefined);
+  equal(getEndTime({}), undefined);
 
-  assert.equal(getEndTime({
+  equal(getEndTime({
     otherinfo: {
       endTime: endTime
     }
   }), endTime);
 
-  assert.equal(getEndTime({
+  equal(getEndTime({
     events: [{
       eventtype: 'X',
     }, {
@@ -91,15 +91,15 @@ test('extractAttributes test', function(assert) {
   }), {
     data: testData
   });
-  assert.deepEqual(testData.otherinfo.QUERY, testQuery);
+  deepEqual(testData.otherinfo.QUERY, testQuery);
 
   //CLIENT_IP_ADDRESS set
-  assert.equal(testHiveAddress, testData.otherinfo.CLIENT_IP_ADDRESS);
+  equal(testHiveAddress, testData.otherinfo.CLIENT_IP_ADDRESS);
 
   // Tables read & tables written
-  assert.ok(testData.primaryfilters);
-  assert.ok(testData.primaryfilters.tablesread instanceof Error);
-  assert.ok(testData.primaryfilters.tableswritten instanceof Error);
-  assert.equal(testData.primaryfilters.tablesread.message, "None");
-  assert.equal(testData.primaryfilters.tableswritten.message, "None");
+  ok(testData.primaryfilters);
+  ok(testData.primaryfilters.tablesread instanceof Error);
+  ok(testData.primaryfilters.tableswritten instanceof Error);
+  equal(testData.primaryfilters.tablesread.message, "None");
+  equal(testData.primaryfilters.tableswritten.message, "None");
 });

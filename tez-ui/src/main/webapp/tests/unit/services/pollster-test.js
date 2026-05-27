@@ -25,5 +25,5 @@ moduleFor('service:pollster', 'Unit | Service | pollster', {
 
 test('Basic creation test', function(assert) {
   let service = this.subject();
-  assert.ok(service);
+  ok(service);
 });

@@ -26,5 +26,5 @@ moduleForModel('task-am', 'Unit | Model | task am', {
 test('Basic creation test', function(assert) {
   let model = this.subject();
   // let store = this.store();
-  assert.ok(!!model);
+  ok(!!model);
 });

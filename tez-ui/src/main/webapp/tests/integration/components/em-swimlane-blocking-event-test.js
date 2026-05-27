@@ -33,7 +33,7 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{em-swimlane-blocking-event processor=processor process=process}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -42,7 +42,7 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-blocking-event}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('Blocking test', function(assert) {
@@ -76,8 +76,8 @@ test('Blocking test', function(assert) {
   this.render(hbs`{{em-swimlane-blocking-event processor=processor process=process blocking=blocking}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".em-swimlane-blocking-event").attr("style").trim(), 'left: 20%;');
-    assert.equal(this.$(".event-line").css("height"), ((blockingIndex - processIndex) * 30) + "px");
+    equal(this.$(".em-swimlane-blocking-event").attr("style").trim(), 'left: 20%;');
+    equal(this.$(".event-line").css("height"), ((blockingIndex - processIndex) * 30) + "px");
   });
 });
 
@@ -112,6 +112,6 @@ test('Blocking test with blocking.endEvent.time < blockTime', function(assert) {
   this.render(hbs`{{em-swimlane-blocking-event processor=processor process=process blocking=blocking}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".em-swimlane-blocking-event").attr("style"), undefined);
+    equal(this.$(".em-swimlane-blocking-event").attr("style"), undefined);
   });
 });

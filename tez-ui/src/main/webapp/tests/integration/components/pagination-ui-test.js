@@ -34,10 +34,10 @@ test('Basic creation test', function(assert) {
 
   this.render(hbs`{{pagination-ui rowCountOptions=rowCountOptions}}`);
 
-  assert.equal(this.$('select').length, 1);
+  equal(this.$('select').length, 1);
 
-  assert.equal(this.$('.page-list').length, 1);
-  assert.equal(this.$('li').length, 0);
+  equal(this.$('.page-list').length, 1);
+  equal(this.$('li').length, 0);
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -46,7 +46,7 @@ test('Basic creation test', function(assert) {
     {{/pagination-ui}}
   `);
 
-  assert.equal(this.$('select').length, 1);
+  equal(this.$('select').length, 1);
 });
 
 test('Page list test', function(assert) {
@@ -69,11 +69,11 @@ test('Page list test', function(assert) {
   this.render(hbs`{{pagination-ui tableDefinition=tableDefinition dataProcessor=processor}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('li').length, 4);
-    assert.equal(this.$('li').eq(0).text().trim(), "First");
-    assert.equal(this.$('li').eq(1).text().trim(), "4");
-    assert.equal(this.$('li').eq(2).text().trim(), "5");
-    assert.equal(this.$('li').eq(3).text().trim(), "6");
+    equal(this.$('li').length, 4);
+    equal(this.$('li').eq(0).text().trim(), "First");
+    equal(this.$('li').eq(1).text().trim(), "4");
+    equal(this.$('li').eq(2).text().trim(), "5");
+    equal(this.$('li').eq(3).text().trim(), "6");
   });
 });
 
@@ -97,10 +97,10 @@ test('Page list - moreAvailable false test', function(assert) {
   this.render(hbs`{{pagination-ui tableDefinition=tableDefinition dataProcessor=processor}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('li').length, 4);
-    assert.equal(this.$('li').eq(1).text().trim(), "3");
-    assert.equal(this.$('li').eq(2).text().trim(), "4");
-    assert.equal(this.$('li').eq(3).text().trim(), "5");
+    equal(this.$('li').length, 4);
+    equal(this.$('li').eq(1).text().trim(), "3");
+    equal(this.$('li').eq(2).text().trim(), "4");
+    equal(this.$('li').eq(3).text().trim(), "5");
   });
 });
 
@@ -124,10 +124,10 @@ test('Page list - moreAvailable true test', function(assert) {
   this.render(hbs`{{pagination-ui tableDefinition=tableDefinition dataProcessor=processor}}`);
 
   return wait().then(() => {
-    assert.equal(this.$('li').length, 4);
-    assert.equal(this.$('li').eq(1).text().trim(), "4");
-    assert.equal(this.$('li').eq(2).text().trim(), "5");
-    assert.equal(this.$('li').eq(3).text().trim(), "6");
+    equal(this.$('li').length, 4);
+    equal(this.$('li').eq(1).text().trim(), "4");
+    equal(this.$('li').eq(2).text().trim(), "5");
+    equal(this.$('li').eq(3).text().trim(), "6");
   });
 });
 
@@ -154,5 +154,5 @@ test('No data test', function(assert) {
   this.render(hbs`{{pagination-ui tableDefinition=definition dataProcessor=processor}}`);
 
   var paginationItems = this.$('li');
-  assert.equal(paginationItems.length, 0);
+  equal(paginationItems.length, 0);
 });

@@ -28,9 +28,9 @@ moduleFor('route:single-am-pollster', 'Unit | Route | single am pollster', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.canPoll);
-  assert.ok(route._loadedValueObserver);
+  ok(route);
+  ok(route.canPoll);
+  ok(route._loadedValueObserver);
 });
 
 test('canPoll test', function(assert) {
@@ -41,7 +41,7 @@ test('canPoll test', function(assert) {
     _canPollObserver: function () {}
   });
 
-  assert.notOk(route.get("canPoll"));
+  notOk(route.get("canPoll"));
 
   route.setProperties({
     polledRecords: {},
@@ -52,27 +52,27 @@ test('canPoll test', function(assert) {
       dag: undefined
     }
   });
-  assert.ok(route.get("canPoll"), true, "Test 1");
+  ok(route.get("canPoll"), true, "Test 1");
 
   route.set("loadedValue.app.isComplete", true);
-  assert.notOk(route.get("canPoll"), "Test 2");
+  notOk(route.get("canPoll"), "Test 2");
 
   route.set("loadedValue.app.isComplete", undefined);
-  assert.notOk(route.get("canPoll"), "Test 3");
+  notOk(route.get("canPoll"), "Test 3");
 
   route.set("loadedValue.dag", Ember.Object.create({
     isComplete: false
   }));
-  assert.ok(route.get("canPoll"), "Test 4");
+  ok(route.get("canPoll"), "Test 4");
 
   route.set("loadedValue.dag.isComplete", true);
-  assert.notOk(route.get("canPoll"), "Test 5");
+  notOk(route.get("canPoll"), "Test 5");
 
   route.set("loadedValue.dag", undefined);
-  assert.notOk(route.get("canPoll"), "Test 6");
+  notOk(route.get("canPoll"), "Test 6");
 
   route.set("loadedValue.app.isComplete", false);
-  assert.ok(route.get("canPoll"), "Test 7");
+  ok(route.get("canPoll"), "Test 7");
 });
 
 test('_loadedValueObserver test', function(assert) {
@@ -84,13 +84,13 @@ test('_loadedValueObserver test', function(assert) {
   }),
   loadedValue = Ember.Object.create();
 
-  assert.equal(route.get("polledRecords"), null);
+  equal(route.get("polledRecords"), null);
 
   route.set("loadedValue", loadedValue);
-  assert.equal(route.get("polledRecords.0"), loadedValue);
+  equal(route.get("polledRecords.0"), loadedValue);
 
   route.set("polledRecords", null);
 
   loadedValue.set("loadTime", 1);
-  assert.equal(route.get("polledRecords.0"), loadedValue);
+  equal(route.get("polledRecords.0"), loadedValue);
 });

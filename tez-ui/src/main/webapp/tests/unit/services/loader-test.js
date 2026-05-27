@@ -28,76 +28,76 @@ moduleFor('service:loader', 'Unit | Service | loader', {
 test('Basic creation test', function(assert) {
   let service = this.subject();
 
-  assert.ok(service.cache);
-  assert.ok(service.store);
-  assert.ok(service._setOptions);
+  ok(service.cache);
+  ok(service.store);
+  ok(service._setOptions);
 
-  assert.ok(service.checkRequisite);
+  ok(service.checkRequisite);
 
-  assert.ok(service.lookup);
-  assert.ok(service.entityFor);
+  ok(service.lookup);
+  ok(service.entityFor);
 
-  assert.ok(service.getCacheKey);
+  ok(service.getCacheKey);
 
-  assert.ok(service.queryRecord);
-  assert.ok(service.query);
+  ok(service.queryRecord);
+  ok(service.query);
 
-  assert.ok(service.unloadAll);
+  ok(service.unloadAll);
 });
 
 test('_setOptions test', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.get("nameSpace"), '');
+  equal(service.get("nameSpace"), '');
 
   service._setOptions({
     nameSpace: "ns"
   });
 
-  assert.equal(service.get("nameSpace"), 'ns');
+  equal(service.get("nameSpace"), 'ns');
 });
 
 test('checkRequisite test', function(assert) {
   let service = this.subject(),
       testType = "type";
 
-  assert.expect(3 + 3 + 2);
+  expect(3 + 3 + 2);
 
   // Not found
   service.store = {
     adapterFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
     },
     serializerFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
     }
   };
-  assert.throws(function () {
+  throws(function () {
     service.checkRequisite(testType);
   });
 
   // Not loader found
   service.store = {
     adapterFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
       return {};
     },
     serializerFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
       return {};
     }
   };
-  assert.throws(function () {
+  throws(function () {
     service.checkRequisite(testType);
   });
 
   service.store = {
     adapterFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
       return { _isLoader: true };
     },
     serializerFor: function (type) {
-      assert.equal(type, testType);
+      equal(type, testType);
       return { _isLoader: true };
     }
   };
@@ -108,10 +108,10 @@ test('checkRequisite test', function(assert) {
 test('lookup test', function(assert) {
   let service = this.subject();
 
-  assert.expect(1);
+  expect(1);
 
   service.container.lookup = function (fullName) {
-    assert.equal(fullName, "typ:na-me");
+    equal(fullName, "typ:na-me");
   };
 
   service.lookup("typ", "NaMe");
@@ -122,28 +122,28 @@ test('entityFor test', function(assert) {
       testName = "abc",
       entity;
 
-  assert.expect(3 + 4 + 3);
+  expect(3 + 4 + 3);
 
   // All lookups fail
   service.lookup = function (type, name) {
     if(name === testName) {
-      assert.equal(type, "entitie");
+      equal(type, "entitie");
     }
     if(name === "entity") {
-      assert.equal(type, "entitie");
+      equal(type, "entitie");
     }
   };
-  assert.throws(function () {
+  throws(function () {
     service.entityFor(testName);
   }, "All lookups fail");
 
   // Default lookups succeeded
   service.lookup = function (type, name) {
     if(name === testName) {
-      assert.equal(type, "entitie");
+      equal(type, "entitie");
     }
     if(name === "entity") {
-      assert.equal(type, "entitie");
+      equal(type, "entitie");
       return Ember.Object.create({
         actualName: "entity",
         name: name
@@ -151,34 +151,34 @@ test('entityFor test', function(assert) {
     }
   };
   entity = service.entityFor(testName);
-  assert.equal(entity.actualName, "entity", "Default lookups succeeded");
-  assert.equal(entity.get("name"), testName, "Default lookups succeeded");
+  equal(entity.actualName, "entity", "Default lookups succeeded");
+  equal(entity.get("name"), testName, "Default lookups succeeded");
 
   // Primary lookups succeeded
   service.lookup = function (type, name) {
     if(name === testName) {
-      assert.equal(type, "entitie");
+      equal(type, "entitie");
       return Ember.Object.create({
         actualName: name,
         name: name
       });
     }
     if(name === "entity") {
-      assert.equal(type, "entitie"); // Shouldn't be called
+      equal(type, "entitie"); // Shouldn't be called
     }
   };
   entity = service.entityFor(testName);
-  assert.equal(entity.get("name"), testName, "Default lookups succeeded");
-  assert.equal(entity.get("name"), testName, "Default lookups succeeded");
+  equal(entity.get("name"), testName, "Default lookups succeeded");
+  equal(entity.get("name"), testName, "Default lookups succeeded");
 });
 
 test('getCacheKey test', function(assert) {
   let service = this.subject();
 
-  assert.equal(service.getCacheKey("type"), "type");
-  assert.equal(service.getCacheKey("type", {a:1}), 'type:{"a":1}');
-  assert.equal(service.getCacheKey("type", null, 1), "type:1");
-  assert.equal(service.getCacheKey("type", {a:1}, 1), 'type:1:{"a":1}');
+  equal(service.getCacheKey("type"), "type");
+  equal(service.getCacheKey("type", {a:1}), 'type:{"a":1}');
+  equal(service.getCacheKey("type", null, 1), "type:1");
+  equal(service.getCacheKey("type", {a:1}, 1), 'type:1:{"a":1}');
 });
 
 test('queryRecord test', function(assert) {
@@ -192,20 +192,20 @@ test('queryRecord test', function(assert) {
       testID = 1,
       cacheKey = service.getCacheKey(testType, testQueryParams, testID);
 
-  assert.expect(1 + 5 + 3);
+  expect(1 + 5 + 3);
 
   service.nameSpace = testNameSpace;
   service.checkRequisite = Ember.K;
   service.entityFor = function (type) {
-    assert.equal(type, testType);
+    equal(type, testType);
 
     return {
       queryRecord: function (loader, id, options, query, urlParams) {
-        assert.equal(loader, service, "Loader");
-        assert.equal(id, testID, "id");
-        assert.equal(options.opt, testOptions.opt, "options");
-        assert.equal(query, testQueryParams, "query");
-        assert.equal(urlParams, testUrlParams, "urlParams");
+        equal(loader, service, "Loader");
+        equal(id, testID, "id");
+        equal(options.opt, testOptions.opt, "options");
+        equal(query, testQueryParams, "query");
+        equal(urlParams, testUrlParams, "urlParams");
 
         return Ember.RSVP.resolve(testRecord);
       }
@@ -213,11 +213,11 @@ test('queryRecord test', function(assert) {
   };
 
   service.cache = Ember.Object.create();
-  assert.notOk(service.get("cache").get(cacheKey));
+  notOk(service.get("cache").get(cacheKey));
   service.queryRecord(testType, testID, testOptions, testQueryParams, testUrlParams).then(function (record) {
-    assert.equal(record, testRecord);
+    equal(record, testRecord);
   });
-  assert.ok(service.get("cache").get(cacheKey));
+  ok(service.get("cache").get(cacheKey));
 });
 
 test('query test', function(assert) {
@@ -231,19 +231,19 @@ test('query test', function(assert) {
       testRecords = [testRecord, testRecord],
       cacheKey = service.getCacheKey(testType, testQueryParams);
 
-  assert.expect(1 + 4 + 3);
+  expect(1 + 4 + 3);
 
   service.nameSpace = testNameSpace;
   service.checkRequisite = Ember.K;
   service.entityFor = function (type) {
-    assert.equal(type, testType);
+    equal(type, testType);
 
     return {
       query: function (loader, query, options, urlParams) {
-        assert.equal(loader, service, "Loader");
-        assert.equal(options.opt, testOptions.opt, "options");
-        assert.equal(query, testQueryParams, "query");
-        assert.equal(urlParams, testUrlParams, "urlParams");
+        equal(loader, service, "Loader");
+        equal(options.opt, testOptions.opt, "options");
+        equal(query, testQueryParams, "query");
+        equal(urlParams, testUrlParams, "urlParams");
 
         return Ember.RSVP.resolve(testRecords);
       }
@@ -251,11 +251,11 @@ test('query test', function(assert) {
   };
 
   service.cache = Ember.Object.create();
-  assert.notOk(service.get("cache").get(cacheKey));
+  notOk(service.get("cache").get(cacheKey));
   service.query(testType, testQueryParams, testOptions, testUrlParams).then(function (records) {
-    assert.equal(records, testRecords);
+    equal(records, testRecords);
   });
-  assert.ok(service.get("cache").get(cacheKey));
+  ok(service.get("cache").get(cacheKey));
 });
 
 test('unloadAll test', function(assert) {
@@ -264,7 +264,7 @@ test('unloadAll test', function(assert) {
         nameSpace: "ns",
         store: {
           peekAll: function (type) {
-            assert.equal(type, testType1);
+            equal(type, testType1);
             return [Ember.Object.create({
               id: "ns:id1",
               entityID: "id1"
@@ -274,12 +274,12 @@ test('unloadAll test', function(assert) {
             })];
           },
           unloadRecord: function (record) {
-            assert.equal(record.get("entityID"), "id1");
+            equal(record.get("entityID"), "id1");
           }
         }
       });
 
-  assert.expect(1 + 1);
+  expect(1 + 1);
 
   service.unloadAll(testType1, "id2");
 });
@@ -290,7 +290,7 @@ test('unloadAll skipID test', function(assert) {
         nameSpace: "ns",
         store: {
           peekAll: function (type) {
-            assert.equal(type, testType1);
+            equal(type, testType1);
             return [Ember.Object.create({
               id: "ns:id1",
               entityID: "id1"
@@ -300,12 +300,12 @@ test('unloadAll skipID test', function(assert) {
             })];
           },
           unloadRecord: function (record) {
-            assert.equal(record.get("entityID"), "id2");
+            equal(record.get("entityID"), "id2");
           }
         }
       });
 
-  assert.expect(1 + 1);
+  expect(1 + 1);
 
   service.unloadAll(testType1, "id1");
 });

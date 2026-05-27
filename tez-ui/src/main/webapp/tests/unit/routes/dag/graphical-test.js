@@ -26,13 +26,13 @@ moduleFor('route:dag/graphical', 'Unit | Route | dag/graphical', {
 test('Basic creation test', function(assert) {
   let route = this.subject();
 
-  assert.ok(route);
-  assert.ok(route.title);
-  assert.ok(route.loaderNamespace);
-  assert.ok(route.setupController);
-  assert.ok(route.load);
-  assert.ok(route._loadedValueObserver);
-  assert.ok(route.setViewHeight);
-  assert.ok(route.actions.didTransition);
-  assert.ok(route.actions.willTransition);
+  ok(route);
+  ok(route.title);
+  ok(route.loaderNamespace);
+  ok(route.setupController);
+  ok(route.load);
+  ok(route._loadedValueObserver);
+  ok(route.setViewHeight);
+  ok(route.actions.didTransition);
+  ok(route.actions.willTransition);
 });

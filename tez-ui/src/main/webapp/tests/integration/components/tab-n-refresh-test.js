@@ -28,12 +28,12 @@ moduleForComponent('tab-n-refresh', 'Integration | Component | tab n refresh', {
 test('Basic creation test', function(assert) {
   this.render(hbs`{{tab-n-refresh}}`);
 
-  assert.equal(this.$(".refresh-ui button").text().trim(), 'Refresh');
-  assert.equal(
+  equal(this.$(".refresh-ui button").text().trim(), 'Refresh');
+  equal(
     this.$(".refresh-ui .text-elements").text().trim().split(" ").slice(-4).join(" "),
     "Load time not available!"
   );
-  assert.equal(this.$(".refresh-ui input").val(), 'on');
+  equal(this.$(".refresh-ui input").val(), 'on');
 
   this.render(hbs`
     {{#tab-n-refresh}}
@@ -41,7 +41,7 @@ test('Basic creation test', function(assert) {
     {{/tab-n-refresh}}
   `);
 
-  assert.equal(this.$(".refresh-ui button").text().trim(), 'Refresh');
+  equal(this.$(".refresh-ui button").text().trim(), 'Refresh');
 });
 
 test('normalizedTabs test', function(assert) {
@@ -57,8 +57,8 @@ test('normalizedTabs test', function(assert) {
 
   this.render(hbs`{{tab-n-refresh tabs=tabs}}`);
 
-  assert.equal($(this.$("li")[0]).text().trim(), testTabs[0].text);
-  assert.equal($(this.$("li")[1]).text().trim(), testTabs[1].text);
+  equal($(this.$("li")[0]).text().trim(), testTabs[0].text);
+  equal($(this.$("li")[1]).text().trim(), testTabs[1].text);
 });
 
 test('loadTime test', function(assert) {
@@ -68,7 +68,7 @@ test('loadTime test', function(assert) {
   this.set("loadTime", loadTime);
 
   this.render(hbs`{{tab-n-refresh loadTime=loadTime}}`);
-  assert.equal(
+  equal(
     this.$(".refresh-ui .text-elements").text().trim().split(" ").slice(-7).join(" ").replace("\n", ""),
     `Last refreshed at ${timeInText}`
   );

@@ -30,7 +30,7 @@ moduleForComponent('em-swimlane-consolidated-process', 'Integration | Component 
 test('Basic creation test', function(assert) {
   this.render(hbs`{{em-swimlane-consolidated-process}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 
   // Template block usage:" + EOL +
   this.render(hbs`
@@ -39,7 +39,7 @@ test('Basic creation test', function(assert) {
     {{/em-swimlane-consolidated-process}}
   `);
 
-  assert.equal(this.$().text().trim(), '');
+  equal(this.$().text().trim(), '');
 });
 
 test('Basic creation test', function(assert) {
@@ -55,7 +55,7 @@ test('Basic creation test', function(assert) {
   this.render(hbs`{{em-swimlane-consolidated-process process=process processor=processor}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(".em-swimlane-consolidated-process").attr("style").trim(),
+    equal(this.$(".em-swimlane-consolidated-process").attr("style").trim(),
         "left: 30%; right: 40%; z-index: 30;");
   });
 });

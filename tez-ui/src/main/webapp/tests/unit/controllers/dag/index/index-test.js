@@ -35,8 +35,8 @@ test('Basic creation test', function(assert) {
     }
   });
 
-  assert.ok(controller);
-  assert.ok(controller.columns);
+  ok(controller);
+  ok(controller.columns);
 });
 
 test('definition test', function(assert) {
@@ -49,5 +49,5 @@ test('definition test', function(assert) {
     }
   });
 
-  assert.ok(controller.get("definition.recordType"), "vertex");
+  ok(controller.get("definition.recordType"), "vertex");
 });
