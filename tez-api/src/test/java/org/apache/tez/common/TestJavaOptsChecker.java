@@ -18,64 +18,66 @@
  */
 package org.apache.tez.common;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.concurrent.TimeUnit;
+
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestJavaOptsChecker {
 
   private final JavaOptsChecker javaOptsChecker = new JavaOptsChecker();
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testBasicChecker() throws TezException {
     javaOptsChecker.checkOpts(TezConfiguration.TEZ_TASK_LAUNCH_CMD_OPTS_DEFAULT);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMultipleGC() {
     // Clashing GC values
     String opts = "-XX:+UseConcMarkSweepGC -XX:+UseG1GC -XX:+UseParallelGC ";
     try {
       javaOptsChecker.checkOpts(opts);
-      Assert.fail("Expected check to fail with opts=" + opts);
+      fail("Expected check to fail with opts=" + opts);
     } catch (TezException e) {
-      Assert.assertTrue(e.getMessage(),
-          e.getMessage().contains("Invalid/conflicting GC options found"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options found"), e.getMessage());
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testPositiveNegativeOpts() throws TezException {
     // Multiple positive GC values
     String opts = "-XX:+UseConcMarkSweepGC -XX:+UseG1GC -XX:+UseParallelGC -XX:-UseG1GC ";
     try {
       javaOptsChecker.checkOpts(opts);
-      Assert.fail("Expected check to fail with opts=" + opts);
+      fail("Expected check to fail with opts=" + opts);
     } catch (TezException e) {
-      Assert.assertTrue(e.getMessage(),
-          e.getMessage().contains("Invalid/conflicting GC options found"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options found"), e.getMessage());
     }
 
     // Positive following a negative is still a positive
     opts = " -XX:-UseG1GC -XX:+UseParallelGC -XX:-UseG1GC  -XX:+UseG1GC";
     try {
       javaOptsChecker.checkOpts(opts);
-      Assert.fail("Expected check to fail with opts=" + opts);
+      fail("Expected check to fail with opts=" + opts);
     } catch (TezException e) {
-      Assert.assertTrue(e.getMessage(),
-          e.getMessage().contains("Invalid/conflicting GC options found"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options found"), e.getMessage());
     }
 
     // Order of positive and negative matters
     opts = " -XX:+UseG1GC -XX:-UseG1GC -XX:+UseParallelGC -XX:-UseG1GC  -XX:+UseG1GC";
     try {
       javaOptsChecker.checkOpts(opts);
-      Assert.fail("Expected check to fail with opts=" + opts);
+      fail("Expected check to fail with opts=" + opts);
     } catch (TezException e) {
-      Assert.assertTrue(e.getMessage(),
-          e.getMessage().contains("Invalid/conflicting GC options found"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options found"), e.getMessage());
     }
 
     // Sanity check for good condition
@@ -85,10 +87,10 @@ public class TestJavaOptsChecker {
     // Invalid negative can be ignored
     opts = " -XX:+UseG1GC -XX:+UseParallelGC -XX:-UseG1GC -XX:-UseConcMarkSweepGC ";
     javaOptsChecker.checkOpts(opts);
-
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSpecialCaseNonConflictingGCOptions() throws TezException {
     String opts = " -XX:+UseParNewGC -XX:+UseConcMarkSweepGC ";
     javaOptsChecker.checkOpts(opts);
@@ -102,13 +104,9 @@ public class TestJavaOptsChecker {
     opts += " -XX:+UseG1GC ";
     try {
       javaOptsChecker.checkOpts(opts);
-      Assert.fail("Expected check to fail with opts=" + opts);
+      fail("Expected check to fail with opts=" + opts);
     } catch (TezException e) {
-      Assert.assertTrue(e.getMessage(),
-          e.getMessage().contains("Invalid/conflicting GC options found"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options found"), e.getMessage());
     }
-
-
   }
-
 }

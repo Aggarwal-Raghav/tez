@@ -32,6 +32,8 @@ import org.apache.tez.dag.api.DAG;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.DAGStatus;
+
+import org.junit.jupiter.api.*;
 /**
  * Run a DAG on a cluster with the given configuration. Starts a TezSession
  * using default cluster configuration from installation. Then uses reflection

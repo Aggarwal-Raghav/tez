@@ -18,11 +18,12 @@
  */
 package org.apache.tez.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -45,9 +46,7 @@ import org.apache.tez.serviceplugins.api.ServicePluginsDescriptor;
 import org.apache.tez.serviceplugins.api.TaskCommunicatorDescriptor;
 import org.apache.tez.serviceplugins.api.TaskSchedulerDescriptor;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +78,7 @@ public class TestExtServicesWithLocalMode {
 
   private static volatile Configuration confForJobs;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws Exception {
 
     localFs = FileSystem.getLocal(clusterConf).getRaw();
@@ -99,7 +98,7 @@ public class TestExtServicesWithLocalMode {
     confForJobs.set(TezConfiguration.TEZ_AM_STAGING_DIR, STAGING_DIR.toString());
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws IOException, TezException {
     if (tezTestServiceCluster != null) {
       tezTestServiceCluster.stop();
@@ -113,7 +112,8 @@ public class TestExtServicesWithLocalMode {
   }
 
 
-  @Test(timeout = 30000)
+  @Test
+  @Timeout(value = 30000, unit = TimeUnit.MILLISECONDS)
   public void test1() throws Exception {
 
     UserPayload userPayload = TezUtils.createUserPayloadFromConf(confForJobs);

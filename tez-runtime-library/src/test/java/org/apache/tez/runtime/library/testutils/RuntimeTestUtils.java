@@ -27,6 +27,8 @@ import java.io.InputStream;
 
 import org.apache.tez.runtime.library.common.shuffle.orderedgrouped.ShuffleHeader;
 
+import org.junit.jupiter.api.*;
+
 public final class RuntimeTestUtils {
 
   private RuntimeTestUtils() {

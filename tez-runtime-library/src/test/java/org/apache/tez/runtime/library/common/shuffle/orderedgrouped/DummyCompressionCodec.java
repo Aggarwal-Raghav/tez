@@ -34,6 +34,8 @@ import org.apache.hadoop.io.compress.Decompressor;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import org.junit.jupiter.api.*;
+
 /**
  * A dummy codec. It passes everything to underlying stream
  */

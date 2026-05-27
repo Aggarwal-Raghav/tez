@@ -49,6 +49,7 @@ import org.apache.tez.test.RecoveryServiceWithEventHandlingHook.SimpleShutdownCo
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

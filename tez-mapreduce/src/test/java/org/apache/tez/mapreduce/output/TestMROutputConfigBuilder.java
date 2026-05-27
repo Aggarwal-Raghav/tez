@@ -18,7 +18,9 @@
  */
 package org.apache.tez.mapreduce.output;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
@@ -26,12 +28,13 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.tez.dag.api.TezUncheckedException;
 import org.apache.tez.mapreduce.hadoop.MRJobConfig;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 
 public class TestMROutputConfigBuilder {
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNewAPI() {
     Configuration conf = new Configuration();
     try {
@@ -48,7 +51,8 @@ public class TestMROutputConfigBuilder {
     MROutput.createConfigBuilder(conf, DBOutputFormat.class).build();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNewAPI_ThroughConf() {
     Configuration conf = new Configuration();
     try {
@@ -85,7 +89,8 @@ public class TestMROutputConfigBuilder {
     MROutput.createConfigBuilder(conf, null).build();
   }
 
-  @Test(timeout = 5000 )
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testOldAPI() {
     Configuration conf = new Configuration();
     try {
@@ -103,7 +108,8 @@ public class TestMROutputConfigBuilder {
     MROutput.createConfigBuilder(conf, org.apache.hadoop.mapred.lib.db.DBOutputFormat.class).build();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testOldAPI_ThroughConf() {
     Configuration conf = new Configuration();
     conf.setBoolean(MRJobConfig.NEW_API_REDUCER_CONFIG, false);

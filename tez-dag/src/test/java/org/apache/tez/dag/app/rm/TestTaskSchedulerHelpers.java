@@ -18,7 +18,7 @@
  */
 package org.apache.tez.dag.app.rm;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -76,6 +76,8 @@ import org.apache.tez.serviceplugins.api.TaskSchedulerContext;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import org.junit.jupiter.api.*;
 
 final class TestTaskSchedulerHelpers {
 

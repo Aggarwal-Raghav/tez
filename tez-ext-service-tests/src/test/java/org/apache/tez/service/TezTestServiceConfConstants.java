@@ -18,6 +18,8 @@
  */
 package org.apache.tez.service;
 
+import org.junit.jupiter.api.*;
+
 public final class TezTestServiceConfConstants {
 
   private static final String TEZ_TEST_SERVICE_PREFIX = "tez.test.service.";

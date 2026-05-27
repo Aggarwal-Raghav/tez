@@ -31,6 +31,7 @@ import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.service.impl.TezTestService;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

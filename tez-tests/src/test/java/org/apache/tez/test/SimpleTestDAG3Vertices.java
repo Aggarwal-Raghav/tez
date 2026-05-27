@@ -30,6 +30,8 @@ import org.apache.tez.dag.api.EdgeProperty.SchedulingType;
 import org.apache.tez.dag.api.UserPayload;
 import org.apache.tez.dag.api.Vertex;
 
+import org.junit.jupiter.api.*;
+
 /**
  * Simple Test DAG with 3 vertices using TestProcessor/TestInput/TestOutput.
  *

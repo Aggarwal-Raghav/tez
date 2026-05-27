@@ -41,6 +41,8 @@ import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.IOSpecProto;
 import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.TaskSpecProto;
 import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.TaskSpecProto.Builder;
 
+import org.junit.jupiter.api.*;
+
 public final class ProtoConverters {
 
   private ProtoConverters() {}

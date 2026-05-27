@@ -18,10 +18,12 @@
  */
 package org.apache.tez.hadoop.shim;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+
 
 public class TestHadoopShim28 {
 
@@ -29,33 +31,33 @@ public class TestHadoopShim28 {
   public void testApplyFinalApplicationStatusCorrection() {
     HadoopShim shim = new HadoopShim28();
     // Session mode success/failure, change to ended
-    Assert.assertEquals(FinalApplicationStatus.ENDED,
+    assertEquals(FinalApplicationStatus.ENDED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.SUCCEEDED, true, false));
-    Assert.assertEquals(FinalApplicationStatus.ENDED,
+    assertEquals(FinalApplicationStatus.ENDED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, true, false));
 
     // Non-session mode success/failure, retain success/failure
-    Assert.assertEquals(FinalApplicationStatus.SUCCEEDED,
+    assertEquals(FinalApplicationStatus.SUCCEEDED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.SUCCEEDED, false, false));
-    Assert.assertEquals(FinalApplicationStatus.FAILED,
+    assertEquals(FinalApplicationStatus.FAILED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, false, false));
 
     // Session and non-session mode error, retain failed.
-    Assert.assertEquals(FinalApplicationStatus.FAILED,
+    assertEquals(FinalApplicationStatus.FAILED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, true, true));
-    Assert.assertEquals(FinalApplicationStatus.FAILED,
+    assertEquals(FinalApplicationStatus.FAILED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, false, true));
 
     // Session and non-session mode killed is killed.
-    Assert.assertEquals(FinalApplicationStatus.KILLED,
+    assertEquals(FinalApplicationStatus.KILLED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.KILLED, true, false));
-    Assert.assertEquals(FinalApplicationStatus.KILLED,
+    assertEquals(FinalApplicationStatus.KILLED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.KILLED, false, false));
 
     // Session and non-session mode undefined is undefined.
-    Assert.assertEquals(FinalApplicationStatus.UNDEFINED,
+    assertEquals(FinalApplicationStatus.UNDEFINED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.UNDEFINED, true, false));
-    Assert.assertEquals(FinalApplicationStatus.UNDEFINED,
+    assertEquals(FinalApplicationStatus.UNDEFINED,
         shim.applyFinalApplicationStatusCorrection(FinalApplicationStatus.UNDEFINED, false, false));
   }
 }
