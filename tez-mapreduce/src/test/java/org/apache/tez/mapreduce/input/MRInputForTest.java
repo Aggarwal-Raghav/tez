@@ -21,6 +21,8 @@ package org.apache.tez.mapreduce.input;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.tez.runtime.api.InputContext;
 
+import org.junit.jupiter.api.*;
+
 /**
  * This is used for inspecting jobConf in test.
  */

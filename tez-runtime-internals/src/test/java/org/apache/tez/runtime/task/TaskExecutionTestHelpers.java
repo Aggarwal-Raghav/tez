@@ -18,8 +18,7 @@
  */
 package org.apache.tez.runtime.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -52,7 +51,7 @@ import org.apache.tez.runtime.api.impl.TezEvent;
 import org.apache.tez.runtime.api.impl.TezHeartbeatRequest;
 import org.apache.tez.runtime.api.impl.TezHeartbeatResponse;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -531,7 +530,7 @@ public final class TaskExecutionTestHelpers {
     if (diagnostics != null && diagnostics.startsWith("Node:")) {
       diagnosticsWithoutIP = diagnostics.substring(diagnostics.indexOf(" : ") + 3);
       String nodeIp = diagnostics.substring(5, diagnostics.indexOf(" : "));
-      Assert.assertFalse(nodeIp.isEmpty());
+      assertFalse(nodeIp.isEmpty());
     }
 
     return diagnosticsWithoutIP;

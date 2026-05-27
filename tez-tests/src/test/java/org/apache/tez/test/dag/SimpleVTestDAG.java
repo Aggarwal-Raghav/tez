@@ -33,6 +33,8 @@ import org.apache.tez.test.TestInput;
 import org.apache.tez.test.TestOutput;
 import org.apache.tez.test.TestProcessor;
 
+import org.junit.jupiter.api.*;
+
 /**
  * A DAG with 3 vertices of which their graph can be depicted easily with V shape.
  *  v1     v2

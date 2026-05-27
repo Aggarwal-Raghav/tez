@@ -18,9 +18,7 @@
  */
 package org.apache.tez.dag.history.recovery;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -34,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.hadoop.conf.Configuration;
@@ -62,7 +61,7 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestRecoveryService {
 
@@ -130,7 +129,8 @@ public class TestRecoveryService {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDrainEvents() throws Exception {
     setup(false, null);
     recoveryService.start();
@@ -143,7 +143,8 @@ public class TestRecoveryService {
     assertEquals(randEventCount, recoveryService.processedRecoveryEventCounter.get());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMultipleDAGFinishedEvent() throws Exception {
     setup(false, null);
     recoveryService.start();
@@ -169,7 +170,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSummaryPathExisted() throws Exception {
     setup(false, null);
     recoveryService.start();
@@ -186,7 +188,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryPathExisted() throws Exception {
     setup(false, null);
     recoveryService.start();
@@ -203,7 +206,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryFlushOnMaxEvents() throws Exception {
     setup(true, new String[][] {
         {TezConfiguration.DAG_RECOVERY_MAX_UNFLUSHED_EVENTS, "10"},
@@ -228,7 +232,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout=10000)
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryFlushOnTimeoutEvents() throws Exception {
     setup(true, new String[][] {
       {TezConfiguration.DAG_RECOVERY_MAX_UNFLUSHED_EVENTS, "-1"},
@@ -256,7 +261,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout=10000)
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryFlush() throws Exception {
     setup(true, new String[][] {
       {TezConfiguration.DAG_RECOVERY_MAX_UNFLUSHED_EVENTS, "10"},
@@ -294,7 +300,8 @@ public class TestRecoveryService {
     recoveryService.stop();
   }
 
-  @Test(timeout=50000)
+  @Test
+  @Timeout(value = 50000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryFlushOnStop() throws Exception {
     setup(true, new String[][] {
       {TezConfiguration.DAG_RECOVERY_MAX_UNFLUSHED_EVENTS, "-1"},
@@ -322,7 +329,8 @@ public class TestRecoveryService {
     verify(dagFos, times(1)).hflush();
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryFlushOnSummaryEvent() throws Exception {
     setup(true, new String[][] {
       {TezConfiguration.DAG_RECOVERY_MAX_UNFLUSHED_EVENTS, "-1"},

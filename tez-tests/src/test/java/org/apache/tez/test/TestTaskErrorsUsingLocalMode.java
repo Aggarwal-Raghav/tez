@@ -18,12 +18,13 @@
  */
 package org.apache.tez.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.tez.client.TezClient;
 import org.apache.tez.dag.api.DAG;
@@ -41,7 +42,7 @@ import org.apache.tez.runtime.api.ProcessorContext;
 import org.apache.tez.runtime.api.TaskFailureType;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,8 @@ public class TestTaskErrorsUsingLocalMode {
       TestTaskErrorsUsingLocalMode.class.getName()).getAbsoluteFile();
 
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testFatalErrorReported() throws IOException, TezException, InterruptedException {
 
     TezClient tezClient = getTezClient("testFatalErrorReported");
@@ -78,7 +80,8 @@ public class TestTaskErrorsUsingLocalMode {
     }
   }
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testNonFatalErrorReported() throws IOException, TezException, InterruptedException {
 
     TezClient tezClient = getTezClient("testNonFatalErrorReported");
@@ -102,7 +105,8 @@ public class TestTaskErrorsUsingLocalMode {
     }
   }
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testSelfKillReported() throws IOException, TezException, InterruptedException {
 
     TezClient tezClient = getTezClient("testSelfKillReported");

@@ -18,7 +18,7 @@
  */
 package org.apache.tez.dag.app;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -80,7 +81,7 @@ import org.apache.tez.runtime.api.impl.TezEvent;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 public class TestRecoveryParser {
 
@@ -97,7 +98,7 @@ public class TestRecoveryParser {
   // Protobuf message limit is 64 MB by default
   private static final int PROTOBUF_DEFAULT_SIZE_LIMIT = 64 << 20;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IllegalArgumentException, IOException {
     this.conf = new Configuration();
     this.localFS = FileSystem.getLocal(conf);
@@ -118,7 +119,8 @@ public class TestRecoveryParser {
     return data;
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testGetLastCompletedDAG() {
     Map<TezDAGID, DAGSummaryData> summaryDataMap =
         new HashMap<TezDAGID, DAGSummaryData>();
@@ -134,7 +136,8 @@ public class TestRecoveryParser {
     assertEquals(lastCompletedDAGId, lastCompletedDAG.dagId.getId());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testGetLastInProgressDAG() {
     Map<TezDAGID, DAGSummaryData> summaryDataMap =
         new HashMap<TezDAGID, DAGSummaryData>();
@@ -156,7 +159,8 @@ public class TestRecoveryParser {
   }
 
   // skipAllOtherEvents due to non-recoverable (in the middle of commit)
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSkipAllOtherEvents_1() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -191,7 +195,7 @@ public class TestRecoveryParser {
     rService.stop();
 
     DAGRecoveryData dagData = parser.parseRecoveryData();
-    assertEquals(true, dagData.nonRecoverable);
+    assertTrue(dagData.nonRecoverable);
     assertTrue(dagData.reason.contains("DAG Commit was in progress, not recoverable,"));
     // DAGSubmittedEvent is handled but DAGInitializedEvent and DAGStartedEvent in the next attempt are both skipped
     // due to the dag is not recoerable.
@@ -201,7 +205,8 @@ public class TestRecoveryParser {
   }
 
   // skipAllOtherEvents due to dag finished
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSkipAllOtherEvents_2() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     ApplicationAttemptId appAttemptId = ApplicationAttemptId.newInstance(appId, 1);
@@ -238,9 +243,9 @@ public class TestRecoveryParser {
     rService.stop();
 
     DAGRecoveryData dagData = parser.parseRecoveryData();
-    assertEquals(false, dagData.nonRecoverable);
+    assertFalse(dagData.nonRecoverable);
     assertEquals(DAGState.FAILED, dagData.dagState);
-    assertEquals(true, dagData.isCompleted);
+    assertTrue(dagData.isCompleted);
     // DAGSubmittedEvent, DAGInitializedEvent and DAGFinishedEvent is handled
     verify(mockAppMaster).createDAG(any(), any());
     // DAGInitializedEvent may not been handled before DAGFinishedEvent,
@@ -249,7 +254,8 @@ public class TestRecoveryParser {
     assertNull(dagData.getDAGStartedEvent());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testLastCorruptedRecoveryRecord() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -286,15 +292,16 @@ public class TestRecoveryParser {
 
     // corrupted last records will be skipped but the whole recovery logs will be read
     DAGRecoveryData dagData = parser.parseRecoveryData();
-    assertEquals(false, dagData.isCompleted);
-    assertEquals(null, dagData.reason);
-    assertEquals(false, dagData.nonRecoverable);
+    assertFalse(dagData.isCompleted);
+    assertNull(dagData.reason);
+    assertFalse(dagData.nonRecoverable);
     // verify DAGSubmitedEvent & DAGInititlizedEvent is handled.
     verify(mockAppMaster).createDAG(any(), any());
     assertNotNull(dagData.getDAGInitializedEvent());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testLastCorruptedSummaryRecord() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -328,7 +335,8 @@ public class TestRecoveryParser {
     }
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_DAGInCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -359,7 +367,8 @@ public class TestRecoveryParser {
     assertTrue(dagData.reason.contains("DAG Commit was in progress"));
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_DAGFinishCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     ApplicationAttemptId appAttemptId = ApplicationAttemptId.newInstance(appId, 1);
@@ -396,7 +405,8 @@ public class TestRecoveryParser {
     assertTrue(dagData.isCompleted);
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_VertexInCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -427,7 +437,8 @@ public class TestRecoveryParser {
     assertTrue(dagData.reason.contains("Vertex Commit was in progress"));
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_VertexFinishCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -463,7 +474,8 @@ public class TestRecoveryParser {
     assertFalse(dagData.nonRecoverable);
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_VertexGroupInCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -496,7 +508,8 @@ public class TestRecoveryParser {
     assertTrue(dagData.reason.contains("Vertex Group Commit was in progress"));
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableSummary_VertexGroupFinishCommitting() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -543,7 +556,8 @@ public class TestRecoveryParser {
     assertFalse(dagData.nonRecoverable);
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableNonSummary1() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -580,7 +594,8 @@ public class TestRecoveryParser {
     assertTrue(dagData.reason.contains("Vertex has been committed, but its full recovery events are not seen"));
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoverableNonSummary2() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -617,7 +632,8 @@ public class TestRecoveryParser {
               + ", but its full recovery events are not seen"));
   }
 
-  @Test(timeout=20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryLargeEventData() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);
@@ -677,15 +693,16 @@ public class TestRecoveryParser {
 
     DAGRecoveryData dagData = parser.parseRecoveryData();
     VertexRecoveryData v0data = dagData.getVertexRecoveryData(v0Id);
-    assertNotNull("Vertex Recovery Data should be non-null", v0data);
+    assertNotNull(v0data, "Vertex Recovery Data should be non-null");
     VertexConfigurationDoneEvent parsedVertexConfigurationDoneEvent = v0data.getVertexConfigurationDoneEvent();
-    assertNotNull("Vertex Configuration Done Event should be non-null", parsedVertexConfigurationDoneEvent);
+    assertNotNull(parsedVertexConfigurationDoneEvent, "Vertex Configuration Done Event should be non-null");
     VertexLocationHint parsedVertexLocationHint = parsedVertexConfigurationDoneEvent.getVertexLocationHint();
-    assertNotNull("Vertex Location Hint should be non-null", parsedVertexLocationHint);
+    assertNotNull(parsedVertexLocationHint, "Vertex Location Hint should be non-null");
     assertEquals(parsedVertexLocationHint.getTaskLocationHints().size(), 100000);
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testRecoveryData() throws IOException {
     ApplicationId appId = ApplicationId.newInstance(System.currentTimeMillis(), 1);
     TezDAGID dagID = TezDAGID.getInstance(appId, 1);

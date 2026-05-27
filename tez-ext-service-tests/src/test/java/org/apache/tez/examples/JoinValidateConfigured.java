@@ -18,13 +18,14 @@
  */
 package org.apache.tez.examples;
 
-
 import java.io.IOException;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.tez.dag.api.DAG;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.Vertex.VertexExecutionContext;
+
+import org.junit.jupiter.api.*;
 
 public class JoinValidateConfigured extends JoinValidate {
 

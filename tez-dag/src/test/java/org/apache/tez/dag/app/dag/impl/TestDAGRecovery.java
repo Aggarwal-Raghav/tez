@@ -18,7 +18,7 @@
  */
 package org.apache.tez.dag.app.dag.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.Credentials;
@@ -134,11 +135,7 @@ import org.apache.tez.runtime.api.impl.TezEvent;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -302,20 +299,20 @@ public class TestDAGRecovery {
     }
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     MockDNSToSwitchMapping.initializeMockRackResolver();
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Before
+  @BeforeEach
   public void setup() {
     conf = new Configuration();
     conf.setBoolean(TezConfiguration.TEZ_AM_CONTAINER_REUSE_ENABLED, false);
     appAttemptId = ApplicationAttemptId.newInstance(
         ApplicationId.newInstance(100, 1), 1);
     dagId = TezDAGID.getInstance(appAttemptId.getApplicationId(), 1);
-    Assert.assertNotNull(dagId);
+    assertNotNull(dagId);
     dagPlan = createDAGPlan();
     dispatcher = new DrainDispatcher();
     fsTokens = new Credentials();
@@ -531,7 +528,7 @@ public class TestDAGRecovery {
   }
 
 
-  @After
+  @AfterEach
   public void teardown() {
     dispatcher.await();
     dispatcher.stop();
@@ -549,7 +546,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: SummaryEvent_DAGFinishedEvent(SUCCEEDED)
    * Recover dag to SUCCEEDED and all of its vertices to SUCCEEDED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromDesiredSucceeded() {
     DAGEventRecoverEvent recoveryEvent = new DAGEventRecoverEvent(dagId, DAGState.SUCCEEDED, dagRecoveryData);
     dag.handle(recoveryEvent);
@@ -567,7 +565,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: SummaryEvent_DAGFinishedEvent(FAILED)
    * Recover dag to FAILED and all of its vertices to FAILED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromDesiredFailed() {
     DAGEventRecoverEvent recoveryEvent = new DAGEventRecoverEvent(dagId, DAGState.FAILED, dagRecoveryData);
     dag.handle(recoveryEvent);
@@ -585,7 +584,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: SummaryEvent_DAGFinishedEvent(KILLED)
    * Recover dag to KILLED and all of its vertices to KILLED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromDesiredKilled() {
     DAGEventRecoverEvent recoveryEvent = new DAGEventRecoverEvent(dagId, DAGState.KILLED, dagRecoveryData);
     dag.handle(recoveryEvent);
@@ -603,7 +603,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: SummaryEvent_DAGFinishedEvent(ERROR)
    * Recover dag to ERROR and all of its vertices to ERROR
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromDesiredError() {
     DAGEventRecoverEvent recoveryEvent = new DAGEventRecoverEvent(dagId, DAGState.ERROR, dagRecoveryData);
     dag.handle(recoveryEvent);
@@ -621,7 +622,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: DAGSubmittedEvent
    * Recover it as normal dag execution
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromNew() {
     DAGEventRecoverEvent recoveryEvent = new DAGEventRecoverEvent(dagId, dagRecoveryData);
     dag.handle(recoveryEvent);
@@ -634,7 +636,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: DAGSubmittedEvent, DAGInitializedEvent
    * Recover it as normal dag execution
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromInited() {
     DAGInitializedEvent dagInitedEvent = new DAGInitializedEvent(dagId, dagInitedTime,
         "user", "dagName", null);
@@ -647,7 +650,8 @@ public class TestDAGRecovery {
     assertEquals(dagInitedTime, dag.initTime);
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testDAGRecoverFromStarted() {
     DAGInitializedEvent dagInitedEvent = new DAGInitializedEvent(dagId, dagInitedTime,
         "user", "dagName", null);
@@ -681,7 +685,8 @@ public class TestDAGRecovery {
    *
    * Reinitialize V1 again.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testVertexRecoverFromNew() {
     initMockDAGRecoveryDataForVertex();
 
@@ -706,7 +711,8 @@ public class TestDAGRecovery {
    *
    * Reinitialize V1 again.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testVertexRecoverFromInited() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -776,7 +782,8 @@ public class TestDAGRecovery {
    *
    * Reinitialize V1 again.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testVertexRecoverFromStart() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -811,7 +818,8 @@ public class TestDAGRecovery {
    *
    * V1 skip initialization.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testVertexRecoverWithSetParallelismCalledFlag() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -849,7 +857,8 @@ public class TestDAGRecovery {
    *
    * V1 skip initialization.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testVertexRecoverFromVertexTaskStart() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -898,7 +907,8 @@ public class TestDAGRecovery {
    * V2 skip initialization.
    * V3 skip initialization.
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMultipleVertexRecoverFromVertexTaskStart() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -992,7 +1002,8 @@ public class TestDAGRecovery {
    *  V2 skip initialization.
    *  Reinitialize V3 again. Since V3 is dependent on V1
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMultipleVertexRecoverFromVertex() {
     initMockDAGRecoveryDataForVertex();
     List<TezEvent> inputGeneratedTezEvents = new ArrayList<TezEvent>();
@@ -1090,7 +1101,8 @@ public class TestDAGRecovery {
    * RecoveryEvent: TaskFinishedEvent(KILLED)
    * Recover it to KILLED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskRecoverFromKilled() {
     initMockDAGRecoveryDataForTask();
     TaskFinishedEvent taskFinishedEvent = new TaskFinishedEvent(t1v1Id, "v1",
@@ -1111,7 +1123,8 @@ public class TestDAGRecovery {
    * RecoveryEvent: TaskStartedEvent
    * Recover it to Scheduled
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskRecoverFromStarted() {
     initMockDAGRecoveryDataForTask();
     TaskStartedEvent taskStartedEvent = new TaskStartedEvent(t1v1Id, "v1", 0L, 0L);
@@ -1130,7 +1143,8 @@ public class TestDAGRecovery {
    * RecoveryEvent: TaskStartedEvent -> TaskFinishedEvent
    * Recover it to Scheduled
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskRecoverFromSucceeded() {
     initMockDAGRecoveryDataForTask();
     TaskStartedEvent taskStartedEvent = new TaskStartedEvent(t1v1Id, "v1", 0L, 0L);
@@ -1198,7 +1212,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptFinishedEvent (FAILED)
    * Recover it to FAILED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromNewToFailed() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptFinishedEvent taFinishedEvent = new TaskAttemptFinishedEvent(
@@ -1227,7 +1242,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptFinishedEvent (KILLED)
    * Recover it to KILLED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromNewToKilled() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptFinishedEvent taFinishedEvent = new TaskAttemptFinishedEvent(
@@ -1254,7 +1270,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptStartedEvent
    * Recover it to KILLED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromRunning() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptStartedEvent taStartedEvent = new TaskAttemptStartedEvent(
@@ -1279,7 +1296,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptStartedEvent -> TaskAttemptFinishedEvent (SUCCEEDED)
    * Recover it to SUCCEEDED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromSucceeded() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptStartedEvent taStartedEvent = new TaskAttemptStartedEvent(
@@ -1373,7 +1391,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptStartedEvent -> TaskAttemptFinishedEvent (FAILED)
    * Recover it to FAILED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromFailed() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptStartedEvent taStartedEvent = new TaskAttemptStartedEvent(
@@ -1404,7 +1423,8 @@ public class TestDAGRecovery {
    * RecoveryEvents: TaskAttemptStartedEvent -> TaskAttemptFinishedEvent (KILLED)
    * Recover it to KILLED
    */
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTARecoverFromKilled() {
     initMockDAGRecoveryDataForTaskAttempt();
     TaskAttemptStartedEvent taStartedEvent = new TaskAttemptStartedEvent(

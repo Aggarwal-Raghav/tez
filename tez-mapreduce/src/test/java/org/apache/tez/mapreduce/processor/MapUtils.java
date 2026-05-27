@@ -67,6 +67,7 @@ import org.apache.tez.runtime.library.common.shuffle.ShuffleUtils;
 
 import com.google.common.collect.HashMultimap;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

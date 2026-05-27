@@ -36,6 +36,8 @@ import org.apache.tez.runtime.api.Event;
 import org.apache.tez.runtime.api.TaskAttemptIdentifier;
 import org.apache.tez.runtime.api.events.VertexManagerEvent;
 
+import org.junit.jupiter.api.*;
+
 public class VertexManagerPluginForTest extends VertexManagerPlugin {
   VertexManagerPluginForTestConfig pluginConfig = new VertexManagerPluginForTestConfig();
 

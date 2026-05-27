@@ -33,6 +33,7 @@ import org.apache.tez.dag.library.vertexmanager.ShuffleVertexManager;
 
 import com.google.protobuf.ByteString;
 
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

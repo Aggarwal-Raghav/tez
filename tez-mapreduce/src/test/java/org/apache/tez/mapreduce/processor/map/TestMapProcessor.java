@@ -18,6 +18,7 @@
  */
 package org.apache.tez.mapreduce.processor.map;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -61,10 +62,7 @@ import org.apache.tez.runtime.library.common.task.local.output.TezTaskOutput;
 import org.apache.tez.runtime.library.common.task.local.output.TezTaskOutputFiles;
 import org.apache.tez.runtime.library.output.OrderedPartitionedKVOutput;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,13 +113,14 @@ public class TestMapProcessor {
     return  mapOutputFile;
   }
 
-  @Before
-  @After
+  @BeforeEach
+  @AfterEach
   public void cleanup() throws Exception {
     localFs.delete(workDir, true);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMapProcessor() throws Exception {
     String dagName = "mrdag0";
     String vertexName = MultiStageMRConfigUtil.getInitialMapVertexName();
@@ -171,7 +170,7 @@ public class TestMapProcessor {
 
     // TODO NEWTEZ FIXME OutputCommitter verification
 //    MRTask mrTask = (MRTask)t.getProcessor();
-//    Assert.assertEquals(TezNullOutputCommitter.class.getName(), mrTask
+//    assertEquals(TezNullOutputCommitter.class.getName(), mrTask
 //        .getCommitter().getClass().getName());
 //    t.close();
 
@@ -197,7 +196,8 @@ public class TestMapProcessor {
     reader.close();
   }
 
-  @Test(timeout = 30000)
+  @Test
+  @Timeout(value = 30000, unit = TimeUnit.MILLISECONDS)
   public void testMapProcessorProgress() throws Exception {
     String dagName = "mrdag0";
     String vertexName = MultiStageMRConfigUtil.getInitialMapVertexName();
@@ -250,8 +250,7 @@ public class TestMapProcessor {
     scheduler.scheduleAtFixedRate(monitorProgress, 0, 1,
         TimeUnit.MILLISECONDS);
     task.run();
-    Assert.assertTrue("Progress Updates should be captured!",
-        progressUpdate > 0.0f && progressUpdate < 1.0f);
+    assertTrue(progressUpdate > 0.0f && progressUpdate < 1.0f, "Progress Updates should be captured!");
     task.close();
     sharedExecutor.shutdownNow();
   }

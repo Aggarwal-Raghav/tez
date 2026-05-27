@@ -22,6 +22,8 @@ import java.util.Random;
 
 import org.apache.hadoop.io.Text;
 
+import org.junit.jupiter.api.*;
+
 public final class RandomTextGenerator {
 
   static int minWordsInKey = 10;

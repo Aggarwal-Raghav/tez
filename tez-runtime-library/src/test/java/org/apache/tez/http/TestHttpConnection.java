@@ -18,8 +18,7 @@
  */
 package org.apache.tez.http;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -37,15 +36,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.tez.common.security.JobTokenSecretManager;
 import org.apache.tez.http.async.netty.AsyncHttpConnection;
 
 import com.google.common.base.Throwables;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestHttpConnection {
 
@@ -66,7 +64,7 @@ public class TestHttpConnection {
 
   private Thread currentThread;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException, URISyntaxException {
     executorService = Executors.newFixedThreadPool(1,
         new ThreadFactory() {
@@ -81,7 +79,7 @@ public class TestHttpConnection {
     when(tokenSecretManager.computeHash(any())).thenReturn("1234".getBytes());
   }
 
-  @AfterClass
+  @AfterAll
   public static void cleanup() throws Exception {
     executorService.shutdownNow();
   }
@@ -93,16 +91,16 @@ public class TestHttpConnection {
       Future<Void> future = executorService.submit(worker);
       future.get();
     } catch (ExecutionException e) {
-      assertTrue(e.getCause().getCause() instanceof IOException);
-      assertTrue(e.getMessage(), e.getMessage().contains(message));
+      assertInstanceOf(IOException.class, e.getCause().getCause());
+      assertTrue(e.getMessage().contains(message), e.getMessage());
       long elapsedTime = System.currentTimeMillis() - startTime;
-      assertTrue("elapasedTime=" + elapsedTime + " should be greater than " + connTimeout,
-          elapsedTime > connTimeout);
+      assertTrue(elapsedTime > connTimeout, "elapasedTime=" + elapsedTime + " should be greater than " + connTimeout);
     }
-    assertTrue(latch.getCount() == 0);
+    assertEquals(0, latch.getCount());
   }
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   public void testConnectionTimeout() throws IOException, InterruptedException {
     HttpConnectionParams params = getConnectionParams();
 
@@ -117,7 +115,8 @@ public class TestHttpConnection {
     baseTest(new Worker(latch, asyncHttpConn, false), latch, "connection timed out");
   }
 
-  @Test(timeout = 20000)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   //Should be interruptible
   public void testAsyncHttpConnectionInterrupt()
       throws IOException, InterruptedException, ExecutionException {
@@ -131,14 +130,14 @@ public class TestHttpConnection {
         wait(100);
       }
     }
-    assertTrue("currentThread is still null", currentThread != null);
+    assertNotNull(currentThread, "currentThread is still null");
     Thread.sleep(1000); //To avoid race to interrupt the thread before connect()
 
     //Try interrupting the thread (exception verification happens in the worker itself)
     currentThread.interrupt();
 
     future.get();
-    assertTrue(latch.getCount() == 0);
+    assertEquals(0, latch.getCount());
   }
 
   HttpConnectionParams getConnectionParams() {
@@ -185,12 +184,12 @@ public class TestHttpConnection {
         if (expectingInterrupt) {
           if (t instanceof ConnectException) {
             //ClosedByInterruptException via NettyConnectListener.operationComplete()
-            assertTrue("Expected ClosedByInterruptException, received "
-                    + Throwables.getStackTraceAsString(t.getCause()),
-                t.getCause() instanceof ClosedByInterruptException);
+            assertInstanceOf(ClosedByInterruptException.class, t.getCause(),
+                "Expected ClosedByInterruptException, received "
+                    + Throwables.getStackTraceAsString(t.getCause()));
           } else {
             // InterruptedException if TezBodyDeferringAsyncHandler quits
-            assertTrue(t instanceof InterruptedException);
+            assertInstanceOf(InterruptedException.class, t);
           }
         }
       } finally {

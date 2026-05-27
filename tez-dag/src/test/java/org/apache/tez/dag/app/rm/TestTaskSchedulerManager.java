@@ -18,11 +18,7 @@
  */
 package org.apache.tez.dag.app.rm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
@@ -44,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -123,9 +120,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -180,7 +175,7 @@ public class TestTaskSchedulerManager {
   AMContainerMap mockAMContainerMap;
   WebUIService mockWebUIService;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mockAppContext = mock(AppContext.class, RETURNS_DEEP_STUBS);
     doReturn(new Configuration(false)).when(mockAppContext).getAMConf();
@@ -196,7 +191,8 @@ public class TestTaskSchedulerManager {
         mockAppContext, mockClientService, mockEventHandler, mockSigMatcher, mockWebUIService);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSimpleAllocate() throws Exception {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -228,7 +224,7 @@ public class TestTaskSchedulerManager {
             priority, containerContext, 0, 0, 0);
     taskSchedulerManager.taskAllocated(0, mockTaskAttempt, lr, container);
     assertEquals(1, mockEventHandler.events.size());
-    assertTrue(mockEventHandler.events.get(0) instanceof AMContainerEventAssignTA);
+    assertInstanceOf(AMContainerEventAssignTA.class, mockEventHandler.events.get(0));
     AMContainerEventAssignTA assignEvent =
         (AMContainerEventAssignTA) mockEventHandler.events.get(0);
     assertEquals(priority, assignEvent.getPriority());
@@ -237,7 +233,8 @@ public class TestTaskSchedulerManager {
     verify(mockAppContext.getCurrentDAG()).addUsedContainer(any(Container.class)); // called on taskAllocated
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTASucceededAfterContainerCleanup() throws Exception {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -270,14 +267,15 @@ public class TestTaskSchedulerManager {
             priority, containerContext, 0, 0, 0);
     taskSchedulerManager.taskAllocated(0, mockTaskAttempt, lr, container);
     assertEquals(1, mockEventHandler.events.size());
-    assertTrue(mockEventHandler.events.get(0) instanceof AMContainerEventAssignTA);
+    assertInstanceOf(AMContainerEventAssignTA.class, mockEventHandler.events.get(0));
     AMContainerEventAssignTA assignEvent =
         (AMContainerEventAssignTA) mockEventHandler.events.get(0);
     assertEquals(priority, assignEvent.getPriority());
     assertEquals(mockAttemptId, assignEvent.getTaskAttemptId());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTAUnsuccessfulAfterContainerCleanup() throws Exception {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -304,13 +302,14 @@ public class TestTaskSchedulerManager {
         new AMSchedulerEventTAEnded(
             mockTaskAttempt, mockCId, TaskAttemptState.KILLED, null, null, 0));
     assertEquals(1, mockEventHandler.events.size());
-    assertTrue(mockEventHandler.events.get(0) instanceof AMContainerEventStopRequest);
+    assertInstanceOf(AMContainerEventStopRequest.class, mockEventHandler.events.get(0));
     AMContainerEventStopRequest stopEvent =
         (AMContainerEventStopRequest) mockEventHandler.events.get(0);
     assertEquals(mockCId, stopEvent.getContainerId());
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskBasedAffinity() throws Exception {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -349,7 +348,8 @@ public class TestTaskSchedulerManager {
     taskSchedulerManager.close();
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testContainerPreempted() throws IOException {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -376,13 +376,14 @@ public class TestTaskSchedulerManager {
     assertTrue(completedEvent.isPreempted());
     assertEquals(TaskAttemptTerminationCause.EXTERNAL_PREEMPTION,
         completedEvent.getTerminationCause());
-    Assert.assertFalse(completedEvent.isDiskFailed());
+    assertFalse(completedEvent.isDiskFailed());
 
     taskSchedulerManager.stop();
     taskSchedulerManager.close();
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testContainerInternalPreempted() throws IOException, ServicePluginException {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -404,7 +405,7 @@ public class TestTaskSchedulerManager {
     assertEquals(mockCId, completedEvent.getContainerId());
     assertEquals("Container preempted internally", completedEvent.getDiagnostics());
     assertTrue(completedEvent.isPreempted());
-    Assert.assertFalse(completedEvent.isDiskFailed());
+    assertFalse(completedEvent.isDiskFailed());
     assertEquals(TaskAttemptTerminationCause.INTERNAL_PREEMPTION,
         completedEvent.getTerminationCause());
 
@@ -412,7 +413,8 @@ public class TestTaskSchedulerManager {
     taskSchedulerManager.close();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testContainerInternalPreemptedAfterContainerCleanup() throws IOException, ServicePluginException {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -435,7 +437,7 @@ public class TestTaskSchedulerManager {
     assertEquals(mockCId, completedEvent.getContainerId());
     assertEquals("Container preempted internally", completedEvent.getDiagnostics());
     assertTrue(completedEvent.isPreempted());
-    Assert.assertFalse(completedEvent.isDiskFailed());
+    assertFalse(completedEvent.isDiskFailed());
     assertEquals(TaskAttemptTerminationCause.INTERNAL_PREEMPTION,
         completedEvent.getTerminationCause());
 
@@ -443,7 +445,8 @@ public class TestTaskSchedulerManager {
     taskSchedulerManager.close();
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testContainerDiskFailed() throws IOException {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -467,7 +470,7 @@ public class TestTaskSchedulerManager {
     assertEquals(mockCId, completedEvent.getContainerId());
     assertEquals("Container disk failed. NM disk failed.",
         completedEvent.getDiagnostics());
-    Assert.assertFalse(completedEvent.isPreempted());
+    assertFalse(completedEvent.isPreempted());
     assertTrue(completedEvent.isDiskFailed());
     assertEquals(TaskAttemptTerminationCause.NODE_DISK_ERROR,
         completedEvent.getTerminationCause());
@@ -476,7 +479,8 @@ public class TestTaskSchedulerManager {
     taskSchedulerManager.close();
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testContainerExceededPMem() throws IOException {
     Configuration conf = new Configuration(false);
     taskSchedulerManager.init(conf);
@@ -502,8 +506,8 @@ public class TestTaskSchedulerManager {
     assertEquals(mockCId, completedEvent.getContainerId());
     assertEquals("Container failed, exitCode=-104. Exceeded Physical Memory",
         completedEvent.getDiagnostics());
-    Assert.assertFalse(completedEvent.isPreempted());
-    Assert.assertFalse(completedEvent.isDiskFailed());
+    assertFalse(completedEvent.isPreempted());
+    assertFalse(completedEvent.isDiskFailed());
     assertEquals(TaskAttemptTerminationCause.CONTAINER_EXITED,
         completedEvent.getTerminationCause());
 
@@ -511,7 +515,8 @@ public class TestTaskSchedulerManager {
     taskSchedulerManager.close();
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testHistoryUrlConf() throws Exception {
     Configuration conf = taskSchedulerManager.appContext.getAMConf();
     final ApplicationId mockApplicationId = mock(ApplicationId.class);
@@ -547,7 +552,8 @@ public class TestTaskSchedulerManager {
 
   }
 
-  @Test (timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testHistoryUrlWithoutScheme() throws Exception {
     Configuration conf = taskSchedulerManager.appContext.getAMConf();
     final ApplicationId mockApplicationId = mock(ApplicationId.class);
@@ -569,7 +575,8 @@ public class TestTaskSchedulerManager {
         taskSchedulerManager.getHistoryUrl());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNoSchedulerSpecified() throws IOException {
     try {
       new TSEHForMultipleSchedulersTest(mockAppContext, mockClientService, mockEventHandler,
@@ -580,7 +587,8 @@ public class TestTaskSchedulerManager {
   }
 
   // Verified via statics
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testCustomTaskSchedulerSetup() throws IOException {
     Configuration conf = new Configuration(false);
     conf.set("testkey", "testval");
@@ -623,7 +631,8 @@ public class TestTaskSchedulerManager {
     assertEquals("testval", parsed.get("testkey"));
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskSchedulerRouting() throws Exception {
     Configuration conf = new Configuration(false);
     UserPayload defaultPayload = TezUtils.createUserPayloadFromConf(conf);
@@ -693,7 +702,8 @@ public class TestTaskSchedulerManager {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testShutdownBeforeStartTaskScheduler() {
     Configuration conf = new TezConfiguration();
     AppContext appContext = mock(AppContext.class, RETURNS_DEEP_STUBS);
@@ -705,12 +715,13 @@ public class TestTaskSchedulerManager {
     TaskSchedulerManager taskSchedulerManager =
         new TaskSchedulerManager(appContext, null, null,
             null, null, list, false);
-    assertFalse("Should not return true unless actually unregistered successfully",
-        taskSchedulerManager.hasUnregistered());
+    assertFalse(taskSchedulerManager.hasUnregistered(),
+            "Should not return true unless actually unregistered successfully");
   }
 
   @SuppressWarnings("unchecked")
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testReportFailureFromTaskScheduler() {
     String dagName = DAG_NAME;
     Configuration conf = new TezConfiguration();
@@ -755,7 +766,7 @@ public class TestTaskSchedulerManager {
       verify(eventHandler, times(1)).handle(argumentCaptor.capture());
 
       Event rawEvent = argumentCaptor.getValue();
-      assertTrue(rawEvent instanceof DAGEventTerminateDag);
+      assertInstanceOf(DAGEventTerminateDag.class, rawEvent);
       DAGEventTerminateDag killEvent = (DAGEventTerminateDag) rawEvent;
       assertTrue(killEvent.getDiagnosticInfo().contains("ReportError"));
       assertTrue(killEvent.getDiagnosticInfo()
@@ -770,7 +781,7 @@ public class TestTaskSchedulerManager {
       verify(eventHandler, times(1)).handle(argumentCaptor.capture());
       rawEvent = argumentCaptor.getValue();
 
-      assertTrue(rawEvent instanceof DAGAppMasterEventUserServiceFatalError);
+      assertInstanceOf(DAGAppMasterEventUserServiceFatalError.class, rawEvent);
       DAGAppMasterEventUserServiceFatalError event =
           (DAGAppMasterEventUserServiceFatalError) rawEvent;
       assertEquals(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, event.getType());
@@ -785,7 +796,8 @@ public class TestTaskSchedulerManager {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskSchedulerUserError() {
     TaskScheduler taskScheduler = mock(TaskScheduler.class, new ExceptionAnswer());
 
@@ -828,7 +840,7 @@ public class TestTaskSchedulerManager {
       verify(eventHandler, times(1)).handle(argumentCaptor.capture());
 
       Event rawEvent = argumentCaptor.getValue();
-      assertTrue(rawEvent instanceof DAGAppMasterEventUserServiceFatalError);
+      assertInstanceOf(DAGAppMasterEventUserServiceFatalError.class, rawEvent);
       DAGAppMasterEventUserServiceFatalError event =
           (DAGAppMasterEventUserServiceFatalError) rawEvent;
 
@@ -843,7 +855,7 @@ public class TestTaskSchedulerManager {
       verify(eventHandler, times(2)).handle(argumentCaptor.capture());
 
       rawEvent = argumentCaptor.getAllValues().get(1);
-      assertTrue(rawEvent instanceof DAGAppMasterEventUserServiceFatalError);
+      assertInstanceOf(DAGAppMasterEventUserServiceFatalError.class, rawEvent);
       event = (DAGAppMasterEventUserServiceFatalError) rawEvent;
 
       assertEquals(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, event.getType());
@@ -856,7 +868,8 @@ public class TestTaskSchedulerManager {
     }
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(value = 10000, unit = TimeUnit.MILLISECONDS)
   public void testHandleException() throws Exception {
     Configuration tezConf = new Configuration(new YarnConfiguration());
     UserPayload defaultPayload = TezUtils.createUserPayloadFromConf(tezConf);
@@ -868,10 +881,10 @@ public class TestTaskSchedulerManager {
     BiMap<String, Integer> tsMap = HashBiMap.create();
 
     // Only TezYarn found.
-    Assert.assertEquals(1, tsDescriptors.size());
-    Assert.assertEquals(TezConstants.getTezYarnServicePluginName(), tsDescriptors.get(0).getEntityName());
-    Assert.assertEquals(1, pluginManager.getTaskSchedulers().size());
-    Assert.assertTrue(pluginManager.getTaskSchedulers().containsKey(TezConstants.getTezYarnServicePluginName()));
+    assertEquals(1, tsDescriptors.size());
+    assertEquals(TezConstants.getTezYarnServicePluginName(), tsDescriptors.get(0).getEntityName());
+    assertEquals(1, pluginManager.getTaskSchedulers().size());
+    assertTrue(pluginManager.getTaskSchedulers().containsKey(TezConstants.getTezYarnServicePluginName()));
 
     // Construct eventHandler
     TestTaskSchedulerHelpers.CapturingEventHandler eventHandler = new TestTaskSchedulerHelpers.CapturingEventHandler();
@@ -931,7 +944,7 @@ public class TestTaskSchedulerManager {
     tseh.init(conf);
     tseh.start();
 
-    Assert.assertEquals(TSEHForMultipleSchedulersTest.YARN_TASK_SCHEDULER_HELD_CONTAINERS
+    assertEquals(TSEHForMultipleSchedulersTest.YARN_TASK_SCHEDULER_HELD_CONTAINERS
         + TSEHForMultipleSchedulersTest.CUSTOM_TASK_SCHEDULER_HELD_CONTAINERS, tseh.getHeldContainersCount());
     tseh.close();
   }
@@ -986,7 +999,7 @@ public class TestTaskSchedulerManager {
 
       numCreateInvocations.incrementAndGet();
       boolean added = seenSchedulers.add(schedulerId);
-      assertTrue("Cannot add multiple schedulers with the same schedulerId", added);
+      assertTrue(added, "Cannot add multiple schedulers with the same schedulerId");
       taskSchedulerNames.add(taskSchedulerDescriptor.getEntityName());
       return super.createTaskScheduler(host, port, trackingUrl, appContext, taskSchedulerDescriptor,
           customAppIdIdentifier, schedulerId);

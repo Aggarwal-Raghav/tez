@@ -18,8 +18,11 @@
  */
 package org.apache.tez.dag.history.logging.ats;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.MediaType;
 
@@ -44,10 +47,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class TestATSHistoryWithMiniCluster {
   private static String TEST_ROOT_DIR = "target" + Path.SEPARATOR
       + TestATSHistoryWithMiniCluster.class.getName() + "-tmpDir";
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException {
     try {
       conf.set(MiniDFSCluster.HDFS_MINIDFS_BASEDIR, TEST_ROOT_DIR);
@@ -99,7 +99,7 @@ public class TestATSHistoryWithMiniCluster {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws InterruptedException {
     LOG.info("Shutdown invoked");
     Thread.sleep(10000);
@@ -120,15 +120,16 @@ public class TestATSHistoryWithMiniCluster {
 
     ClientResponse response = resource.accept(MediaType.APPLICATION_JSON)
         .get(ClientResponse.class);
-    Assert.assertEquals(200, response.getStatus());
-    Assert.assertEquals(MediaType.APPLICATION_JSON_TYPE, response.getType());
+    assertEquals(200, response.getStatus());
+    assertEquals(MediaType.APPLICATION_JSON_TYPE, response.getType());
 
     K entity = response.getEntity(clazz);
-    Assert.assertNotNull(entity);
+    assertNotNull(entity);
     return entity;
   }
 
-  @Test (timeout=50000)
+  @Test
+  @Timeout(value = 50000, unit = TimeUnit.MILLISECONDS)
   public void testDisabledACls() throws Exception {
     TezClient tezSession = null;
     try {
@@ -161,7 +162,7 @@ public class TestATSHistoryWithMiniCluster {
         Thread.sleep(500l);
         dagStatus = dagClient.getDAGStatus(null);
       }
-      Assert.assertEquals(DAGStatus.State.SUCCEEDED, dagStatus.getState());
+      assertEquals(DAGStatus.State.SUCCEEDED, dagStatus.getState());
     } finally {
       if (tezSession != null) {
         tezSession.stop();

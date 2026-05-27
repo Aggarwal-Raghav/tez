@@ -18,7 +18,10 @@
  */
 package org.apache.tez.dag.history.logging.proto;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -29,22 +32,19 @@ import org.apache.hadoop.yarn.util.Clock;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.history.logging.proto.HistoryLoggerProtos.ManifestEntryProto;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.*;
 
 public class TestDagManifestFileScanner {
   private MockClock clock;
   private DatePartitionedLogger<ManifestEntryProto> manifestLogger;
 
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir
+  public java.nio.file.Path tempFolder;
 
-  @Before
+  @BeforeEach
   public void setupTest() throws Exception {
-    String basePath = tempFolder.newFolder().getAbsolutePath();
+    String basePath = String.valueOf(new Path(tempFolder.toAbsolutePath().toString()));
     clock = new MockClock();
     Configuration conf = new Configuration(false);
     conf.set(TezConfiguration.TEZ_HISTORY_LOGGING_PROTO_BASE_DIR, basePath);
@@ -55,7 +55,8 @@ public class TestDagManifestFileScanner {
     manifestLogger = loggers.getManifestEventsLogger();
   }
 
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testNormal() throws Exception {
     clock.setTime(0); // 0th day.
     createManifestEvents(0, 8);
@@ -66,7 +67,7 @@ public class TestDagManifestFileScanner {
     while (scanner.getNext() != null) {
       ++count;
     }
-    Assert.assertEquals(8, count);
+    assertEquals(8, count);
 
     // Save offset for later use.
     String offset = scanner.getOffset();
@@ -77,7 +78,7 @@ public class TestDagManifestFileScanner {
     while (scanner.getNext() != null) {
       ++count;
     }
-    Assert.assertEquals(5, count);
+    assertEquals(5, count);
 
     // Reset the offset
     scanner.setOffset(offset);
@@ -85,7 +86,7 @@ public class TestDagManifestFileScanner {
     while (scanner.getNext() != null) {
       ++count;
     }
-    Assert.assertEquals(5, count);
+    assertEquals(5, count);
 
     scanner.close();
 
@@ -93,7 +94,8 @@ public class TestDagManifestFileScanner {
   }
 
   private Path deleteFilePath = null;
-  @Test(timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testError() throws Exception {
     clock.setTime(0); // 0th day.
     createManifestEvents(0, 4);
@@ -102,10 +104,10 @@ public class TestDagManifestFileScanner {
     createManifestEvents(24 * 3600, 1);
 
     DagManifesFileScanner scanner = new DagManifesFileScanner(manifestLogger);
-    Assert.assertNotNull(scanner.getNext());
+    assertNotNull(scanner.getNext());
     deleteFilePath.getFileSystem(manifestLogger.getConfig()).delete(deleteFilePath, false);
     // 4 files - 1 file deleted - 1 truncated - 1 corrupted => 1 remains.
-    Assert.assertNull(scanner.getNext());
+    assertNull(scanner.getNext());
 
     // Save offset for later use.
     String offset = scanner.getOffset();
@@ -113,13 +115,13 @@ public class TestDagManifestFileScanner {
     // Move time outside the window, it should skip files with error and give more data for
     // next day.
     clock.setTime((24 * 60 * 60 + 61) * 1000); // 1 day 61 sec.
-    Assert.assertNotNull(scanner.getNext());
-    Assert.assertNull(scanner.getNext());
+    assertNotNull(scanner.getNext());
+    assertNull(scanner.getNext());
 
     // Reset the offset
     scanner.setOffset(offset);
-    Assert.assertNotNull(scanner.getNext());
-    Assert.assertNull(scanner.getNext());
+    assertNotNull(scanner.getNext());
+    assertNull(scanner.getNext());
     scanner.close();
   }
 

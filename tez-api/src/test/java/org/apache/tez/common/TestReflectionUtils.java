@@ -18,14 +18,12 @@
  */
 package org.apache.tez.common;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,7 +31,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.TezReflectionException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestReflectionUtils {
 
@@ -46,18 +44,20 @@ public class TestReflectionUtils {
     }
   }
 
-  @Test(timeout = 5000)
-  public void testConstructorWithParameters() throws TezReflectionException
-  {
-    Class<?>[] parameterTypes = new Class[] { String.class, Integer.TYPE };
-    Object[] parameters = new Object[] { new String("test"), 1 };
-    ParameterizedConstructorClass instance = ReflectionUtils.createClazzInstance(
-        ParameterizedConstructorClass.class.getName(), parameterTypes, parameters);
-    assertEquals("Class not constructed with first parameter correctly", instance.first, "test");
-    assertEquals("Class not constructed with second parameter correctly", instance.second, 1);
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  public void testConstructorWithParameters() throws TezReflectionException {
+    Class<?>[] parameterTypes = new Class[] {String.class, Integer.TYPE};
+    Object[] parameters = new Object[] {new String("test"), 1};
+    ParameterizedConstructorClass instance =
+        ReflectionUtils.createClazzInstance(
+            ParameterizedConstructorClass.class.getName(), parameterTypes, parameters);
+    assertEquals(instance.first, "test", "Class not constructed with first parameter correctly");
+    assertEquals(instance.second, 1, "Class not constructed with second parameter correctly");
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testAddResourceToClasspath() throws IOException, TezException {
     TezClassLoader.setupTezClassLoader();
     String rsrcName = "dummyfile.xml";

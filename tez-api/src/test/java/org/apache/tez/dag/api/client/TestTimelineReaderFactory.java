@@ -18,10 +18,12 @@
  */
 package org.apache.tez.dag.api.client;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -29,25 +31,27 @@ import org.apache.hadoop.security.authentication.client.ConnectionConfigurator;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.client.TimelineReaderFactory.TimelineReaderPseudoAuthenticatedStrategy;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestTimelineReaderFactory {
 
-  // ensure TimelineReaderTokenAuthenticatedStrategy is used.
-  @Test(timeout = 5000)
-  public void testShouldUseTokenDelegationAuthStrategy() throws TezException {
+  // ensure on hadoop 2.6+ TimelineReaderTokenAuthenticatedStrategy is used.
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  public void testShouldUseTokenDelegationAuthStrategyForHadoop26() throws TezException {
 
     String returnedClassName =
         TimelineReaderFactory.getTimelineReaderStrategy(mock(Configuration.class), false, 0)
             .getClass()
             .getCanonicalName();
-    Assert.assertEquals("should use token delegation auth",
+    assertEquals(
         "org.apache.tez.dag.api.client.TimelineReaderFactory.TimelineReaderTokenAuthenticatedStrategy",
-        returnedClassName);
+        returnedClassName,
+        "should use pseudo auth on hadoop2.4");
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testPseudoAuthenticatorConnectionUrlShouldHaveUserName() throws Exception {
     ConnectionConfigurator connConf = mock(ConnectionConfigurator.class);
     TimelineReaderPseudoAuthenticatedStrategy.PseudoAuthenticatedURLConnectionFactory
@@ -56,7 +60,7 @@ public class TestTimelineReaderFactory {
     String inputUrl = "http://host:8080/path";
     String expectedUrl = inputUrl + "?user.name=" + UserGroupInformation.getCurrentUser().getShortUserName();
     HttpURLConnection httpURLConnection = connectionFactory.getHttpURLConnection(new URL(inputUrl));
-    Assert.assertEquals(expectedUrl, httpURLConnection.getURL().toString());
+    assertEquals(expectedUrl, httpURLConnection.getURL().toString());
   }
 
 }

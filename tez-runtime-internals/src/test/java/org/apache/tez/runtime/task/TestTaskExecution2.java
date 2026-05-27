@@ -19,11 +19,7 @@
 package org.apache.tez.runtime.task;
 
 import static org.apache.tez.runtime.task.TaskExecutionTestHelpers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -36,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
@@ -83,9 +80,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,17 +111,18 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Before
+  @BeforeEach
   public void reset() {
     TestProcessor.reset();
   }
 
-  @AfterClass
+  @AfterAll
   public static void shutdown() {
     taskExecutor.shutdownNow();
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSingleSuccessfulTask() throws IOException, InterruptedException, TezException,
       ExecutionException {
     ListeningExecutorService executor = null;
@@ -155,7 +151,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testMultipleSuccessfulTasks() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -208,7 +205,8 @@ public class TestTaskExecution2 {
 
 
   // test task failed due to exception in Processor
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testFailedTaskTezException() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -246,7 +244,8 @@ public class TestTaskExecution2 {
 
 
   // Test task failed due to Processor class not found
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testFailedTask2() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -282,7 +281,8 @@ public class TestTaskExecution2 {
   }
 
   // test task failed due to exception in Processor
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testFailedTaskIOException() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -320,7 +320,8 @@ public class TestTaskExecution2 {
   }
 
   // test that makes sure errors aren't reported when the container is already failing
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testIgnoreErrorsDuringFailure() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -356,7 +357,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testHeartbeatException() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -396,7 +398,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testHeartbeatShouldDie() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -437,7 +440,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSignalDeprecatedFatalErrorAndLoop() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -478,7 +482,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSignalFatalAndThrow() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -514,7 +519,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testSignalNonFatalAndThrow() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -550,7 +556,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskSelfKill() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -587,7 +594,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testTaskKilled() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -623,7 +631,8 @@ public class TestTaskExecution2 {
     }
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testKilledAfterComplete() throws IOException, InterruptedException, TezException,
       ExecutionException {
 
@@ -713,8 +722,8 @@ public class TestTaskExecution2 {
 
     // If Target <=0, assert counter count is exactly 0
     if (minTaskCounterCount <= 0) {
-      assertEquals(tezCounters.toString(), 0, numTaskCounters);
-      assertEquals(tezCounters.toString(), 0, numFsCounters);
+      assertEquals(0, numTaskCounters, tezCounters.toString());
+      assertEquals(0, numFsCounters, tezCounters.toString());
     } else {
       assertTrue(numTaskCounters >= minTaskCounterCount);
       assertTrue(numFsCounters >= minFsCounterCount);

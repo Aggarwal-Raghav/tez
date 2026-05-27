@@ -18,7 +18,6 @@
  */
 package org.apache.tez.dag.app;
 
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -40,6 +39,8 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.Message;
+
+import org.junit.jupiter.api.*;
 
 public class TezTestServiceCommunicator extends AbstractService {
 

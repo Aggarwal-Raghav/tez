@@ -18,15 +18,16 @@
  */
 package org.apache.tez.dag.api;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.security.Credentials;
@@ -51,17 +52,17 @@ import org.apache.tez.serviceplugins.api.ServicePluginsDescriptor;
 import org.apache.tez.serviceplugins.api.TaskCommunicatorDescriptor;
 import org.apache.tez.serviceplugins.api.TaskSchedulerDescriptor;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.*;
 
 // based on TestDAGLocationHint
 public class TestDAGPlan {
-  @Rule
-  public TemporaryFolder tempFolder = new TemporaryFolder(); //TODO: doesn't seem to be deleting this folder automatically as expected.
 
-  @Test(timeout = 5000)
+  @TempDir
+  public Path tempFolder;
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testBasicJobPlanSerde() throws IOException {
 
     DAGPlan job = DAGPlan.newBuilder()
@@ -81,7 +82,7 @@ public class TestDAGPlan {
                    .build())
              .build())
         .build();
-   File file = tempFolder.newFile("jobPlan");
+   File file = tempFolder.resolve("jobPlan").toFile();
    FileOutputStream outStream = null;
    try {
      outStream = new FileOutputStream(file);
@@ -103,10 +104,11 @@ public class TestDAGPlan {
      outStream.close();
    }
 
-   Assert.assertEquals(job, inJob);
+   assertEquals(job, inJob);
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testEdgeManagerSerde() {
     DAG dag = DAG.create("DAG-testEdgeManagerSerde");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1")
@@ -137,13 +139,13 @@ public class TestDAGPlan {
         .getEdgeList().get(0));
 
     EdgeManagerPluginDescriptor emDesc = edgeProperty.getEdgeManagerDescriptor();
-    Assert.assertNotNull(emDesc);
-    Assert.assertEquals("emClass", emDesc.getClassName());
-    Assert.assertTrue(
-        Arrays.equals("emPayload".getBytes(), emDesc.getUserPayload().deepCopyAsArray()));
+    assertNotNull(emDesc);
+    assertEquals("emClass", emDesc.getClassName());
+    assertArrayEquals("emPayload".getBytes(), emDesc.getUserPayload().deepCopyAsArray());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testUserPayloadSerde() {
     DAG dag = DAG.create("DAG-testUserPayloadSerde");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1").
@@ -204,7 +206,8 @@ public class TestDAGPlan {
     assertEquals("output", edgeProperty.getEdgeSource().getClassName());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void userVertexOrderingIsMaintained() {
     DAG dag = DAG.create("DAG-userVertexOrderingIsMaintained");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1").
@@ -277,7 +280,8 @@ public class TestDAGPlan {
     assertEquals("output", edgeProperty.getEdgeSource().getClassName());
   }
 
-  @Test (timeout=5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testCredentialsSerde() {
     DAG dag = DAG.create("DAG-testCredentialsSerde");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1").
@@ -321,7 +325,8 @@ public class TestDAGPlan {
     assertNotNull(fetchedCredentials.getToken(new Text("Token2")));
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidExecContext_1() {
     DAG dag = DAG.create("DAG-testInvalidExecContext_1");
     dag.setExecutionContext(VertexExecutionContext.createExecuteInAm(true));
@@ -346,7 +351,8 @@ public class TestDAGPlan {
 
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidExecContext_2() {
 
     ServicePluginsDescriptor servicePluginsDescriptor = ServicePluginsDescriptor
@@ -428,7 +434,8 @@ public class TestDAGPlan {
 
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testServiceDescriptorPropagation() {
     DAG dag = DAG.create("DAG-testServiceDescriptorPropagation");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1").
@@ -491,7 +498,8 @@ public class TestDAGPlan {
     assertFalse(v2Proto.hasExecutionContext());
   }
 
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   public void testInvalidJavaOpts() {
     DAG dag = DAG.create("DAG-testInvalidJavaOpts");
     ProcessorDescriptor pd1 = ProcessorDescriptor.create("processor1")
@@ -507,7 +515,7 @@ public class TestDAGPlan {
       dag.createDag(conf, null, null, null, true, null, new JavaOptsChecker());
       fail("Expected dag creation to fail for invalid java opts");
     } catch (TezUncheckedException e) {
-      Assert.assertTrue(e.getMessage().contains("Invalid/conflicting GC options"));
+      assertTrue(e.getMessage().contains("Invalid/conflicting GC options"));
     }
 
     // Should not fail as java opts valid

@@ -19,7 +19,7 @@
 package org.apache.tez.auxservices;
 
 import static org.apache.tez.auxservices.IndexCache.INDEX_CACHE_MB;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -38,15 +38,14 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.tez.runtime.library.common.Constants;
 import org.apache.tez.runtime.library.common.sort.impl.TezIndexRecord;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 public class TestIndexCache {
   private Configuration conf;
   private FileSystem fs;
   private Path p;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     conf = new Configuration();
     fs = FileSystem.getLocal(conf).getRaw();
@@ -249,7 +248,7 @@ public class TestIndexCache {
       }
       getInfoThread.join();
       removeMapThread.join();
-      assertEquals(true, cache.checkTotalMemoryUsed());
+      assertTrue(cache.checkTotalMemoryUsed());
     }
   }
 
