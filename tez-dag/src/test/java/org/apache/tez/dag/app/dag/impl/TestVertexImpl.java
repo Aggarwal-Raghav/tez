@@ -192,7 +192,6 @@ import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.dag.utils.TaskSpecificLaunchCmdOption;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 import org.apache.tez.runtime.api.Event;
 import org.apache.tez.runtime.api.InputInitializer;
 import org.apache.tez.runtime.api.InputInitializerContext;
@@ -2758,7 +2757,6 @@ public class TestVertexImpl {
     }
     dispatcher = new DrainDispatcher();
     appContext = mock(AppContext.class);
-    when(appContext.getHadoopShim()).thenReturn(new DefaultHadoopShim());
     when(appContext.getContainerLauncherName(anyInt())).thenReturn(
         TezConstants.getTezYarnServicePluginName());
     DAGAppMaster mockDagAppMaster = mock(DAGAppMaster.class);

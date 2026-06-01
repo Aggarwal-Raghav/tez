@@ -53,7 +53,6 @@ import org.apache.hadoop.io.DataInputBuffer;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.tez.common.CallableWithNdc;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.TezCommonUtils;
 import org.apache.tez.common.TezUtilsInternal;
@@ -543,7 +542,7 @@ public class UnorderedPartitionedKVWriter extends BaseUnorderedPartitionedKVWrit
           new ArrayList<WrappedBuffer>(filledBuffers), codec, spilledRecordsCounter,
           spillNumber));
       filledBuffers.clear();
-      Futures.addCallback(future, new SpillCallback(spillNumber), GuavaShim.directExecutor());
+      Futures.addCallback(future, new SpillCallback(spillNumber), MoreExecutors.directExecutor());
       // Update once per buffer (instead of every record)
       updateTezCountersAndNotify();
       return true;

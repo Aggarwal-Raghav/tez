@@ -49,8 +49,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShim;
 import org.apache.tez.runtime.api.AbstractLogicalIOProcessor;
 import org.apache.tez.runtime.api.AbstractLogicalInput;
 import org.apache.tez.runtime.api.AbstractLogicalOutput;
@@ -108,7 +106,7 @@ public class TestLogicalIOProcessorRuntimeTask {
     LogicalIOProcessorRuntimeTask lio1 = new LogicalIOProcessorRuntimeTask(task1, 0, tezConf, null,
         umbilical, serviceConsumerMetadata, new HashMap<String, String>(), startedInputsMap, null,
         "", new ExecutionContextImpl("localhost"), Runtime.getRuntime().maxMemory(), true,
-        new DefaultHadoopShim(), sharedExecutor);
+        sharedExecutor);
 
     try {
       lio1.initialize();
@@ -139,7 +137,7 @@ public class TestLogicalIOProcessorRuntimeTask {
     LogicalIOProcessorRuntimeTask lio2 = new LogicalIOProcessorRuntimeTask(task2, 0, tezConf, null,
         umbilical, serviceConsumerMetadata, new HashMap<String, String>(), startedInputsMap, null,
         "", new ExecutionContextImpl("localhost"), Runtime.getRuntime().maxMemory(), true,
-        new DefaultHadoopShim(), sharedExecutor);
+        sharedExecutor);
     try {
       lio2.initialize();
       lio2.run();
@@ -185,7 +183,7 @@ public class TestLogicalIOProcessorRuntimeTask {
         new CleanupLogicalIOProcessorRuntimeTask(task1, 0, tezConf, null,
             umbilical, serviceConsumerMetadata, new HashMap<String, String>(),
             startedInputsMap, null, "", new ExecutionContextImpl("localhost"),
-            Runtime.getRuntime().maxMemory(), true, new DefaultHadoopShim(),
+            Runtime.getRuntime().maxMemory(), true,
             sharedExecutor);
 
     TaskRunner2Callable runner =
@@ -222,7 +220,7 @@ public class TestLogicalIOProcessorRuntimeTask {
     LogicalIOProcessorRuntimeTask lio1 = new LogicalIOProcessorRuntimeTask(task1, 0, tezConf, null,
         umbilical, serviceConsumerMetadata, new HashMap<String, String>(), startedInputsMap, null,
         "", new ExecutionContextImpl("localhost"), Runtime.getRuntime().maxMemory(), true,
-        new DefaultHadoopShim(), sharedExecutor);
+        sharedExecutor);
 
     try {
       lio1.initialize();
@@ -338,11 +336,11 @@ public class TestLogicalIOProcessorRuntimeTask {
         Map<String, String> envMap, Multimap<String, String> startedInputsMap,
         ObjectRegistry objectRegistry, String pid,
         org.apache.tez.runtime.api.ExecutionContext ExecutionContext,
-        long memAvailable, boolean updateSysCounters, HadoopShim hadoopShim,
+        long memAvailable, boolean updateSysCounters,
         TezExecutors sharedExecutor) throws IOException {
       super(taskSpec, appAttemptNumber, tezConf, localDirs, tezUmbilical,
           serviceConsumerMetadata, envMap, startedInputsMap, objectRegistry,
-          pid, ExecutionContext, memAvailable, updateSysCounters, hadoopShim,
+          pid, ExecutionContext, memAvailable, updateSysCounters,
           sharedExecutor);
     }
 

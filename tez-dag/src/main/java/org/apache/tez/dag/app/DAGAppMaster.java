@@ -187,8 +187,6 @@ import org.apache.tez.frameworkplugins.AMExtensions;
 import org.apache.tez.frameworkplugins.FrameworkUtils;
 import org.apache.tez.frameworkplugins.ServerFrameworkService;
 import org.apache.tez.frameworkplugins.yarn.YarnServerFrameworkService;
-import org.apache.tez.hadoop.shim.HadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.runtime.hook.TezDAGHook;
 import org.apache.tez.util.LoggingUtils;
 import org.apache.tez.util.TezMxBeanResourceCalculator;
@@ -248,7 +246,6 @@ public class DAGAppMaster extends AbstractService {
   private final String workingDirectory;
   private final String[] localDirs;
   private final String[] logDirs;
-  private HadoopShim hadoopShim;
   private ContainerSignatureMatcher containerSignatureMatcher;
   private AMContainerMap containers;
   private AMNodeTracker nodes;
@@ -425,7 +422,6 @@ public class DAGAppMaster extends AbstractService {
     this.frameworkService = getFrameworkService(conf);
 
     initResourceCalculatorPlugins();
-    this.hadoopShim = new HadoopShimsLoader(this.amConf).getHadoopShim();
 
     long sleepTimeBeforeSecs = this.amConf.getLong(
         TezConfiguration.TEZ_AM_SLEEP_TIME_BEFORE_EXIT_MILLIS,
@@ -694,7 +690,7 @@ public class DAGAppMaster extends AbstractService {
       List<NamedEntityDescriptor> taskSchedulerDescriptors) {
     return new TaskSchedulerManager(context,
         clientRpcServer, dispatcher.getEventHandler(), containerSignatureMatcher, webUIService,
-        taskSchedulerDescriptors, isLocal, hadoopShim);
+        taskSchedulerDescriptors, isLocal);
   }
 
   @VisibleForTesting
@@ -1478,7 +1474,7 @@ public class DAGAppMaster extends AbstractService {
       LOG.info("Localizing additional local resources for AM : " + lrDiff);
       List<URL> downloadedURLs;
       try {
-        TezUtilsInternal.setHadoopCallerContext(hadoopShim, dagId);
+        TezUtilsInternal.setHadoopCallerContext(dagId);
         downloadedURLs = RelocalizationUtils.processAdditionalResources(
             Maps.transformValues(lrDiff, new Function<LocalResource, URI>() {
 
@@ -1490,7 +1486,7 @@ public class DAGAppMaster extends AbstractService {
       } catch (IOException e) {
         throw new TezException(e);
       } finally {
-        hadoopShim.clearHadoopCallerContext();
+        TezUtilsInternal.clearHadoopCallerContext();
       }
       LOG.info("Done downloading additional AM resources");
       return downloadedURLs;
@@ -1705,11 +1701,6 @@ public class DAGAppMaster extends AbstractService {
       return containerLauncherManager.getContainerLauncherClassName(launcherId);
     }
 
-
-    @Override
-    public HadoopShim getHadoopShim() {
-      return hadoopShim;
-    }
 
     @Override
     public Map<ApplicationAccessType, String> getApplicationACLs() {
@@ -1990,7 +1981,7 @@ public class DAGAppMaster extends AbstractService {
   private DAGRecoveryData recoverDAG() throws IOException, TezException {
     if (recoveryEnabled) {
       try {
-        TezUtilsInternal.setHadoopCallerContext(hadoopShim, this.getAppID());
+        TezUtilsInternal.setHadoopCallerContext(this.getAppID());
         if (this.appAttemptID.getAttemptId() > 1) {
           LOG.info("Recovering data from previous attempts"
               + ", currentAttemptId=" + this.appAttemptID.getAttemptId());
@@ -1998,7 +1989,7 @@ public class DAGAppMaster extends AbstractService {
           return parseDAGFromRecoveryData();
         }
       } finally {
-        hadoopShim.clearHadoopCallerContext();
+        TezUtilsInternal.clearHadoopCallerContext();
       }
     }
     return null;
@@ -2472,7 +2463,7 @@ public class DAGAppMaster extends AbstractService {
       UserGroupInformation.setConfiguration(conf);
       Credentials credentials = UserGroupInformation.getCurrentUser().getCredentials();
 
-      TezUtilsInternal.setSecurityUtilConfigration(LOG, conf);
+      TezUtilsInternal.setSecurityUtilConfiguration(LOG, conf);
 
       DAGAppMaster appMaster =
           new DAGAppMaster(

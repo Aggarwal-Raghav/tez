@@ -39,7 +39,6 @@ import javax.annotation.Nullable;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.yarn.event.EventHandler;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.ReflectionUtils;
 import org.apache.tez.common.TezUtilsInternal;
@@ -118,10 +117,10 @@ public class RootInputInitializerManager {
 
       InputInitializer initializer;
       try {
-        TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(), vertex.getVertexId());
+        TezUtilsInternal.setHadoopCallerContext(vertex.getVertexId());
         initializer = createInitializer(input, context);
       } finally {
-        appContext.getHadoopShim().clearHadoopCallerContext();
+        TezUtilsInternal.clearHadoopCallerContext();
       }
 
       InitializerWrapper initializerWrapper =
@@ -139,7 +138,7 @@ public class RootInputInitializerManager {
       initializerMap.put(input.getName(), initializerWrapper);
       ListenableFuture<List<Event>> future = executor
           .submit(new InputInitializerCallable(initializerWrapper, dagUgi, appContext));
-      Futures.addCallback(future, createInputInitializerCallback(initializerWrapper), GuavaShim.directExecutor());
+      Futures.addCallback(future, createInputInitializerCallback(initializerWrapper), MoreExecutors.directExecutor());
     }
   }
 
@@ -274,11 +273,10 @@ public class RootInputInitializerManager {
           LOG.info("Starting InputInitializer for Input: {} on vertex {}", initializerWrapper.getInput().getName(),
               initializerWrapper.getVertexLogIdentifier());
           try {
-            TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(),
-                initializerWrapper.vertexId);
+            TezUtilsInternal.setHadoopCallerContext(initializerWrapper.vertexId);
             return initializerWrapper.getInitializer().initialize();
           } finally {
-            appContext.getHadoopShim().clearHadoopCallerContext();
+            TezUtilsInternal.clearHadoopCallerContext();
           }
         }
       });

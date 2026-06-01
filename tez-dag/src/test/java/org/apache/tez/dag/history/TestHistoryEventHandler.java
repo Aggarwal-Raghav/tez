@@ -53,7 +53,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.HadoopShim;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -200,7 +199,6 @@ public class TestHistoryEventHandler {
 
     AppContext appContext = mock(AppContext.class);
     when(appContext.getApplicationID()).thenReturn(appId);
-    when(appContext.getHadoopShim()).thenReturn(new HadoopShim() {});
     when(appContext.getAMConf()).thenReturn(conf);
     when(appContext.getCurrentDAG()).thenReturn(dag);
 

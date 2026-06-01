@@ -43,8 +43,6 @@ import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.DAGStatus;
 import org.apache.tez.dag.api.client.StatusGetOpts;
-import org.apache.tez.hadoop.shim.HadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.runtime.library.api.TezRuntimeConfiguration;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -73,7 +71,6 @@ public abstract class TezExampleBase extends Configured implements Tool {
   private boolean generateSplitInClient = false;
   private boolean leaveAmRunning = false;
   private String reconnectAppId;
-  private HadoopShim hadoopShim;
 
   protected boolean isCountersLog() {
 	  return isCountersLog;
@@ -121,7 +118,6 @@ public abstract class TezExampleBase extends Configured implements Tool {
     if (optionParser.getCommandLine().hasOption(RECONNECT_APP_ID)) {
         reconnectAppId = optionParser.getCommandLine().getOptionValue(RECONNECT_APP_ID);
     }
-    hadoopShim = new HadoopShimsLoader(conf).getHadoopShim();
 
     return execute(otherArgs, null, null);
   }
@@ -142,7 +138,6 @@ public abstract class TezExampleBase extends Configured implements Tool {
   public int run(TezConfiguration conf, String[] args, @Nullable TezClient tezClient) throws
       Exception {
     setConf(conf);
-    hadoopShim = new HadoopShimsLoader(conf).getHadoopShim();
     GenericOptionsParser optionParser = new GenericOptionsParser(conf, getExtraOptions(), args);
     if (optionParser.getCommandLine().hasOption(LOCAL_MODE)) {
       isLocalMode = true;
@@ -179,13 +174,9 @@ public abstract class TezExampleBase extends Configured implements Tool {
     CallerContext callerContext = CallerContext.create("TezExamples",
         "Tez Example DAG: " + dag.getName());
     ApplicationId appId = tezClientInternal.getAppMasterApplicationId();
-    if (hadoopShim == null) {
-      Configuration conf = (getConf() == null ? new Configuration(false) : getConf());
-      hadoopShim = new HadoopShimsLoader(conf).getHadoopShim();
-    }
 
     if (appId != null) {
-      TezUtilsInternal.setHadoopCallerContext(hadoopShim, appId);
+      TezUtilsInternal.setHadoopCallerContext(appId);
       callerContext.setCallerIdAndType(appId.toString(), "TezExampleApplication");
     }
     dag.setCallerContext(callerContext);

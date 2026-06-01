@@ -142,8 +142,6 @@ import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.frameworkplugins.AMExtensions;
 import org.apache.tez.frameworkplugins.yarn.YarnServerFrameworkService;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShim;
 import org.apache.tez.runtime.api.OutputCommitter;
 import org.apache.tez.runtime.api.OutputCommitterContext;
 import org.apache.tez.runtime.api.events.DataMovementEvent;
@@ -211,7 +209,6 @@ public class TestDAGImpl {
   private HistoryEventHandler historyEventHandler;
   private TaskAttemptEventDispatcher taskAttemptEventDispatcher;
   private ClusterInfo clusterInfo = new ClusterInfo(Resource.newInstance(8192,10));
-  private HadoopShim defaultShim = new DefaultHadoopShim();
   private AMExtensions amExtensions = new YarnServerFrameworkService.YarnAMExtensions();
 
   static {
@@ -873,7 +870,6 @@ public class TestDAGImpl {
     taskSchedulerManager = mock(TaskSchedulerManager.class);
     execService = mock(ListeningExecutorService.class);
     final ListenableFuture<Void> mockFuture = mock(ListenableFuture.class);
-    when(appContext.getHadoopShim()).thenReturn(defaultShim);
     when(appContext.getApplicationID()).thenReturn(appAttemptId.getApplicationId());
     doReturn(amExtensions).when(appContext).getAmExtensions();
 
@@ -895,7 +891,6 @@ public class TestDAGImpl {
     doReturn(dagId).when(appContext).getCurrentDAGID();
     doReturn(historyEventHandler).when(appContext).getHistoryHandler();
     doReturn(aclManager).when(appContext).getAMACLManager();
-    doReturn(defaultShim).when(appContext).getHadoopShim();
     dag = new DAGImpl(dagId, conf, dagPlan,
         dispatcher.getEventHandler(), taskCommunicatorManagerInterface,
         fsTokens, clock, "user", thh, appContext);
@@ -905,7 +900,6 @@ public class TestDAGImpl {
     mrrAppContext = mock(AppContext.class);
     doReturn(aclManager).when(mrrAppContext).getAMACLManager();
     doReturn(execService).when(mrrAppContext).getExecService();
-    doReturn(defaultShim).when(mrrAppContext).getHadoopShim();
     doReturn(amExtensions).when(mrrAppContext).getAmExtensions();
 
     mrrDagId = TezDAGID.getInstance(appAttemptId.getApplicationId(), 2);
@@ -924,7 +918,6 @@ public class TestDAGImpl {
     groupAppContext = mock(AppContext.class);
     doReturn(aclManager).when(groupAppContext).getAMACLManager();
     doReturn(execService).when(groupAppContext).getExecService();
-    doReturn(defaultShim).when(groupAppContext).getHadoopShim();
 
     groupDagId = TezDAGID.getInstance(appAttemptId.getApplicationId(), 3);
     groupDagPlan = createGroupDAGPlan(testName.getMethodName());
@@ -999,7 +992,6 @@ public class TestDAGImpl {
     dagPlanWithCustomEdge = createDAGWithCustomEdge(exLocation, useLegacy);
     dagWithCustomEdgeAppContext = mock(AppContext.class);
     doReturn(aclManager).when(dagWithCustomEdgeAppContext).getAMACLManager();
-    when(dagWithCustomEdgeAppContext.getHadoopShim()).thenReturn(defaultShim);
     dagWithCustomEdge = new DAGImpl(dagWithCustomEdgeId, conf, dagPlanWithCustomEdge,
         dispatcher.getEventHandler(), taskCommunicatorManagerInterface,
         fsTokens, clock, "user", thh, dagWithCustomEdgeAppContext);

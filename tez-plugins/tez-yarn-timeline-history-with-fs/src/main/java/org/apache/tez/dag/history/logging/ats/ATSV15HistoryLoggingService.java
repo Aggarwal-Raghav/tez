@@ -187,8 +187,7 @@ public class ATSV15HistoryLoggingService extends HistoryLoggingService {
       @Override
       public void run() {
         boolean interrupted = false;
-        TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(),
-            appContext.getApplicationID());
+        TezUtilsInternal.setHadoopCallerContext(appContext.getApplicationID());
         while (!stopped.get() && !Thread.currentThread().isInterrupted()
               && !interrupted) {
 
@@ -241,8 +240,7 @@ public class ATSV15HistoryLoggingService extends HistoryLoggingService {
       eventHandlingThread.interrupt();
     }
     try {
-      TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(),
-          appContext.getApplicationID());
+      TezUtilsInternal.setHadoopCallerContext(appContext.getApplicationID());
       synchronized (lock) {
         if (!eventQueue.isEmpty()) {
           LOG.warn("ATSService being stopped"
@@ -274,7 +272,7 @@ public class ATSV15HistoryLoggingService extends HistoryLoggingService {
         }
       }
     } finally {
-      appContext.getHadoopShim().clearHadoopCallerContext();
+      TezUtilsInternal.clearHadoopCallerContext();
     }
     if (!eventQueue.isEmpty()) {
       LOG.warn("Did not finish flushing eventQueue before stopping ATSService"

@@ -38,7 +38,6 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.yarn.api.records.Resource;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.ReflectionUtils;
 import org.apache.tez.dag.api.EdgeManagerPluginDescriptor;
@@ -85,6 +84,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -489,7 +489,7 @@ public class VertexManager {
       VertexManagerEvent e = eventQueue.poll();
       if (e != null) {
         ListenableFuture<Void> future = execService.submit(e);
-        Futures.addCallback(future, e.getCallback(), GuavaShim.directExecutor());
+        Futures.addCallback(future, e.getCallback(), MoreExecutors.directExecutor());
       } else {
         // This may happen. Lets say Callback succeeded on threadA. It set eventInFlight to false
         // and called tryScheduleNextEvent() and found queue not empty but got paused before it

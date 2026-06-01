@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.hadoop.service.AbstractService;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.service.TezTestServiceProtocolBlockingPB;
 import org.apache.tez.service.impl.TezTestServiceProtocolClientImpl;
 import org.apache.tez.test.service.rpc.TezTestServiceProtocolProtos.RunContainerRequestProto;
@@ -75,7 +74,7 @@ public class TezTestServiceCommunicator extends AbstractService {
       public void onFailure(Throwable t) {
         callback.indicateError(t);
       }
-    }, GuavaShim.directExecutor());
+    }, MoreExecutors.directExecutor());
 
   }
 
@@ -92,7 +91,7 @@ public class TezTestServiceCommunicator extends AbstractService {
       public void onFailure(Throwable t) {
         callback.indicateError(t);
       }
-    }, GuavaShim.directExecutor());
+    }, MoreExecutors.directExecutor());
 
   }
 

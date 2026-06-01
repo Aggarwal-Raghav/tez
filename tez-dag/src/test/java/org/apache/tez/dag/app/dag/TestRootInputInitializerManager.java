@@ -46,7 +46,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 import org.apache.tez.runtime.api.Event;
 import org.apache.tez.runtime.api.InputInitializer;
 import org.apache.tez.runtime.api.InputInitializerContext;
@@ -218,7 +217,6 @@ public class TestRootInputInitializerManager {
     Vertex vertex = mock(Vertex.class);
     doReturn(mock(TezVertexID.class)).when(vertex).getVertexId();
     AppContext appContext = mock(AppContext.class);
-    doReturn(new DefaultHadoopShim()).when(appContext).getHadoopShim();
     doReturn(mock(EventHandler.class)).when(appContext).getEventHandler();
     UserGroupInformation dagUgi = UserGroupInformation.createRemoteUser("fakeuser");
     StateChangeNotifier stateChangeNotifier = mock(StateChangeNotifier.class);

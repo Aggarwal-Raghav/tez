@@ -35,7 +35,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalDirAllocator;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.tez.common.CallableWithNdc;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.TezRuntimeFrameworkConfigs;
 import org.apache.tez.common.TezUtilsInternal;
@@ -263,7 +262,7 @@ public class Shuffle implements ExceptionReporter {
   public void run() throws IOException {
     merger.configureAndStart();
     runShuffleFuture = executor.submit(runShuffleCallable);
-    Futures.addCallback(runShuffleFuture, new ShuffleRunnerFutureCallback(), GuavaShim.directExecutor());
+    Futures.addCallback(runShuffleFuture, new ShuffleRunnerFutureCallback(), MoreExecutors.directExecutor());
     executor.shutdown();
   }
 

@@ -24,8 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.HashSet;
@@ -41,10 +39,12 @@ import java.util.zip.Inflater;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.ipc.CallerContext;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.log4j.Appender;
 import org.apache.log4j.PatternLayout;
 import org.apache.tez.client.TezClientUtils;
@@ -52,7 +52,6 @@ import org.apache.tez.common.io.NonSyncByteArrayOutputStream;
 import org.apache.tez.dag.api.DagTypeConverters;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezConstants;
-import org.apache.tez.dag.api.TezUncheckedException;
 import org.apache.tez.dag.api.records.DAGProtos;
 import org.apache.tez.dag.api.records.DAGProtos.ConfigurationProto;
 import org.apache.tez.dag.api.records.DAGProtos.PlanKeyValuePair;
@@ -60,7 +59,6 @@ import org.apache.tez.dag.records.TaskAttemptTerminationCause;
 import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.HadoopShim;
 import org.apache.tez.serviceplugins.api.ServicePluginsDescriptor;
 import org.apache.tez.serviceplugins.api.TaskAttemptEndReason;
 import org.apache.tez.util.StopWatch;
@@ -76,6 +74,8 @@ import org.slf4j.LoggerFactory;
 public final class TezUtilsInternal {
 
   private static final Logger LOG = LoggerFactory.getLogger(TezUtilsInternal.class);
+
+  private static final CallerContext nullCallerContext = new CallerContext.Builder("").build();
 
   private TezUtilsInternal() {}
 
@@ -375,40 +375,51 @@ public final class TezUtilsInternal {
   }
 
   @Private
-  public static void setHadoopCallerContext(HadoopShim hadoopShim, TezTaskAttemptID attemptID) {
-    hadoopShim.setHadoopCallerContext("tez_ta:" + attemptID.toString());
+  public static void setHadoopCallerContext(String context) {
+    CallerContext.setCurrent(new CallerContext.Builder(context).build());
   }
 
   @Private
-  public static void setHadoopCallerContext(HadoopShim hadoopShim, TezVertexID vertexID) {
-    hadoopShim.setHadoopCallerContext("tez_v:" + vertexID.toString());
+  public static void clearHadoopCallerContext() {
+    CallerContext.setCurrent(nullCallerContext);
   }
 
   @Private
-  public static void setHadoopCallerContext(HadoopShim hadoopShim, TezDAGID dagID) {
-    hadoopShim.setHadoopCallerContext("tez_dag:" + dagID.toString());
+  public static void setHadoopCallerContext(TezTaskAttemptID attemptID) {
+    setHadoopCallerContext("tez_ta:" + attemptID.toString());
   }
 
   @Private
-  public static void setHadoopCallerContext(HadoopShim hadoopShim, ApplicationId appID) {
-    hadoopShim.setHadoopCallerContext("tez_app:" + appID.toString());
+  public static void setHadoopCallerContext(TezVertexID vertexID) {
+    setHadoopCallerContext("tez_v:" + vertexID.toString());
   }
 
   @Private
-  public static void setSecurityUtilConfigration(Logger log, Configuration conf) {
-    // Use reflection to invoke SecurityUtil.setConfiguration when available, version 2.6.0 of
-    // hadoop does not support it, it is currently available from 2.9.0.
-    // Remove this when the minimum supported hadoop version has the above method.
-    Class<SecurityUtil> clz = SecurityUtil.class;
-    try {
-      Method method = clz.getMethod("setConfiguration", Configuration.class);
-      method.invoke(null, conf);
-    } catch (NoSuchMethodException e) {
-      // This is not available, so ignore it.
-    } catch (SecurityException | IllegalAccessException | IllegalArgumentException |
-        InvocationTargetException e) {
-      log.warn("Error invoking SecurityUtil.setConfiguration: ", e);
-      throw new TezUncheckedException("Error invoking SecurityUtil.setConfiguration", e);
-    }
+  public static void setHadoopCallerContext(TezDAGID dagID) {
+    setHadoopCallerContext("tez_dag:" + dagID.toString());
+  }
+
+  @Private
+  public static void setHadoopCallerContext(ApplicationId appID) {
+    setHadoopCallerContext("tez_app:" + appID.toString());
+  }
+
+  public static FinalApplicationStatus applyFinalApplicationStatusCorrection(
+      FinalApplicationStatus orig, boolean isSessionMode, boolean isError) {
+    return switch (orig) {
+      case FAILED ->
+          // App is failed if dag failed in non-session mode or there was an error.
+          (!isSessionMode || isError)
+              ? FinalApplicationStatus.FAILED
+              : FinalApplicationStatus.ENDED;
+      case SUCCEEDED ->
+          isSessionMode ? FinalApplicationStatus.ENDED : FinalApplicationStatus.SUCCEEDED;
+      default -> orig;
+    };
+  }
+
+  @Private
+  public static void setSecurityUtilConfiguration(Logger log, Configuration conf) {
+    SecurityUtil.setConfiguration(conf);
   }
 }

@@ -81,7 +81,7 @@ public class TaskRunner2Callable extends CallableWithNdc<TaskRunner2Callable.Tas
             return new TaskRunner2CallableResult(null);
           }
           LOG.info("Initializing task" + ", taskAttemptId={}", task.getTaskAttemptID());
-          TezUtilsInternal.setHadoopCallerContext(task.getHadoopShim(), task.getTaskAttemptID());
+          TezUtilsInternal.setHadoopCallerContext(task.getTaskAttemptID());
           TezCommonUtils.logCredentials(LOG, ugi.getCredentials(), "taskInit");
           IOStatisticsContext.getCurrentIOStatisticsContext().reset();
           task.initialize();

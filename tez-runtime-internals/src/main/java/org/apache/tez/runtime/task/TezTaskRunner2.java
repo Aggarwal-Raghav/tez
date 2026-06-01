@@ -42,7 +42,6 @@ import org.apache.tez.common.TezExecutors;
 import org.apache.tez.common.TezSharedExecutor;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.records.TezTaskAttemptID;
-import org.apache.tez.hadoop.shim.HadoopShim;
 import org.apache.tez.runtime.LogicalIOProcessorRuntimeTask;
 import org.apache.tez.runtime.api.ExecutionContext;
 import org.apache.tez.runtime.api.ObjectRegistry;
@@ -106,8 +105,6 @@ public class TezTaskRunner2 {
   private volatile long taskKillStartTime  = 0;
   final Configuration taskConf;
 
-  private final HadoopShim hadoopShim;
-
   // The callable which is being used to execute the task.
   private volatile TaskRunner2Callable taskRunnerCallable;
 
@@ -124,10 +121,10 @@ public class TezTaskRunner2 {
       TaskReporterInterface taskReporter, ExecutorService executor,
       ObjectRegistry objectRegistry, String pid,
       ExecutionContext executionContext, long memAvailable,
-      boolean updateSysCounters, HadoopShim hadoopShim) throws IOException {
+      boolean updateSysCounters) throws IOException {
     this(tezConf, ugi, localDirs, taskSpec, appAttemptNumber, serviceConsumerMetadata,
         serviceProviderEnvMap, startedInputsMap, taskReporter, executor, objectRegistry,
-        pid, executionContext, memAvailable, updateSysCounters, hadoopShim, null);
+        pid, executionContext, memAvailable, updateSysCounters, null);
   }
 
   public TezTaskRunner2(Configuration tezConf, UserGroupInformation ugi, String[] localDirs,
@@ -138,20 +135,19 @@ public class TezTaskRunner2 {
                         TaskReporterInterface taskReporter, ExecutorService executor,
                         ObjectRegistry objectRegistry, String pid,
                         ExecutionContext executionContext, long memAvailable,
-                        boolean updateSysCounters, HadoopShim hadoopShim,
+                        boolean updateSysCounters,
                         TezExecutors sharedExecutor) throws
       IOException {
     this.ugi = ugi;
     this.taskReporter = taskReporter;
     this.executor = executor;
     this.umbilicalAndErrorHandler = new UmbilicalAndErrorHandler();
-    this.hadoopShim = hadoopShim;
     this.taskConf = new Configuration(tezConf);
     mergeTaskSpecConfToConf(taskSpec, taskConf);
     localExecutor = sharedExecutor == null ? new TezSharedExecutor(tezConf) : null;
     this.task = new LogicalIOProcessorRuntimeTask(taskSpec, appAttemptNumber, taskConf, localDirs,
         umbilicalAndErrorHandler, serviceConsumerMetadata, serviceProviderEnvMap, startedInputsMap,
-        objectRegistry, pid, executionContext, memAvailable, updateSysCounters, hadoopShim,
+        objectRegistry, pid, executionContext, memAvailable, updateSysCounters,
         sharedExecutor == null ? localExecutor : sharedExecutor);
   }
 

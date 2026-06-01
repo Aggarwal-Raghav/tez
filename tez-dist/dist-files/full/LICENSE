@@ -231,7 +231,6 @@ license:
   - tez-tests-*.jar
   - tez-yarn-timeline-history-*.jar
   - tez-yarn-timeline-history-with-acls-*.jar
-  - hadoop-shim-*.jar
   - avro-*.jar
   - async-http-client-*.jar
   - apacheds-i18n-*.jar

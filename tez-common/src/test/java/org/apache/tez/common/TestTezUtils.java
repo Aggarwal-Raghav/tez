@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.tez.client.TezClientUtils;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezConstants;
@@ -327,5 +328,38 @@ public class TestTezUtils {
     assertEquals("testComm0", tcd.getEntityName());
     assertEquals(1, tcd.getUserPayload().getVersion());
     assertArrayEquals(new byte[] {0, 0, 0, 1}, tcd.getUserPayload().deepCopyAsArray());
+  }
+
+  @Test
+  public void testApplyFinalApplicationStatusCorrection() {
+    // Session mode success/failure, change to ended
+    Assert.assertEquals(FinalApplicationStatus.ENDED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.SUCCEEDED, true, false));
+    Assert.assertEquals(FinalApplicationStatus.ENDED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, true, false));
+
+    // Non-session mode success/failure, retain success/failure
+    Assert.assertEquals(FinalApplicationStatus.SUCCEEDED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.SUCCEEDED, false, false));
+    Assert.assertEquals(FinalApplicationStatus.FAILED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, false, false));
+
+    // Session and non-session mode error, retain failed.
+    Assert.assertEquals(FinalApplicationStatus.FAILED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, true, true));
+    Assert.assertEquals(FinalApplicationStatus.FAILED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.FAILED, false, true));
+
+    // Session and non-session mode killed is killed.
+    Assert.assertEquals(FinalApplicationStatus.KILLED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.KILLED, true, false));
+    Assert.assertEquals(FinalApplicationStatus.KILLED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.KILLED, false, false));
+
+    // Session and non-session mode undefined is undefined.
+    Assert.assertEquals(FinalApplicationStatus.UNDEFINED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.UNDEFINED, true, false));
+    Assert.assertEquals(FinalApplicationStatus.UNDEFINED,
+        TezUtilsInternal.applyFinalApplicationStatusCorrection(FinalApplicationStatus.UNDEFINED, false, false));
   }
 }

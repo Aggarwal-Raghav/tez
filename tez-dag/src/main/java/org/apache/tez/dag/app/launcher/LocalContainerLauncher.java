@@ -430,8 +430,7 @@ public class LocalContainerLauncher extends DagContainerLauncher {
     TezChild tezChild =
         TezChild.newTezChild(defaultConf, null, 0, containerId.toString(), tokenIdentifier,
             attemptNumber, localDirs, workingDirectory, containerEnv, "", executionContext, credentials,
-            memAvailable, context.getUser(), tezTaskUmbilicalProtocol, false,
-            context.getHadoopShim());
+            memAvailable, context.getUser(), tezTaskUmbilicalProtocol, false);
     return tezChild;
   }
 
