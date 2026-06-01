@@ -109,7 +109,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.runtime.api.impl.TaskSpec;
 import org.apache.tez.serviceplugins.api.ServicePluginErrorDefaults;
 import org.apache.tez.serviceplugins.api.ServicePluginException;
@@ -151,8 +150,7 @@ public class TestTaskSchedulerManager {
                                     ContainerSignatureMatcher containerSignatureMatcher,
                                     WebUIService webUI) {
       super(appContext, clientService, eventHandler, containerSignatureMatcher, webUI,
-          Lists.newArrayList(new NamedEntityDescriptor("FakeDescriptor", null)), false,
-          new HadoopShimsLoader(appContext.getAMConf()).getHadoopShim());
+          Lists.newArrayList(new NamedEntityDescriptor("FakeDescriptor", null)), false);
     }
 
     @Override
@@ -706,7 +704,7 @@ public class TestTaskSchedulerManager {
 
     TaskSchedulerManager taskSchedulerManager =
         new TaskSchedulerManager(appContext, null, null,
-            null, null, list, false,null);
+            null, null, list, false);
     assertFalse("Should not return true unless actually unregistered successfully",
         taskSchedulerManager.hasUnregistered());
   }
@@ -741,8 +739,7 @@ public class TestTaskSchedulerManager {
 
     TaskSchedulerManager taskSchedulerManager =
         new TaskSchedulerManager(appContext, dagClientServer, eventHandler,
-            mock(ContainerSignatureMatcher.class), mock(WebUIService.class), list, false,
-            new HadoopShimsLoader(appContext.getAMConf()).getHadoopShim()) {
+            mock(ContainerSignatureMatcher.class), mock(WebUIService.class), list, false) {
           @Override
           TaskSchedulerContext wrapTaskSchedulerContext(TaskSchedulerContext rawContext) {
             // Avoid wrapping in threads
@@ -975,8 +972,7 @@ public class TestTaskSchedulerManager {
                                          List<NamedEntityDescriptor> schedulerDescriptors,
                                          boolean isPureLocalMode) {
       super(appContext, clientService, eventHandler, containerSignatureMatcher, webUI,
-          schedulerDescriptors, isPureLocalMode,
-          new HadoopShimsLoader(appContext.getAMConf()).getHadoopShim());
+          schedulerDescriptors, isPureLocalMode);
       yarnTaskScheduler = mock(TaskScheduler.class);
       uberTaskScheduler = mock(TaskScheduler.class);
     }

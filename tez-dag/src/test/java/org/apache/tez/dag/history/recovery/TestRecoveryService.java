@@ -61,7 +61,6 @@ import org.apache.tez.dag.history.events.TaskStartedEvent;
 import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 
 import org.junit.Test;
 
@@ -97,7 +96,6 @@ public class TestRecoveryService {
 
     appContext = mock(AppContext.class);
     when(appContext.getClock()).thenReturn(new SystemClock());
-    when(appContext.getHadoopShim()).thenReturn(new DefaultHadoopShim());
     when(appContext.getApplicationID()).thenReturn(appId);
 
     if (useMockFs) {

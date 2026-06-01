@@ -71,8 +71,6 @@ import org.apache.tez.dag.api.records.DAGProtos;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.dag.utils.RelocalizationUtils;
-import org.apache.tez.hadoop.shim.HadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.runtime.api.ExecutionContext;
 import org.apache.tez.runtime.api.impl.ExecutionContextImpl;
 import org.apache.tez.runtime.common.objectregistry.ObjectRegistryImpl;
@@ -129,7 +127,6 @@ public class TezChild {
   private TaskReporterInterface taskReporter;
   private int taskCount = 0;
   private TezVertexID lastVertexID;
-  private final HadoopShim hadoopShim;
   private final TezExecutors sharedExecutor;
   private ThreadLocalMap mdcContext;
 
@@ -139,7 +136,7 @@ public class TezChild {
       ObjectRegistryImpl objectRegistry, String pid,
       ExecutionContext executionContext,
       Credentials credentials, long memAvailable, String user, TezTaskUmbilicalProtocol umbilical,
-      boolean updateSysCounters, HadoopShim hadoopShim) throws IOException, InterruptedException {
+      boolean updateSysCounters) throws IOException, InterruptedException {
     this.mdcContext = LoggingUtils.setupLog4j();
     this.defaultConf = conf;
     this.containerIdString = containerIdentifier;
@@ -153,7 +150,6 @@ public class TezChild {
     this.memAvailable = memAvailable;
     this.user = user;
     this.updateSysCounters = updateSysCounters;
-    this.hadoopShim = hadoopShim;
     this.sharedExecutor = new TezSharedExecutor(defaultConf);
 
     getTaskMaxSleepTime = defaultConf.getInt(
@@ -276,7 +272,7 @@ public class TezChild {
             containerTask.getTaskSpec().getTaskAttemptID().toString());
         System.out.println(timeStamp + " Starting to run new task attempt: " +
             containerTask.getTaskSpec().getTaskAttemptID().toString());
-        TezUtilsInternal.setHadoopCallerContext(hadoopShim,
+        TezUtilsInternal.setHadoopCallerContext(
             containerTask.getTaskSpec().getTaskAttemptID());
         TezUtilsInternal.updateLoggers(defaultConf, loggerAddend, LoggingUtils.getPatternForTask(defaultConf));
 
@@ -292,7 +288,7 @@ public class TezChild {
             localDirs, containerTask.getTaskSpec(), appAttemptNumber,
             serviceConsumerMetadata, serviceProviderEnvMap, startedInputsMap, taskReporter,
             executor, objectRegistry, pid, executionContext, memAvailable, updateSysCounters,
-            hadoopShim, sharedExecutor);
+            sharedExecutor);
 
         boolean shouldDie;
         final String[] hookClasses = taskConf
@@ -498,7 +494,7 @@ public class TezChild {
       String tokenIdentifier, int attemptNumber, String[] localDirs, String workingDirectory,
       Map<String, String> serviceProviderEnvMap, @Nullable String pid,
       ExecutionContext executionContext, Credentials credentials, long memAvailable, String user,
-      TezTaskUmbilicalProtocol tezUmbilical, boolean updateSysCounters, HadoopShim hadoopShim)
+      TezTaskUmbilicalProtocol tezUmbilical, boolean updateSysCounters)
       throws IOException, InterruptedException, TezException {
 
     // Pull in configuration specified for the session.
@@ -506,15 +502,14 @@ public class TezChild {
     // for each and every task, and reading it back from disk. Also needs to be per vertex.
     Limits.setConfiguration(conf);
 
-    TezUtilsInternal.setSecurityUtilConfigration(LOG, conf);
+    TezUtilsInternal.setSecurityUtilConfiguration(LOG, conf);
 
     // singleton of ObjectRegistry for this JVM
     ObjectRegistryImpl objectRegistry = new ObjectRegistryImpl();
 
     return new TezChild(conf, host, port, containerIdentifier, tokenIdentifier,
         attemptNumber, workingDirectory, localDirs, serviceProviderEnvMap, objectRegistry, pid,
-        executionContext, credentials, memAvailable, user, tezUmbilical, updateSysCounters,
-        hadoopShim);
+        executionContext, credentials, memAvailable, user, tezUmbilical, updateSysCounters);
   }
 
   public static void main(String[] args) throws IOException, InterruptedException, TezException {
@@ -548,7 +543,6 @@ public class TezChild {
     UserGroupInformation.setConfiguration(defaultConf);
     Credentials credentials = UserGroupInformation.getCurrentUser().getCredentials();
 
-    HadoopShim hadoopShim = new HadoopShimsLoader(defaultConf).getHadoopShim();
 
     // log the system properties
     if (LOG.isInfoEnabled()) {
@@ -562,7 +556,7 @@ public class TezChild {
         tokenIdentifier, attemptNumber, localDirs, System.getenv(Environment.PWD.name()),
         System.getenv(), pid, new ExecutionContextImpl(System.getenv(Environment.NM_HOST.name())),
         credentials, Runtime.getRuntime().maxMemory(), System
-            .getenv(ApplicationConstants.Environment.USER.toString()), null, true, hadoopShim);
+            .getenv(ApplicationConstants.Environment.USER.toString()), null, true);
     ContainerExecutionResult result = tezChild.run();
     LOG.info("TezChild is about to exit from main(), run() returned result: {}", result.toString());
   }

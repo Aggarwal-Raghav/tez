@@ -63,7 +63,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.HadoopShim;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -427,7 +426,6 @@ public class TestATSV15HistoryLoggingService {
     ATSV15HistoryLoggingService service = new ATSV15HistoryLoggingService();
     appContext = mock(AppContext.class);
     when(appContext.getApplicationID()).thenReturn(appId);
-    when(appContext.getHadoopShim()).thenReturn(new HadoopShim() {});
     service.setAppContext(appContext);
 
     Configuration conf = new Configuration(false);

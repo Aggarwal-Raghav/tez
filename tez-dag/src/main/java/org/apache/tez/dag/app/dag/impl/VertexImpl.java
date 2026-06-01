@@ -63,7 +63,6 @@ import org.apache.hadoop.yarn.state.StateMachineFactory;
 import org.apache.hadoop.yarn.util.Clock;
 import org.apache.tez.client.TezClientUtils;
 import org.apache.tez.common.ATSConstants;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.ProgressHelper;
 import org.apache.tez.common.ReflectionUtils;
@@ -205,6 +204,7 @@ import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
 
@@ -2259,8 +2259,7 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
           @Override
           public Void call() throws Exception {
             try {
-              TezUtilsInternal.setHadoopCallerContext(vertex.appContext.getHadoopShim(),
-                  vertex.vertexId);
+              TezUtilsInternal.setHadoopCallerContext(vertex.vertexId);
               vertex.dagUgi.doAs(new PrivilegedExceptionAction<Void>() {
                 @Override
                 public Void run() throws Exception {
@@ -2271,14 +2270,14 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
                 }
               });
             } finally {
-              vertex.appContext.getHadoopShim().clearHadoopCallerContext();
+              TezUtilsInternal.clearHadoopCallerContext();
             }
             return null;
           }
         };
         ListenableFuture<Void> commitFuture =
             vertex.getAppContext().getExecService().submit(commitCallableEvent);
-        Futures.addCallback(commitFuture, commitCallableEvent.getCallback(), GuavaShim.directExecutor());
+        Futures.addCallback(commitFuture, commitCallableEvent.getCallback(), MoreExecutors.directExecutor());
         vertex.commitFutures.put(outputName, commitFuture);
       }
     }
@@ -2573,13 +2572,13 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
             LOG.debug("Invoking committer init for output={}, vertex={}", outputName, logIdentifier);
 
             try {
-              TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(), vertexId);
+              TezUtilsInternal.setHadoopCallerContext(vertexId);
               outputCommitter.initialize();
               outputCommitters.put(outputName, outputCommitter);
               LOG.debug("Invoking committer setup for output={}, vertex={}", outputName, logIdentifier);
               outputCommitter.setupOutput();
             } finally {
-              appContext.getHadoopShim().clearHadoopCallerContext();
+              TezUtilsInternal.clearHadoopCallerContext();
             }
 
             return null;
@@ -3478,7 +3477,7 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
     if (outputCommitters != null) {
       LOG.info("Invoking committer abort for vertex, vertexId=" + logIdentifier);
       try {
-        TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(), vertexId);
+        TezUtilsInternal.setHadoopCallerContext(vertexId);
         dagUgi.doAs(new PrivilegedExceptionAction<Void>() {
           @Override
           public Void run() {
@@ -3498,7 +3497,7 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
       } catch (Exception e) {
         throw new TezUncheckedException("Unknown error while attempting VertexCommitter(s) abort", e);
       } finally {
-        appContext.getHadoopShim().clearHadoopCallerContext();
+        TezUtilsInternal.clearHadoopCallerContext();
       }
     }
     if (finishTime == 0) {

@@ -118,7 +118,6 @@ import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.frameworkplugins.yarn.YarnServerFrameworkService;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 import org.apache.tez.runtime.api.Event;
 import org.apache.tez.runtime.api.InputInitializer;
 import org.apache.tez.runtime.api.InputInitializerContext;
@@ -324,7 +323,6 @@ public class TestDAGRecovery {
     execService = mock(ListeningExecutorService.class);
     thh = mock(TaskHeartbeatHandler.class);
     final ListenableFuture<Void> mockFuture = mock(ListenableFuture.class);
-    when(appContext.getHadoopShim()).thenReturn(new DefaultHadoopShim());
     when(appContext.getApplicationID()).thenReturn(appAttemptId.getApplicationId());
     when(appContext.getClock()).thenReturn(new SystemClock());
     when(appContext.getAmExtensions()).thenReturn(new YarnServerFrameworkService.YarnAMExtensions());

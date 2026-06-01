@@ -155,17 +155,6 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.tez</groupId>
-        <artifactId>hadoop-shim</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tez</groupId>
-        <artifactId>hadoop-shim</artifactId>
-        <version>${project.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tez</groupId>
         <artifactId>tez-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -687,6 +676,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-hdfs-client</artifactId>
+        <version>${hadoop.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-hdfs</artifactId>
         <version>${hadoop.version}</version>
         <exclusions>
@@ -823,7 +817,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>hadoop-shim</module>
     <module>tez-api</module>
     <module>tez-build-tools</module>
     <module>tez-common</module>
@@ -837,7 +830,6 @@
     <module>tez-ui</module>
     <module>tez-plugins</module>
     <module>tez-tools</module>
-    <module>hadoop-shim-impls</module>
     <module>tez-dist</module>
     <module>docs</module>
   </modules>

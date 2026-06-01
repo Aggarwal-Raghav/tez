@@ -47,7 +47,6 @@ import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.util.AuxiliaryServiceHelper;
-import org.apache.tez.common.GuavaShim;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.TezCommonUtils;
 import org.apache.tez.common.TezExecutors;
@@ -56,7 +55,6 @@ import org.apache.tez.common.security.JobTokenIdentifier;
 import org.apache.tez.common.security.TokenCache;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezException;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 import org.apache.tez.runtime.api.ExecutionContext;
 import org.apache.tez.runtime.api.impl.ExecutionContextImpl;
 import org.apache.tez.runtime.api.impl.TaskSpec;
@@ -216,7 +214,7 @@ public class ContainerRunnerImpl extends AbstractService implements ContainerRun
         workingDir, credentials, memoryPerExecutor);
     ListenableFuture<ContainerExecutionResult> future = executorService
         .submit(callable);
-    Futures.addCallback(future, new ContainerRunnerCallback(request, callable), GuavaShim.directExecutor());
+    Futures.addCallback(future, new ContainerRunnerCallback(request, callable), MoreExecutors.directExecutor());
   }
 
   /**
@@ -276,7 +274,7 @@ public class ContainerRunnerImpl extends AbstractService implements ContainerRun
         new ExecutionContextImpl(localAddress.get().getHostName()), env, localDirs,
         workingDir, credentials, memoryPerExecutor, sharedExecutor);
     ListenableFuture<ContainerExecutionResult> future = executorService.submit(callable);
-    Futures.addCallback(future, new TaskRunnerCallback(request, callable), GuavaShim.directExecutor());
+    Futures.addCallback(future, new TaskRunnerCallback(request, callable), MoreExecutors.directExecutor());
   }
 
 
@@ -319,8 +317,7 @@ public class ContainerRunnerImpl extends AbstractService implements ContainerRun
               request.getContainerIdString(),
               request.getTokenIdentifier(), request.getAppAttemptNumber(), workingDir, localDirs,
               envMap, objectRegistry, pid,
-              executionContext, credentials, memoryAvailable, request.getUser(), null, false,
-              new DefaultHadoopShim());
+              executionContext, credentials, memoryAvailable, request.getUser(), null, false);
       ContainerExecutionResult result = tezChild.run();
       LOG.info("ExecutionTime for Container: " + request.getContainerIdString() + "=" +
           sw.stop().now(TimeUnit.MILLISECONDS));
@@ -469,7 +466,7 @@ public class ContainerRunnerImpl extends AbstractService implements ContainerRun
           request.getAppAttemptNumber(),
           serviceConsumerMetadata, envMap, startedInputsMap, taskReporter, executor, objectRegistry,
           pid,
-          executionContext, memoryAvailable, false, new DefaultHadoopShim(), sharedExecutor);
+          executionContext, memoryAvailable, false, sharedExecutor);
 
       boolean shouldDie;
       try {

@@ -244,7 +244,7 @@ public class TestTaskReporter {
     TezConfiguration tezConf = new TezConfiguration();
     LogicalIOProcessorRuntimeTask lio1 =
         new LogicalIOProcessorRuntimeTask(mockSpec, 0, tezConf, null, null, null, null, null, null, "", null,
-            Runtime.getRuntime().maxMemory(), true, null, null);
+            Runtime.getRuntime().maxMemory(), true, null);
 
     LocalFileSystem localFS = FileSystem.getLocal(tezConf);
     FileSystem.clearStatistics();
@@ -258,7 +258,7 @@ public class TestTaskReporter {
 
     tezConf.setLong(TEZ_TASK_LOCAL_FS_WRITE_LIMIT_BYTES, 10);
     lio1 = new LogicalIOProcessorRuntimeTask(mockSpec, 0, tezConf, null, null, null, null, null, null, "", null,
-        Runtime.getRuntime().maxMemory(), true, null, null);
+        Runtime.getRuntime().maxMemory(), true, null);
 
     try {
       lio1.checkTaskLimits();

@@ -62,7 +62,6 @@ import org.apache.tez.dag.records.TezDAGID;
 import org.apache.tez.dag.records.TezTaskAttemptID;
 import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
-import org.apache.tez.hadoop.shim.HadoopShim;
 
 import com.google.protobuf.CodedInputStream;
 
@@ -341,7 +340,6 @@ public class TestProtoHistoryLoggingService {
     when(appContext.getApplicationID()).thenReturn(appId);
     when(appContext.getApplicationAttemptId()).thenReturn(attemptId);
     when(appContext.getUser()).thenReturn(user);
-    when(appContext.getHadoopShim()).thenReturn(new HadoopShim() {});
     when(appContext.getClock()).thenReturn(clock);
     service.setAppContext(appContext);
     Configuration conf = new Configuration(false);

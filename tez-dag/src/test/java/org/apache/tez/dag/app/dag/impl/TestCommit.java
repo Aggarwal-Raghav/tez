@@ -108,7 +108,6 @@ import org.apache.tez.dag.records.TezTaskID;
 import org.apache.tez.dag.records.TezVertexID;
 import org.apache.tez.frameworkplugins.AMExtensions;
 import org.apache.tez.frameworkplugins.yarn.YarnServerFrameworkService;
-import org.apache.tez.hadoop.shim.DefaultHadoopShim;
 import org.apache.tez.runtime.api.OutputCommitter;
 import org.apache.tez.runtime.api.OutputCommitterContext;
 import org.apache.tez.runtime.api.events.VertexManagerEvent;
@@ -309,7 +308,6 @@ public class TestCommit {
     dispatcher = new DrainDispatcher();
     fsTokens = new Credentials();
     appContext = mock(AppContext.class);
-    when(appContext.getHadoopShim()).thenReturn(new DefaultHadoopShim());
     when(appContext.getAmExtensions()).thenReturn(amExtensions);
     rawExecutor = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
         .setDaemon(true).setNameFormat("App Shared Pool - " + "#%d").build());

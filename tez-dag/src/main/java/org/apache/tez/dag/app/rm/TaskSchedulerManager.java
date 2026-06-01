@@ -81,8 +81,6 @@ import org.apache.tez.dag.app.rm.node.AMNodeEventTaskAttemptEnded;
 import org.apache.tez.dag.app.rm.node.AMNodeEventTaskAttemptSucceeded;
 import org.apache.tez.dag.app.web.WebUIService;
 import org.apache.tez.dag.records.TaskAttemptTerminationCause;
-import org.apache.tez.hadoop.shim.HadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.serviceplugins.api.DagInfo;
 import org.apache.tez.serviceplugins.api.ServicePluginError;
 import org.apache.tez.serviceplugins.api.TaskScheduler;
@@ -135,7 +133,6 @@ public class TaskSchedulerManager extends AbstractService implements
   // Custom AppIds to avoid container conflicts if there's multiple sources
   private final long SCHEDULER_APP_ID_BASE = 111101111;
   private final long SCHEDULER_APP_ID_INCREMENT = 111111111;
-  private final HadoopShim hadoopShim;
 
   BlockingQueue<AMSchedulerEvent> eventQueue
                               = new LinkedBlockingQueue<AMSchedulerEvent>();
@@ -166,7 +163,6 @@ public class TaskSchedulerManager extends AbstractService implements
     this.webUI = null;
     this.historyUrl = null;
     this.isLocalMode = false;
-    this.hadoopShim = new HadoopShimsLoader(appContext.getAMConf()).getHadoopShim();
     this.yarnSchedulerClassName = appContext.getAMConf().get(TezConfiguration.TEZ_AM_YARN_SCHEDULER_CLASS,
         TezConfiguration.TEZ_AM_YARN_SCHEDULER_CLASS_DEFAULT);
   }
@@ -188,8 +184,7 @@ public class TaskSchedulerManager extends AbstractService implements
                               ContainerSignatureMatcher containerSignatureMatcher,
                               WebUIService webUI,
                               List<NamedEntityDescriptor> schedulerDescriptors,
-                              boolean isLocalMode,
-                              HadoopShim hadoopShim) {
+                              boolean isLocalMode) {
     super(TaskSchedulerManager.class.getName());
     Preconditions.checkArgument(schedulerDescriptors != null && !schedulerDescriptors.isEmpty(),
         "TaskSchedulerDescriptors must be specified");
@@ -200,7 +195,6 @@ public class TaskSchedulerManager extends AbstractService implements
     this.webUI = webUI;
     this.historyUrl = getHistoryUrl();
     this.isLocalMode = isLocalMode;
-    this.hadoopShim = hadoopShim;
     this.yarnSchedulerClassName = appContext.getAMConf().get(TezConfiguration.TEZ_AM_YARN_SCHEDULER_CLASS,
         TezConfiguration.TEZ_AM_YARN_SCHEDULER_CLASS_DEFAULT);
     this.appCallbackExecutor = createAppCallbackExecutorService();
@@ -867,8 +861,6 @@ public class TaskSchedulerManager extends AbstractService implements
       } else {
         finishState = FinalApplicationStatus.UNDEFINED;
       }
-      finishState = hadoopShim.applyFinalApplicationStatusCorrection(finishState,
-          dagAppMaster.isSession(), appMasterState == DAGAppMasterState.ERROR);
       List<String> diagnostics = dagAppMaster.getDiagnostics();
       if(diagnostics != null) {
         for (String s : diagnostics) {

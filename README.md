@@ -97,10 +97,6 @@ you can bundle AWS-S3 or Azure support:
 mvn package -Dhadoop.version=3.4.2 -Paws -Pazure
 ```
 
-Tez also has shims to provide version-specific implementations for various APIs.
-For more details, refer to
-[Hadoop Shims](https://cwiki.apache.org/confluence/display/TEZ/HadoopShims).
-
 Tez UI
 ------
 

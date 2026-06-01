@@ -161,8 +161,7 @@ public class RecoveryService extends AbstractService {
     eventHandlingThread = new Thread(new Runnable() {
       @Override
       public void run() {
-        TezUtilsInternal.setHadoopCallerContext(appContext.getHadoopShim(),
-            appContext.getApplicationID());
+        TezUtilsInternal.setHadoopCallerContext(appContext.getApplicationID());
         DAGHistoryEvent event;
         while (!stopped.get() && !Thread.currentThread().isInterrupted()) {
           drained = eventQueue.isEmpty();

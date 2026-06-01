@@ -68,8 +68,6 @@ import org.apache.tez.dag.api.Vertex;
 import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.DAGStatus;
 import org.apache.tez.dag.api.client.StatusGetOpts;
-import org.apache.tez.hadoop.shim.HadoopShim;
-import org.apache.tez.hadoop.shim.HadoopShimsLoader;
 import org.apache.tez.mapreduce.examples.helpers.SplitsInClientOptionParser;
 import org.apache.tez.mapreduce.hadoop.MRHelpers;
 import org.apache.tez.mapreduce.hadoop.MRInputHelpers;
@@ -438,7 +436,6 @@ public class TestOrderedWordCount extends Configured implements Tool {
     }
 
     UserGroupInformation.setConfiguration(conf);
-    HadoopShim hadoopShim = new HadoopShimsLoader(tezConf).getHadoopShim();
     TestOrderedWordCount instance = new TestOrderedWordCount();
 
     String stagingDirStr =  conf.get(TezConfiguration.TEZ_AM_STAGING_DIR,
@@ -470,7 +467,7 @@ public class TestOrderedWordCount extends Configured implements Tool {
         null, instance.credentials);
     tezSession.start();
     if (tezSession.getAppMasterApplicationId() != null) {
-      TezUtilsInternal.setHadoopCallerContext(hadoopShim, tezSession.getAppMasterApplicationId());
+      TezUtilsInternal.setHadoopCallerContext(tezSession.getAppMasterApplicationId());
     }
 
     DAGStatus dagStatus = null;
