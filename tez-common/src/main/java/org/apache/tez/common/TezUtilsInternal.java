@@ -44,7 +44,6 @@ import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
-import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.log4j.Appender;
 import org.apache.log4j.PatternLayout;
 import org.apache.tez.client.TezClientUtils;
@@ -402,20 +401,6 @@ public final class TezUtilsInternal {
   @Private
   public static void setHadoopCallerContext(ApplicationId appID) {
     setHadoopCallerContext("tez_app:" + appID.toString());
-  }
-
-  public static FinalApplicationStatus applyFinalApplicationStatusCorrection(
-      FinalApplicationStatus orig, boolean isSessionMode, boolean isError) {
-    return switch (orig) {
-      case FAILED ->
-          // App is failed if dag failed in non-session mode or there was an error.
-          (!isSessionMode || isError)
-              ? FinalApplicationStatus.FAILED
-              : FinalApplicationStatus.ENDED;
-      case SUCCEEDED ->
-          isSessionMode ? FinalApplicationStatus.ENDED : FinalApplicationStatus.SUCCEEDED;
-      default -> orig;
-    };
   }
 
   @Private

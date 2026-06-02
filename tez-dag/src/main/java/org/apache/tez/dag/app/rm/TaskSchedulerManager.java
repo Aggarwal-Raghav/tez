@@ -48,7 +48,6 @@ import org.apache.tez.Utils;
 import org.apache.tez.common.ContainerSignatureMatcher;
 import org.apache.tez.common.Preconditions;
 import org.apache.tez.common.ReflectionUtils;
-import org.apache.tez.common.TezUtilsInternal;
 import org.apache.tez.dag.api.NamedEntityDescriptor;
 import org.apache.tez.dag.api.TaskLocationHint;
 import org.apache.tez.dag.api.TaskLocationHint.TaskBasedLocationAffinity;
@@ -862,8 +861,6 @@ public class TaskSchedulerManager extends AbstractService implements
       } else {
         finishState = FinalApplicationStatus.UNDEFINED;
       }
-      finishState = TezUtilsInternal.applyFinalApplicationStatusCorrection(finishState,
-          dagAppMaster.isSession(), appMasterState == DAGAppMasterState.ERROR);
       List<String> diagnostics = dagAppMaster.getDiagnostics();
       if(diagnostics != null) {
         for (String s : diagnostics) {
