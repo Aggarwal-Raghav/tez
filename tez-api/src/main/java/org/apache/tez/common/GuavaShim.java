@@ -18,8 +18,6 @@
  */
 package org.apache.tez.common;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
 import com.google.common.util.concurrent.MoreExecutors;
@@ -29,27 +27,10 @@ import com.google.common.util.concurrent.MoreExecutors;
  */
 public final class GuavaShim {
 
-  static {
-    try {
-      executorMethod = MoreExecutors.class.getDeclaredMethod("directExecutor");
-    } catch (NoSuchMethodException nsme) {
-      try {
-        executorMethod = MoreExecutors.class.getDeclaredMethod("sameThreadExecutor");
-      } catch (NoSuchMethodException nsmeSame) {
-      }
-    }
-  }
-
   private GuavaShim() {
   }
 
-  private static Method executorMethod;
-
   public static Executor directExecutor() {
-    try {
-      return (Executor) executorMethod.invoke(null);
-    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
-    }
+    return MoreExecutors.directExecutor();
   }
 }

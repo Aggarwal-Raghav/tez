@@ -18,11 +18,40 @@
  */
 package org.apache.tez.hadoop.shim;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.hadoop.classification.InterfaceAudience.Private;
+import org.apache.hadoop.ipc.CallerContext;
+import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
+import org.apache.hadoop.yarn.proto.YarnServiceProtos.SchedulerResourceTypes;
 
 /**
- * Default Hadoop Shim. For now, it mimics HadoopShim.
+ * Default Hadoop Shim. Provides Hadoop 3.x baseline capabilities.
  */
 @Private
 public class DefaultHadoopShim extends HadoopShim {
+
+  private static final CallerContext nullCallerContext = new CallerContext.Builder("").build();
+
+  @Override
+  public void setHadoopCallerContext(String context) {
+    CallerContext.setCurrent(new CallerContext.Builder(context).build());
+  }
+
+  @Override
+  public void clearHadoopCallerContext() {
+    CallerContext.setCurrent(nullCallerContext);
+  }
+
+  @Override
+  public Set<String> getSupportedResourceTypes(RegisterApplicationMasterResponse response) {
+    EnumSet<SchedulerResourceTypes> supportedResourceTypes = response.getSchedulerResourceTypes();
+    Set<String> supportedTypes = new HashSet<String>();
+    for (SchedulerResourceTypes resourceType : supportedResourceTypes) {
+      supportedTypes.add(resourceType.name());
+    }
+    return supportedTypes;
+  }
 }
