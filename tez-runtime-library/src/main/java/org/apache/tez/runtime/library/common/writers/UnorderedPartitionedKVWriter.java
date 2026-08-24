@@ -407,13 +407,17 @@ public class UnorderedPartitionedKVWriter extends BaseUnorderedPartitionedKVWrit
 
   @SuppressWarnings("unchecked")
   private void write(Object key, Object value, int partition) throws IOException {
+    WrappedBuffer currentBuffer = this.currentBuffer;
+
     // Wrap to 4 byte (Int) boundary for metaData
-    int mod = currentBuffer.nextPosition % INT_SIZE;
+    // Equivalent to modulo 4 (currentBuffer.nextPosition % INT_SIZE)
+    int mod = currentBuffer.nextPosition & (INT_SIZE - 1);
     int metaSkip = mod == 0 ? 0 : (INT_SIZE - mod);
     if ((currentBuffer.availableSize < (META_SIZE + metaSkip)) || (currentBuffer.full)) {
       // Move over to the next buffer.
       metaSkip = 0;
       setupNextBuffer();
+      currentBuffer = this.currentBuffer;
     }
     currentBuffer.nextPosition += metaSkip;
     int metaStart = currentBuffer.nextPosition;
@@ -455,17 +459,23 @@ public class UnorderedPartitionedKVWriter extends BaseUnorderedPartitionedKVWrit
       }
     }
 
-    // Meta-data updates
-    int metaIndex = metaStart / INT_SIZE;
-    int indexNext = currentBuffer.partitionPositions[partition];
+    int pos = currentBuffer.nextPosition;
 
-    currentBuffer.metaBuffer.put(metaIndex + INDEX_KEYLEN, (valStart - (metaStart + META_SIZE)));
-    currentBuffer.metaBuffer.put(metaIndex + INDEX_VALLEN, (currentBuffer.nextPosition - valStart));
+    // Meta-data updates
+    // Equivalent to division by 4 (metaStart / INT_SIZE)
+    int metaIndex = metaStart >>> 2;
+    int indexNext = currentBuffer.partitionPositions[partition];
+    int keyLength = valStart - (metaStart + META_SIZE);
+    int valLength = pos - valStart;
+    int recordBytes = keyLength + valLength;
+
+    currentBuffer.metaBuffer.put(metaIndex + INDEX_KEYLEN, keyLength);
+    currentBuffer.metaBuffer.put(metaIndex + INDEX_VALLEN, valLength);
     currentBuffer.metaBuffer.put(metaIndex + INDEX_NEXT, indexNext);
     currentBuffer.skipSize += metaSkip; // For size estimation
     // Update stats on number of records
-    localOutputRecordBytesCounter += (currentBuffer.nextPosition - (metaStart + META_SIZE));
-    localOutputBytesWithOverheadCounter += ((currentBuffer.nextPosition - metaStart) + metaSkip);
+    localOutputRecordBytesCounter += recordBytes;
+    localOutputBytesWithOverheadCounter += recordBytes + (META_SIZE + metaSkip);
     localOutputRecordsCounter++;
     if (localOutputRecordBytesCounter % NOTIFY_THRESHOLD == 0) {
       updateTezCountersAndNotify();
