@@ -28,16 +28,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -118,6 +122,7 @@ public class TestHistoryParser {
   private final static String SUMMATION = "Summation";
   private final static String SIMPLE_HISTORY_DIR = "/tmp/simplehistory/";
   private final static String HISTORY_TXT = "history.txt";
+  private static final long ATS_RETRY_DELAY_MS = 5_000L;
 
   private static Configuration conf = new Configuration();
   private static FileSystem fs;
@@ -209,14 +214,12 @@ public class TestHistoryParser {
     String dagId = runWordCount(WordCount.TokenProcessor.class.getName(),
         WordCount.SumProcessor.class.getName(), "WordCount", true);
 
-    //Export the data from ATS
-    String[] args = { "--dagId=" + dagId, "--downloadDir=" + DOWNLOAD_DIR, "--yarnTimelineAddress=" + yarnTimelineAddress };
+    //Retry the ATS export+parse pipeline until the resulting DagInfo actually contains
+    //the expected DAG (two vertices, non-empty vertices/tasks). Under load the AM's async
+    //flush and the timeline server's write path can race the export, leaving empty/partial
+    //entities in the zip.
+    DagInfo dagInfoFromATS = fetchDagInfoFromAtsWithRetry(dagId, 6, 2);
 
-    int result = ATSImportTool.process(args);
-    assertEquals(0, result);
-
-    //Parse ATS data and verify results
-    DagInfo dagInfoFromATS = getDagInfo(dagId);
     verifyDagInfo(dagInfoFromATS, true);
     verifyJobSpecificInfo(dagInfoFromATS);
     checkConfig(dagInfoFromATS);
@@ -224,7 +227,8 @@ public class TestHistoryParser {
     //Now run with SimpleHistoryLogging
     dagId = runWordCount(WordCount.TokenProcessor.class.getName(),
         WordCount.SumProcessor.class.getName(), "WordCount", false);
-    Thread.sleep(10000); //For all flushes to happen and to avoid half-cooked download.
+
+    waitForHistoryFileReady(dagId, 60_000L);
 
     DagInfo shDagInfo = getDagInfoFromSimpleHistory(dagId);
     verifyDagInfo(shDagInfo, false);
@@ -232,6 +236,109 @@ public class TestHistoryParser {
 
     //Compare dagInfo by parsing ATS data with DagInfo obtained by parsing SimpleHistoryLog
     isDAGEqual(dagInfoFromATS, shDagInfo);
+  }
+
+  /**
+   * The ATS write path is async (AM event queue → timeline client → timeline server). Even
+   * after the DAG client reports the job complete, timeline entities may still be in transit,
+   * so an export triggered right after completion can capture a partial snapshot (empty zip
+   * entries, or a DagInfo with fewer vertices / empty task lists). Retry the export+parse
+   * pipeline until {@link #isDagInfoComplete} confirms the snapshot is populated.
+   */
+  private DagInfo fetchDagInfoFromAtsWithRetry(String dagId, int maxAttempts,
+      int expectedNumOfVertices) throws Exception {
+    String[] args = { "--dagId=" + dagId, "--downloadDir=" + DOWNLOAD_DIR,
+        "--yarnTimelineAddress=" + yarnTimelineAddress };
+    Exception lastError = null;
+    DagInfo lastPartial = null;
+    for (int attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        // Fresh download every attempt — ATSImportTool overwrites the zip.
+        int result = ATSImportTool.process(args);
+        if (result != 0) {
+          throw new IOException("ATS export failed with exit code: " + result);
+        }
+        DagInfo info = getDagInfo(dagId);
+        if (isDagInfoComplete(info, expectedNumOfVertices)) {
+          return info;
+        }
+        lastPartial = info;
+      } catch (Exception e) {
+        lastError = e;
+      }
+      if (attempt < maxAttempts - 1) {
+        Thread.sleep(ATS_RETRY_DELAY_MS);
+      }
+    }
+    fail("Could not fetch a complete DagInfo for " + dagId + " after " + maxAttempts
+        + " attempts (lastError=" + lastError + ", lastPartial="
+        + (lastPartial == null ? "null"
+            : "vertices=" + lastPartial.getVertices().size()
+            + ", tasks=" + (lastPartial.getVertices().isEmpty() ? 0
+                : lastPartial.getVertices().iterator().next().getTasks().size()))
+        + ")");
+    return null;
+  }
+
+  /**
+   * ATS parsing can succeed on a partially-written zip: the reader returns a DagInfo with
+   * fewer vertices than the DAG actually has, or vertices whose task/attempt lists are still
+   * empty. That's the race we're guarding against — a "successful" parse is not proof the
+   * export was complete. We know the expected vertex count from the DAG under test, so require
+   * it explicitly and require every vertex to have at least one task with at least one attempt.
+   */
+  private static boolean isDagInfoComplete(DagInfo info, int expectedNumOfVertices) {
+    return info != null
+        && info.getVertices().size() >= expectedNumOfVertices
+        && info.getVertices().stream().allMatch(v ->
+            !v.getTasks().isEmpty()
+                && v.getTasks().stream().allMatch(t -> !t.getTaskAttempts().isEmpty()));
+  }
+
+  /**
+   * SimpleHistoryLoggingService writes events asynchronously and only hflushes/closes the file
+   * when the AM shuts down (see SimpleHistoryLoggingService#serviceStop). Two equal-length size
+   * samples do not prove the writer has finished — it can pause between events while the file
+   * is still open. Poll for the terminal DAG record instead: a JSON object with
+   * {@code "eventType":"DAG_FINISHED"} that carries this DAG's entityId. That record is the
+   * last one {@link SimpleHistoryLoggingService} emits for the DAG, so its presence guarantees
+   * the snapshot the parser will read is complete.
+   */
+  private void waitForHistoryFileReady(String dagId, long timeoutMs) throws Exception {
+    TezDAGID tezDAGID = TezDAGID.fromString(dagId);
+    ApplicationAttemptId applicationAttemptId =
+        ApplicationAttemptId.newInstance(tezDAGID.getApplicationId(), 1);
+    Path historyPath = new Path(conf.get("fs.defaultFS")
+        + SIMPLE_HISTORY_DIR + HISTORY_TXT + "." + applicationAttemptId);
+    FileSystem hfs = historyPath.getFileSystem(conf);
+    long deadlineNanos = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+    long lastLen = -1L;
+    while (System.nanoTime() < deadlineNanos) {
+      if (hfs.exists(historyPath)) {
+        lastLen = hfs.getFileStatus(historyPath).getLen();
+        if (lastLen > 0 && hasDagFinishedRecord(hfs, historyPath, dagId)) {
+          return;
+        }
+      }
+      Thread.sleep(500);
+    }
+    fail("Timed out waiting for SimpleHistory file " + historyPath
+        + " to contain DAG_FINISHED for " + dagId + " within " + timeoutMs + "ms (lastLen="
+        + lastLen + ")");
+  }
+
+  /**
+   * Return true if the history file contains a DAG_FINISHED record for the given dagId. The
+   * check reads the file's current bytes and searches for the two markers the JSON encoding
+   * always emits together (see HistoryEventJsonConversion#convertDAGFinishedEvent):
+   */
+  private static boolean hasDagFinishedRecord(FileSystem hfs, Path historyPath, String dagId)
+      throws IOException {
+    try (FSDataInputStream in = hfs.open(historyPath)) {
+      String contents = new String(IOUtils.toByteArray(in), StandardCharsets.UTF_8);
+      return contents.contains("\"entityId\":\"" + dagId + "\"")
+          && contents.contains("\"eventType\":\"DAG_FINISHED\"");
+    }
   }
 
   private DagInfo getDagInfoFromSimpleHistory(String dagId) throws TezException, IOException {
