@@ -476,14 +476,12 @@ public class UnorderedPartitionedKVWriter extends BaseUnorderedPartitionedKVWrit
     // Update stats on number of records
     localOutputRecordBytesCounter += recordBytes;
     localOutputBytesWithOverheadCounter += recordBytes + (META_SIZE + metaSkip);
-    localOutputRecordsCounter++;
-    if (localOutputRecordBytesCounter % NOTIFY_THRESHOLD == 0) {
+    if (++localOutputRecordsCounter == NOTIFY_THRESHOLD) {
       updateTezCountersAndNotify();
     }
     locBuffer.partitionPositions[partition] = metaStart;
     locBuffer.recordsPerPartition[partition]++;
-    locBuffer.sizePerPartition[partition] +=
-        locBuffer.nextPosition - (metaStart + META_SIZE);
+    locBuffer.sizePerPartition[partition] += recordBytes;
     locBuffer.numRecords++;
 
   }
@@ -699,16 +697,18 @@ public class UnorderedPartitionedKVWriter extends BaseUnorderedPartitionedKVWrit
   private long writePartition(int pos, WrappedBuffer wrappedBuffer, Writer writer,
       DataInputBuffer keyBuffer, DataInputBuffer valBuffer) throws IOException {
     long numRecords = 0;
+    IntBuffer metaBuffer = wrappedBuffer.metaBuffer;
+    byte[] buffer = wrappedBuffer.buffer;
     while (pos != WrappedBuffer.PARTITION_ABSENT_POSITION) {
-      int metaIndex = pos / INT_SIZE;
-      int keyLength = wrappedBuffer.metaBuffer.get(metaIndex + INDEX_KEYLEN);
-      int valLength = wrappedBuffer.metaBuffer.get(metaIndex + INDEX_VALLEN);
-      keyBuffer.reset(wrappedBuffer.buffer, pos + META_SIZE, keyLength);
-      valBuffer.reset(wrappedBuffer.buffer, pos + META_SIZE + keyLength, valLength);
+      int metaIndex = pos >>> 2;
+      int keyLength = metaBuffer.get(metaIndex + INDEX_KEYLEN);
+      int valLength = metaBuffer.get(metaIndex + INDEX_VALLEN);
+      keyBuffer.reset(buffer, pos + META_SIZE, keyLength);
+      valBuffer.reset(buffer, pos + META_SIZE + keyLength, valLength);
 
       writer.append(keyBuffer, valBuffer);
       numRecords++;
-      pos = wrappedBuffer.metaBuffer.get(metaIndex + INDEX_NEXT);
+      pos = metaBuffer.get(metaIndex + INDEX_NEXT);
     }
     return numRecords;
   }
